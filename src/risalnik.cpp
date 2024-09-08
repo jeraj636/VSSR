@@ -114,11 +114,11 @@ void Risalnik::zacetek_okvir()
 
     //* Nastavljanje matrik:
     // Ortho 2D matrika
-    m_ortho_mat_2D = mat::mat3(1); //! za enkrat še se ne uporablja
+    m_ortho_mat_2D = mat::mat3(1);
     m_ortho_mat_2D = mat::ortho(m_ortho_mat_2D, 0, m_velikost_okna.x, m_velikost_okna.y, 0);
 
     // Proj 3D maatrika
-    m_proj_mat_3D = mat::mat4(1); //! za enkrat se še ne uporablja
+    m_proj_mat_3D = mat::mat4(1);
     m_proj_mat_3D = mat::projekcija(m_proj_mat_3D, m_velikost_okna.y, m_velikost_okna.x, degToRad(kamera_3D.vidno_polje), 0.1, 1000);
 
     //* Miškin kazalec
@@ -362,7 +362,6 @@ void Risalnik::ustvari_bufferje_2D_p()
 
 void Risalnik::ustvari_shaderje_2D_p()
 {
-    //! Memory lick
     int uspeh;
     char informacije[512];
 
@@ -494,47 +493,88 @@ bool Risalnik::dobi_tipko(int katera_tipka)
         return false;
 }
 
-void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, const Barva b_odzadja, mat::vec2 pozicija, float velikost, const std::string niz)
+void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, const Barva b_odzadja, mat::vec2 pozicija, float velikost, const std::string niz, Poravnava poravnava_x, Poravnava poravnava_y)
 {
     //* Rezervacija prostora v pomilniku
     float *tocke = new float[16 * niz.size()];
     uint32_t *indeksi = new uint32_t[6 * niz.size()];
 
-    /*
-    pozicija.x /= (m_velikost_okna.x / 2);
-    pozicija.y /= (m_velikost_okna.y / 2);
-    pozicija.x -= 1;
-    pozicija.y -= 1;
-    */
+    //* Izračum pravilne velikosti pisave
+    velikost /= pisava.m_velikost;
 
     stbtt_aligned_quad quad;
     float x = 0, y = 0;
+    float min_y = 1000, max_y = -1000;
+    for (int i = 0; i < niz.size(); i++)
+    {
+        stbtt_GetBakedQuad(pisava.m_char_data, 512, 512, niz[i], &x, &y, &quad, false);
+        x += quad.x1 - quad.x0;
+        std::cout << quad.y0 << "  " << quad.y1 << "\n";
+        if (quad.y1 > max_y)
+            max_y = quad.y1;
+        if (quad.y0 < min_y)
+            min_y = quad.y0;
+    }
+    mat::vec2 korekcija(0);
+
+    switch (poravnava_x)
+    {
+    case Poravnava::sredina:
+        korekcija.x -= x / 2;
+        break;
+    case Poravnava::levo:
+        break;
+    case Poravnava::desno:
+        korekcija.x -= x;
+        break;
+    default:
+        std::cout << "Napaka napačen tip poravnave x v besedilu: " << niz << "\n";
+        exit(0);
+        break;
+    }
+    switch (poravnava_y)
+    {
+    case Poravnava::sredina:
+        korekcija.y -= (abs(min_y) + abs(max_y)) / 2;
+        break;
+    case Poravnava::zograj:
+        break;
+    case Poravnava::spodaj:
+        korekcija.y -= abs(min_y) + abs(max_y);
+        break;
+    default:
+        std::cout << "Napaka napačen tip poravnave x v besedilu: " << niz << "\n";
+        exit(0);
+        break;
+    }
+    //* Pisanje podatkov v tabele
+    x = y = 0;
     for (int i = 0; i < niz.size(); i++)
     {
         stbtt_GetBakedQuad(pisava.m_char_data, 512, 512, niz[i], &x, &y, &quad, false);
 
-        quad.x0 /= velikost;
-        quad.x1 /= velikost;
-        quad.y0 /= -velikost;
-        quad.y1 /= -velikost;
+        quad.x0 *= velikost;
+        quad.x1 *= velikost;
+        quad.y0 *= -velikost;
+        quad.y1 *= -velikost;
 
-        tocke[i * 16 + 0] = quad.x0 + pozicija.x;
-        tocke[i * 16 + 1] = quad.y0 + pozicija.y;
+        tocke[i * 16 + 0] = quad.x0 + korekcija.x;
+        tocke[i * 16 + 1] = quad.y0 + korekcija.y;
         tocke[i * 16 + 2] = quad.s0;
         tocke[i * 16 + 3] = quad.t0;
 
-        tocke[i * 16 + 4] = quad.x1 + pozicija.x;
-        tocke[i * 16 + 5] = quad.y0 + pozicija.y;
+        tocke[i * 16 + 4] = quad.x1 + korekcija.x;
+        tocke[i * 16 + 5] = quad.y0 + korekcija.y;
         tocke[i * 16 + 6] = quad.s1;
         tocke[i * 16 + 7] = quad.t0;
 
-        tocke[i * 16 + 8] = quad.x1 + pozicija.x;
-        tocke[i * 16 + 9] = quad.y1 + pozicija.y;
+        tocke[i * 16 + 8] = quad.x1 + korekcija.x;
+        tocke[i * 16 + 9] = quad.y1 + korekcija.y;
         tocke[i * 16 + 10] = quad.s1;
         tocke[i * 16 + 11] = quad.t1;
 
-        tocke[i * 16 + 12] = quad.x0 + pozicija.x;
-        tocke[i * 16 + 13] = quad.y1 + pozicija.y;
+        tocke[i * 16 + 12] = quad.x0 + korekcija.x;
+        tocke[i * 16 + 13] = quad.y1 + korekcija.y;
         tocke[i * 16 + 14] = quad.s0;
         tocke[i * 16 + 15] = quad.t1;
 
@@ -544,6 +584,7 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, con
         indeksi[i * 6 + 3] = 0 + i * 4;
         indeksi[i * 6 + 4] = 2 + i * 4;
         indeksi[i * 6 + 5] = 3 + i * 4;
+
         x += quad.x1 - quad.x0;
     }
 
@@ -565,8 +606,11 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, con
     glUniform4f(glGetUniformLocation(m_shader_program_2D_p, "u_b_obj"), b_besedila.r, b_besedila.g, b_besedila.b, b_besedila.a);
     glUniform4f(glGetUniformLocation(m_shader_program_2D_p, "u_b_ozd"), b_odzadja.r, b_odzadja.g, b_odzadja.b, b_odzadja.a);
     glUniform1i(glGetUniformLocation(m_shader_program_2D_p, "u_tek_id"), 0);
-    mat::mat3 tt(1);
-    glUniformMatrix3fv(glGetUniformLocation(m_shader_program_2D_p, "u_orto"), 1, GL_TRUE, &tt.mat[0][0]);
+
+    mat::mat3 transformacija(1);
+    transformacija = mat::pozicijska(transformacija, pozicija);
+    transformacija = m_ortho_mat_2D * transformacija;
+    glUniformMatrix3fv(glGetUniformLocation(m_shader_program_2D_p, "u_orto"), 1, GL_TRUE, &transformacija.mat[0][0]);
 
     glDrawElements(GL_TRIANGLES, 6 * niz.size(), GL_UNSIGNED_INT, 0);
 
@@ -577,4 +621,9 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, con
     //* Sprostitev pomnilnika
     delete[] tocke;
     delete[] indeksi;
+}
+
+mat::vec2 Risalnik::dobi_velikost_okna()
+{
+    return m_velikost_okna;
 }

@@ -14,6 +14,15 @@ class Pisava;
 class Risalnik;
 class Objekt_2D;
 class Objekt_3D;
+
+enum class Poravnava
+{
+    zograj,
+    spodaj,
+    sredina,
+    levo,
+    desno,
+};
 class Kazalec
 {
 public:
@@ -42,7 +51,7 @@ public:
     static inline mat::vec3 pozicija_3D_luci;
     static inline Kamera_2D kamera_2D;
     static inline Kamera_3D kamera_3D;
-    mat::vec2 get_velikost_okna();
+    static mat::vec2 dobi_velikost_okna();
 
 private:
     static inline GLFWwindow *m_glfw_okno;
@@ -63,8 +72,8 @@ public:
     static void konec_okvir();
     static void narisi_2D_objekt(const Objekt_2D &obj);
     static void narisi_3D_objekt(const Objekt_3D &obj);
-    static void narisi_besedilo(const Pisava &pisava, const Barva b_besedila, const Barva b_odzadja, mat::vec2 pozicija, float velikost, const std::string niz);
-    static void narisi_besedilo(const Pisava &pisava, const Barva b_besedila, const Barva b_odzadja, float pozicija_y, float velikost, const std::string niz);
+    static void narisi_besedilo(const Pisava &pisava, const Barva b_besedila, const Barva b_odzadja, mat::vec2 pozicija, float velikost, const std::string niz, Poravnava poravnava_x, Poravnava poravnava_y);
+    // static void narisi_besedilo(const Pisava &pisava, const Barva b_besedila, const Barva b_odzadja, float pozicija_y, float velikost, const std::string niz); //! to morebiti ne bo realizirano
     static bool ali_je_okno_za_zapreti();
     static bool dobi_tipko(int katera_tipka);
 
