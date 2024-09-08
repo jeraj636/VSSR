@@ -15,6 +15,7 @@ public:
     ~Pisava();
     void nastavi(const std::string &pot, uint32_t velikost);
     friend class Risalnik;
+    friend class Besedilo;
 
 protected:
     uint32_t m_tekstura_ID;

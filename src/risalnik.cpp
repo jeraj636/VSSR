@@ -493,7 +493,7 @@ bool Risalnik::dobi_tipko(int katera_tipka)
         return false;
 }
 
-void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, const Barva b_odzadja, mat::vec2 pozicija, float velikost, const std::string niz, Poravnava poravnava_x, Poravnava poravnava_y)
+void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat::vec2 pozicija, float velikost, const std::string niz, Poravnava poravnava_x, Poravnava poravnava_y)
 {
     //* Rezervacija prostora v pomilniku
     float *tocke = new float[16 * niz.size()];
@@ -502,25 +502,37 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, con
     //* Izračum pravilne velikosti pisave
     velikost /= pisava.m_velikost;
 
+    //* Pridobivanje x in y velikosti
+    /*
+        y velikost dobimo na načim da najdemo y_max in y_min in izračunamo razliko
+        x velikost pa s sestevanjem razlik med x1 in x0
+    */
     stbtt_aligned_quad quad;
     float x = 0, y = 0;
     float min_y = 1000, max_y = -1000;
     for (int i = 0; i < niz.size(); i++)
     {
         stbtt_GetBakedQuad(pisava.m_char_data, 512, 512, niz[i], &x, &y, &quad, false);
+
+        quad.x0 /= velikost;
+        quad.x1 /= velikost;
+        quad.y0 /= -velikost;
+        quad.y1 /= -velikost;
+
         x += quad.x1 - quad.x0;
-        std::cout << quad.y0 << "  " << quad.y1 << "\n";
+
         if (quad.y1 > max_y)
             max_y = quad.y1;
         if (quad.y0 < min_y)
             min_y = quad.y0;
     }
+    std::cout << x << "\n";
+    //* Popravljanje zamika glede na referenčno točko
     mat::vec2 korekcija(0);
-
     switch (poravnava_x)
     {
     case Poravnava::sredina:
-        korekcija.x -= x / 2;
+        korekcija.x -= (x) / 2;
         break;
     case Poravnava::levo:
         break;
@@ -547,16 +559,19 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, con
         exit(0);
         break;
     }
+
     //* Pisanje podatkov v tabele
     x = y = 0;
+    x -= korekcija.x;
+    y = korekcija.y;
     for (int i = 0; i < niz.size(); i++)
     {
         stbtt_GetBakedQuad(pisava.m_char_data, 512, 512, niz[i], &x, &y, &quad, false);
 
-        quad.x0 *= velikost;
-        quad.x1 *= velikost;
-        quad.y0 *= -velikost;
-        quad.y1 *= -velikost;
+        quad.x0 /= velikost;
+        quad.x1 /= velikost;
+        quad.y0 /= -velikost;
+        quad.y1 /= -velikost;
 
         tocke[i * 16 + 0] = quad.x0 + korekcija.x;
         tocke[i * 16 + 1] = quad.y0 + korekcija.y;
@@ -604,7 +619,6 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, con
 
     //* Nastavljanje barv in teksture
     glUniform4f(glGetUniformLocation(m_shader_program_2D_p, "u_b_obj"), b_besedila.r, b_besedila.g, b_besedila.b, b_besedila.a);
-    glUniform4f(glGetUniformLocation(m_shader_program_2D_p, "u_b_ozd"), b_odzadja.r, b_odzadja.g, b_odzadja.b, b_odzadja.a);
     glUniform1i(glGetUniformLocation(m_shader_program_2D_p, "u_tek_id"), 0);
 
     mat::mat3 transformacija(1);

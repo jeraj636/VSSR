@@ -30,6 +30,8 @@ src/kamera_2D.cpp
 src/kamera_3D.cpp
 src/cas.cpp
 src/pisava.cpp
+src/zacetna_scena.cpp
+src/besedilo.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
