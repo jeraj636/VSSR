@@ -5,7 +5,7 @@
 #include "objekt_2D.h"
 int main()
 {
-    Risalnik::odpri_okno("test", 0);
+    Risalnik::odpri_okno("test", 0x33333333);
 
     std::cout << "Pozdravljen sevet!\n";
     Pisava pisava("../sredstva/pisava.ttf", 100);

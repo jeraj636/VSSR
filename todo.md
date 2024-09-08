@@ -12,3 +12,4 @@
 - [X] Risalnik
 - [X] Tekstura
 - [X] Pisava
+- [X] Scena

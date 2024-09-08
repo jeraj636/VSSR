@@ -12,7 +12,8 @@ uniform sampler2D u_tekstura;
 
 void main()
 {
-    frag_color = texture(u_tekstura,tex_poz) * vec4(u_barva);
+    vec4 tekstura = texture(u_tekstura,tex_poz);
+    frag_color = tekstura * u_barva;
 }
 )";
 const char *fragment_shader_2D_p_s = R"(
