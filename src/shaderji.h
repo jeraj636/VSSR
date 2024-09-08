@@ -82,6 +82,7 @@ void main()
 {
     tex_poz = a_t_pos;
     gl_Position = vec4(u_transformacija * vec3(a_pos,1.0),1.0);
+    gl_Position.z =0;
 }
 
 )";

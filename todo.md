@@ -11,4 +11,4 @@
 - [X] Objekt 3D
 - [X] Risalnik
 - [X] Tekstura
-- [ ] Pisava
+- [X] Pisava

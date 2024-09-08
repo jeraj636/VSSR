@@ -28,5 +28,5 @@ void Kamera_2D::posodobi_kamero()
 
     //* Ustvarjanje matrike za kamero
     m_mat_pogled = mat::mat3(1);
-    m_mat_pogled = mat::pozicijska(m_mat_pogled, pozicija);
+    // m_mat_pogled = mat::pozicijska(m_mat_pogled, pozicija);
 }

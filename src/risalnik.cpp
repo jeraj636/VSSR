@@ -434,7 +434,7 @@ void Risalnik::narisi_2D_objekt(const Objekt_2D &obj)
     //* Pripravljanje transformacijske matrike
     mat::mat3 transformacija(1);
     transformacija = mat::pozicijska(transformacija, obj.pozicija);
-    transformacija = mat::rotacijska(transformacija, obj.rotacija);
+    transformacija = mat::rotacijska(transformacija, degToRad(obj.rotacija));
     transformacija = mat::velikostna(transformacija, obj.velikost);
 
     //* Mnozenje z projekcijo in kamero
