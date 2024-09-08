@@ -1,0 +1,43 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/VSSR.dir/lib/glad/src/glad.c.o"
+  "CMakeFiles/VSSR.dir/lib/glad/src/glad.c.o.d"
+  "CMakeFiles/VSSR.dir/src/barva.cpp.o"
+  "CMakeFiles/VSSR.dir/src/barva.cpp.o.d"
+  "CMakeFiles/VSSR.dir/src/cas.cpp.o"
+  "CMakeFiles/VSSR.dir/src/cas.cpp.o.d"
+  "CMakeFiles/VSSR.dir/src/kamera_2D.cpp.o"
+  "CMakeFiles/VSSR.dir/src/kamera_2D.cpp.o.d"
+  "CMakeFiles/VSSR.dir/src/kamera_3D.cpp.o"
+  "CMakeFiles/VSSR.dir/src/kamera_3D.cpp.o.d"
+  "CMakeFiles/VSSR.dir/src/main.cpp.o"
+  "CMakeFiles/VSSR.dir/src/main.cpp.o.d"
+  "CMakeFiles/VSSR.dir/src/mat3.cpp.o"
+  "CMakeFiles/VSSR.dir/src/mat3.cpp.o.d"
+  "CMakeFiles/VSSR.dir/src/mat4.cpp.o"
+  "CMakeFiles/VSSR.dir/src/mat4.cpp.o.d"
+  "CMakeFiles/VSSR.dir/src/matematika.cpp.o"
+  "CMakeFiles/VSSR.dir/src/matematika.cpp.o.d"
+  "CMakeFiles/VSSR.dir/src/obj.cpp.o"
+  "CMakeFiles/VSSR.dir/src/obj.cpp.o.d"
+  "CMakeFiles/VSSR.dir/src/objekt_2D.cpp.o"
+  "CMakeFiles/VSSR.dir/src/objekt_2D.cpp.o.d"
+  "CMakeFiles/VSSR.dir/src/objekt_3D.cpp.o"
+  "CMakeFiles/VSSR.dir/src/objekt_3D.cpp.o.d"
+  "CMakeFiles/VSSR.dir/src/pisava.cpp.o"
+  "CMakeFiles/VSSR.dir/src/pisava.cpp.o.d"
+  "CMakeFiles/VSSR.dir/src/risalnik.cpp.o"
+  "CMakeFiles/VSSR.dir/src/risalnik.cpp.o.d"
+  "CMakeFiles/VSSR.dir/src/tekstura.cpp.o"
+  "CMakeFiles/VSSR.dir/src/tekstura.cpp.o.d"
+  "CMakeFiles/VSSR.dir/src/vec2.cpp.o"
+  "CMakeFiles/VSSR.dir/src/vec2.cpp.o.d"
+  "CMakeFiles/VSSR.dir/src/vec3.cpp.o"
+  "CMakeFiles/VSSR.dir/src/vec3.cpp.o.d"
+  "VSSR"
+  "VSSR.pdb"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang C CXX)
+  include(CMakeFiles/VSSR.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

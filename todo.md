@@ -1,0 +1,14 @@
+## VSSR
+- [X] Barva
+- [X] Kamera
+- [X] Matematika
+  - [X] vec2
+  - [X] vec3
+  - [X] mat3
+  - [X] mat4
+- [X] Obj
+- [X] Objekt 2D
+- [X] Objekt 3D
+- [X] Risalnik
+- [X] Tekstura
+- [ ] Pisava
