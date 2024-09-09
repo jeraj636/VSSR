@@ -3,6 +3,7 @@
 #include "scena.h"
 #include "pisava.h"
 #include "besedilo.h"
+#include "objekt_2D.h"
 class Zacetna_scena : public Scena
 {
 public:
@@ -14,5 +15,6 @@ public:
 private:
     Pisava pisava;
     Besedilo test;
+    Objekt_2D kokos;
 };
 #endif

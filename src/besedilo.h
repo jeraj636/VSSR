@@ -20,6 +20,7 @@ public:
     void nastavi(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, Poravnava t_poravnava_x, Poravnava t_poravnava_y);
     bool ali_je_miska_gor();
     void narisi_me();
+    void nastavi_pozicijo(mat::vec2 t_pozicija);
 
 protected:
     mat::vec2 m_dejanska_velikost;

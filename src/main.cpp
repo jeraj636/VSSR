@@ -10,6 +10,7 @@ int main()
 
     std::cout << "Pozdravljen sevet!\n";
     Zacetna_scena zs;
+    zs.zacetek();
     while (!Risalnik::ali_je_okno_za_zapreti())
     {
         Risalnik::zacetek_okvir();

@@ -44,8 +44,9 @@ void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
     kazalec_miske.pozicija_kazalca = (mat::vec2){0, 0};
     kazalec_miske.pr_pozicija_kazalca = (mat::vec2){0, 0};
     kazalec_miske.prvi = true;
-    // Zakrivanje kazalca miske
-    glfwSetInputMode(m_glfw_okno, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    //* Zakrivanje kazalca miske
+    // glfwSetInputMode(m_glfw_okno, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     //* Callback
     glfwSetFramebufferSizeCallback(m_glfw_okno, posodobi_velikost_okna);
@@ -509,87 +510,35 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat
     */
     stbtt_aligned_quad quad;
     float x = 0, y = 0;
-    float min_y = 1000, max_y = -1000;
-    for (int i = 0; i < niz.size(); i++)
-    {
-        stbtt_GetBakedQuad(pisava.m_char_data, 512, 512, niz[i], &x, &y, &quad, false);
-
-        quad.x0 /= velikost;
-        quad.x1 /= velikost;
-        quad.y0 /= -velikost;
-        quad.y1 /= -velikost;
-
-        x += quad.x1 - quad.x0;
-
-        if (quad.y1 > max_y)
-            max_y = quad.y1;
-        if (quad.y0 < min_y)
-            min_y = quad.y0;
-    }
-    std::cout << x << "\n";
-    //* Popravljanje zamika glede na referenčno točko
-    mat::vec2 korekcija(0);
-    switch (poravnava_x)
-    {
-    case Poravnava::sredina:
-        korekcija.x -= (x) / 2;
-        break;
-    case Poravnava::levo:
-        break;
-    case Poravnava::desno:
-        korekcija.x -= x;
-        break;
-    default:
-        std::cout << "Napaka napačen tip poravnave x v besedilu: " << niz << "\n";
-        exit(0);
-        break;
-    }
-    switch (poravnava_y)
-    {
-    case Poravnava::sredina:
-        korekcija.y -= (abs(min_y) + abs(max_y)) / 2;
-        break;
-    case Poravnava::zograj:
-        break;
-    case Poravnava::spodaj:
-        korekcija.y -= abs(min_y) + abs(max_y);
-        break;
-    default:
-        std::cout << "Napaka napačen tip poravnave x v besedilu: " << niz << "\n";
-        exit(0);
-        break;
-    }
 
     //* Pisanje podatkov v tabele
     x = y = 0;
-    x -= korekcija.x;
-    y = korekcija.y;
     for (int i = 0; i < niz.size(); i++)
     {
         stbtt_GetBakedQuad(pisava.m_char_data, 512, 512, niz[i], &x, &y, &quad, false);
 
-        quad.x0 /= velikost;
-        quad.x1 /= velikost;
-        quad.y0 /= -velikost;
-        quad.y1 /= -velikost;
+        quad.x0 *= velikost;
+        quad.x1 *= velikost;
+        quad.y0 *= -velikost;
+        quad.y1 *= -velikost;
 
-        tocke[i * 16 + 0] = quad.x0 + korekcija.x;
-        tocke[i * 16 + 1] = quad.y0 + korekcija.y;
+        tocke[i * 16 + 0] = quad.x0;
+        tocke[i * 16 + 1] = quad.y0;
         tocke[i * 16 + 2] = quad.s0;
         tocke[i * 16 + 3] = quad.t0;
 
-        tocke[i * 16 + 4] = quad.x1 + korekcija.x;
-        tocke[i * 16 + 5] = quad.y0 + korekcija.y;
+        tocke[i * 16 + 4] = quad.x1;
+        tocke[i * 16 + 5] = quad.y0;
         tocke[i * 16 + 6] = quad.s1;
         tocke[i * 16 + 7] = quad.t0;
 
-        tocke[i * 16 + 8] = quad.x1 + korekcija.x;
-        tocke[i * 16 + 9] = quad.y1 + korekcija.y;
+        tocke[i * 16 + 8] = quad.x1;
+        tocke[i * 16 + 9] = quad.y1;
         tocke[i * 16 + 10] = quad.s1;
         tocke[i * 16 + 11] = quad.t1;
 
-        tocke[i * 16 + 12] = quad.x0 + korekcija.x;
-        tocke[i * 16 + 13] = quad.y1 + korekcija.y;
+        tocke[i * 16 + 12] = quad.x0;
+        tocke[i * 16 + 13] = quad.y1;
         tocke[i * 16 + 14] = quad.s0;
         tocke[i * 16 + 15] = quad.t1;
 
@@ -599,8 +548,6 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat
         indeksi[i * 6 + 3] = 0 + i * 4;
         indeksi[i * 6 + 4] = 2 + i * 4;
         indeksi[i * 6 + 5] = 3 + i * 4;
-
-        x += quad.x1 - quad.x0;
     }
 
     glBindVertexArray(m_VAO_2D_p);

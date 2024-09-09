@@ -23,7 +23,14 @@ void Besedilo::nastavi(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_
 }
 bool Besedilo::ali_je_miska_gor()
 {
-    return 1;
+    /*
+    posodobi();
+    if (Risalnik::kazalec_miske.pozicija_kazalca.x > m_centrirana_pozicija.x - m_dejanska_velikost.x / 2 &&
+        Risalnik::kazalec_miske.pozicija_kazalca.x < m_centrirana_pozicija.x + m_dejanska_velikost.x)
+        return true;
+    else
+    */
+    return false;
 }
 void Besedilo::narisi_me()
 {
@@ -31,11 +38,12 @@ void Besedilo::narisi_me()
 }
 void Besedilo::posodobi()
 {
-    //* Pridobivanje x in y velikosti
     /*
+    //* Pridobivanje x in y velikosti
+
         y velikost dobimo na načim da najdemo y_max in y_min in izračunamo razliko
         x velikost pa s sestevanjem razlik med x1 in x0
-    */
+
     float vel = m_velikost / m_pisava.m_velikost;
     float x = 0, y = 0;
     float min_y = 1000, max_y = -1000;
@@ -68,4 +76,11 @@ void Besedilo::posodobi()
         m_pozicija.y = -y / 2;
         break;
     }
+    */
+}
+
+void Besedilo::nastavi_pozicijo(mat::vec2 t_pozicija)
+{
+    m_pozicija = t_pozicija;
+    posodobi();
 }

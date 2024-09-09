@@ -2,20 +2,22 @@
 #include "risalnik.h"
 
 Zacetna_scena::Zacetna_scena()
-    : pisava("../sredstva/pisava.ttf", 100), test(pisava, 0xffffffff, (Risalnik::dobi_velikost_okna().x / 2, Risalnik::dobi_velikost_okna().y / 2), 50, "TEST!!", Poravnava::sredina, Poravnava::sredina)
+    : pisava("../sredstva/pisava.ttf", 100), test(pisava, 0xffffffff, (0), 100, "TEST!!", Poravnava::sredina, Poravnava::sredina)
 {
 }
 
 void Zacetna_scena::zacetek()
 {
+    kokos = Objekt_2D(mat::vec2(200, 200), (200), 180, 0xffffffff, "../sredstva/kokos.png", true);
 }
 
 void Zacetna_scena::zanka()
 {
-    // test.narisi_me();
-    Risalnik::narisi_besedilo(pisava, 0xffffffff, mat::vec2(Risalnik::dobi_velikost_okna().x / 2.0f, 100), 200, "TEST!!", Poravnava::sredina, Poravnava::spodaj);
-    // Risalnik::narisi_besedilo(pisava, 0xffffffff, mat::vec2(Risalnik::dobi_velikost_okna().x / 2.0f, 100), 50, "TEST!!", Poravnava::sredina, Poravnava::spodaj);
-    // Risalnik::narisi_besedilo(pisava, 0xffffffff, mat::vec2(Risalnik::dobi_velikost_okna().x / 2.0f, 100), 25, "TEST!!", Poravnava::sredina, Poravnava::spodaj);
+    //! NUJNO
+    //! Vedno posodablja pozicijo!!!!!!!!!!!!!
+    kokos.pozicija = (Risalnik::dobi_velikost_okna() / 2);
+    Risalnik::narisi_besedilo(pisava, 0xff0000ff, (Risalnik::dobi_velikost_okna().x / 2, 300), 100, "TEST!!", Poravnava::sredina, Poravnava::sredina);
+    Risalnik::narisi_2D_objekt(kokos);
 }
 
 void Zacetna_scena::konec()
