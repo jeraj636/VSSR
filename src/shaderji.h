@@ -67,7 +67,7 @@ out vec2 tek_poz;
 
 void main()
 {
-    gl_Position = vec4(u_orto * vec3(a_poz,0.0),1.0);
+    gl_Position = vec4(u_orto * vec3(a_poz,1.0),1.0);
     gl_Position.z =0;
     tek_poz = i_tek_poz;
 }

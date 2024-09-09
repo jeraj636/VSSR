@@ -494,7 +494,7 @@ bool Risalnik::dobi_tipko(int katera_tipka)
         return false;
 }
 
-void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat::vec2 pozicija, float velikost, const std::string niz, Poravnava poravnava_x, Poravnava poravnava_y)
+void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat::vec2 pozicija, float velikost, const std::string niz, Poravnava poravnava_x)
 {
     //* Rezervacija prostora v pomilniku
     float *tocke = new float[16 * niz.size()];
@@ -503,14 +503,37 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat
     //* Izračum pravilne velikosti pisave
     velikost /= pisava.m_velikost;
 
+    stbtt_aligned_quad quad;
+    float x = 0, y = 0;
     //* Pridobivanje x in y velikosti
     /*
         y velikost dobimo na načim da najdemo y_max in y_min in izračunamo razliko
         x velikost pa s sestevanjem razlik med x1 in x0
     */
-    stbtt_aligned_quad quad;
-    float x = 0, y = 0;
+    for (int i = 0; i < niz.size(); i++)
+    {
+        stbtt_GetBakedQuad(pisava.m_char_data, 512, 512, niz[i], &x, &y, &quad, false);
+        quad.x0 *= velikost;
+        quad.x1 *= velikost;
+        quad.y0 *= -velikost;
+        quad.y1 *= -velikost;
+    }
+    std::cout << pozicija << "\n";
+    switch (poravnava_x)
+    {
+    case Poravnava::levo:
+        break;
+    case Poravnava::sredina:
+        pozicija.x -= (x * velikost) / 2;
+        break;
+    case Poravnava::desno:
+        pozicija.x -= x * velikost;
+        break;
 
+    default:
+        std::cout << "Napaka! napačna poravnava besedila: " << niz << '\n';
+        break;
+    }
     //* Pisanje podatkov v tabele
     x = y = 0;
     for (int i = 0; i < niz.size(); i++)
@@ -570,6 +593,7 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat
 
     mat::mat3 transformacija(1);
     transformacija = mat::pozicijska(transformacija, pozicija);
+    // std::cout << transformacija << "\n";
     transformacija = m_ortho_mat_2D * transformacija;
     glUniformMatrix3fv(glGetUniformLocation(m_shader_program_2D_p, "u_orto"), 1, GL_TRUE, &transformacija.mat[0][0]);
 

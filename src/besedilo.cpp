@@ -1,7 +1,7 @@
 #include "besedilo.h"
 #include "pisava.h"
 #include <iostream>
-Besedilo::Besedilo(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, Poravnava t_poravnava_x, Poravnava t_poravnava_y)
+Besedilo::Besedilo(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, Poravnava t_poravnava_x)
     : m_pisava(t_pisava)
 {
     barva_besedila = t_barva_besedila;
@@ -9,9 +9,8 @@ Besedilo::Besedilo(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozi
     m_velikost = t_velikost;
     niz = t_niz;
     m_poravnava_x = t_poravnava_x;
-    m_poravnava_y = t_poravnava_y;
 }
-void Besedilo::nastavi(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, Poravnava t_poravnava_x, Poravnava t_poravnava_y)
+void Besedilo::nastavi(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, Poravnava t_poravnava_x)
 {
     m_pisava = t_pisava;
     barva_besedila = t_barva_besedila;
@@ -19,7 +18,6 @@ void Besedilo::nastavi(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_
     m_velikost = t_velikost;
     niz = t_niz;
     m_poravnava_x = t_poravnava_x;
-    m_poravnava_y = t_poravnava_y;
 }
 bool Besedilo::ali_je_miska_gor()
 {
@@ -34,7 +32,7 @@ bool Besedilo::ali_je_miska_gor()
 }
 void Besedilo::narisi_me()
 {
-    Risalnik::narisi_besedilo(m_pisava, barva_besedila, m_pozicija, m_velikost, niz, m_poravnava_x, m_poravnava_y);
+    Risalnik::narisi_besedilo(m_pisava, barva_besedila, m_pozicija, m_velikost, niz, m_poravnava_x);
 }
 void Besedilo::posodobi()
 {

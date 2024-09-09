@@ -72,7 +72,7 @@ public:
     static void konec_okvir();
     static void narisi_2D_objekt(const Objekt_2D &obj);
     static void narisi_3D_objekt(const Objekt_3D &obj);
-    static void narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat::vec2 pozicija, float velikost, const std::string niz, Poravnava poravnava_x, Poravnava poravnava_y);
+    static void narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat::vec2 pozicija, float velikost, const std::string niz, Poravnava poravnava_x);
     static bool ali_je_okno_za_zapreti();
     static bool dobi_tipko(int katera_tipka);
 
