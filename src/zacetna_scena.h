@@ -13,8 +13,17 @@ public:
     void konec() override;
 
 private:
-    Pisava pisava;
-    Besedilo test;
-    Objekt_2D kokos;
+    Pisava m_pisava_naslov;
+    Pisava m_pisava;
+    Besedilo m_b_igraj;
+    Besedilo m_b_nastavitve;
+    Besedilo m_b_navodila;
+    Besedilo m_b_zasluge;
+    Besedilo m_b_izhod;
+    Besedilo m_naslov;
+    Besedilo m_podnaslov;
+
+private:
+    void posodobi_meni();
 };
 #endif

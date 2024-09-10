@@ -51,7 +51,7 @@ void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
     //* Callback
     glfwSetFramebufferSizeCallback(m_glfw_okno, posodobi_velikost_okna);
     glfwSetKeyCallback(m_glfw_okno, posodobi_tipke);
-
+    glfwSetMouseButtonCallback(m_glfw_okno, posodobi_gumb_miske);
     //* Ustvarjanje bufferjev
     ustvari_bufferje_2D_p();
     ustvari_bufferje_2D();
@@ -616,4 +616,25 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat
 mat::vec2 Risalnik::dobi_velikost_okna()
 {
     return m_velikost_okna;
+}
+
+void Risalnik::zapri_okno()
+{
+    glfwSetWindowShouldClose(m_glfw_okno, 1);
+    glfwDestroyWindow(m_glfw_okno);
+    glfwTerminate();
+    exit(1);
+}
+
+void Risalnik::posodobi_gumb_miske(GLFWwindow *window, int gumb, int akcija, int mods)
+{
+    if (gumb == GLFW_MOUSE_BUTTON_LEFT && akcija == GLFW_PRESS)
+        miskin_gumb.levi_gumb = true;
+    else
+        miskin_gumb.levi_gumb = false;
+
+    if (gumb == GLFW_MOUSE_BUTTON_RIGHT && akcija == GLFW_PRESS)
+        miskin_gumb.desni_gumb = true;
+    else
+        miskin_gumb.desni_gumb = false;
 }

@@ -1,6 +1,13 @@
 #include "besedilo.h"
 #include "pisava.h"
 #include <iostream>
+Splosne_nastavitve_besedil::Splosne_nastavitve_besedil(Pisava t_pisava, uint32_t t_barva_besedil, Poravnava t_poravnava_x, float t_velikost)
+    : pisava(t_pisava)
+{
+    barva_besedil = t_barva_besedil;
+    poravnava_x = t_poravnava_x;
+    velikost = t_velikost;
+}
 
 Besedilo::Besedilo(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, Poravnava t_poravnava_x)
     : pisava(t_pisava)
@@ -11,6 +18,19 @@ Besedilo::Besedilo(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozi
     niz = t_niz;
     poravnava_x = t_poravnava_x;
 }
+Besedilo::Besedilo(Pisava &t_pisava)
+    : pisava(t_pisava)
+{
+}
+
+Besedilo::Besedilo(Splosne_nastavitve_besedil t_spl_nst_bes)
+    : pisava(t_spl_nst_bes.pisava)
+{
+    barva_besedila = t_spl_nst_bes.barva_besedil;
+    poravnava_x = t_spl_nst_bes.poravnava_x;
+    velikost = t_spl_nst_bes.velikost;
+}
+
 void Besedilo::nastavi(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, Poravnava t_poravnava_x)
 {
     pisava = t_pisava;

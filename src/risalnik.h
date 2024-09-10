@@ -32,6 +32,12 @@ public:
 protected:
     bool prvi, prebran_v_tem_okvirju;
 };
+class Miskin_gumb
+{
+public:
+    bool levi_gumb;
+    bool desni_gumb;
+};
 class Cas
 {
 public:
@@ -48,6 +54,7 @@ class Risalnik
 public:
     static inline Barva barva_okna;
     static inline Kazalec kazalec_miske;
+    static inline Miskin_gumb miskin_gumb;
     static inline mat::vec3 pozicija_3D_luci;
     static inline Kamera_2D kamera_2D;
     static inline Kamera_3D kamera_3D;
@@ -75,11 +82,12 @@ public:
     static void narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat::vec2 pozicija, float velikost, const std::string niz, Poravnava poravnava_x);
     static bool ali_je_okno_za_zapreti();
     static bool dobi_tipko(int katera_tipka);
+    static void zapri_okno();
 
 private:
     static void posodobi_velikost_okna(GLFWwindow *okno, int dolzina, int visina);
     static void posodobi_tipke(GLFWwindow *okno, int tipka, int koda_skeniranja, int akcija, int modi);
-
+    static void posodobi_gumb_miske(GLFWwindow *window, int gumb, int akcija, int mods);
     static void ustvari_bufferje_2D();
     static void ustvari_bufferje_3D();
     static void ustvari_bufferje_2D_p();

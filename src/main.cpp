@@ -6,7 +6,7 @@
 #include "zacetna_scena.h"
 int main()
 {
-    Risalnik::odpri_okno("VSSR", 0x33333333);
+    Risalnik::odpri_okno("VSSR", 0x111111ff);
 
     std::cout << "Pozdravljen sevet!\n";
     Zacetna_scena zs;
