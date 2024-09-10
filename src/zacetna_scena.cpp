@@ -2,7 +2,7 @@
 #include "risalnik.h"
 
 Zacetna_scena::Zacetna_scena()
-    : pisava("../sredstva/pisava.ttf", 100), test(pisava, 0xffffffff, (0), 100, "TEST!!", Poravnava::sredina)
+    : pisava("../sredstva/pisava.ttf", 100), test(pisava, 0xffffffff, mat::vec2(0, 300), 25, "TEST!!", Poravnava::sredina)
 {
 }
 
@@ -13,13 +13,14 @@ void Zacetna_scena::zacetek()
 
 void Zacetna_scena::zanka()
 {
-    //! NUJNO
-    //! Vedno posodablja pozicijo!!!!!!!!!!!!!
+    test.pozicija.x = Risalnik::dobi_velikost_okna().x / 2;
+    test.narisi_me();
     kokos.pozicija = (Risalnik::dobi_velikost_okna() / 2);
-    Risalnik::narisi_besedilo(pisava, 0xff0000ff, mat::vec2(Risalnik::dobi_velikost_okna().x / 2, 300), 100, "TEST!!", Poravnava::sredina);
-    Risalnik::narisi_besedilo(pisava, 0xff0000ff, mat::vec2(Risalnik::dobi_velikost_okna().x / 2, 200), 100, "TEST!!", Poravnava::levo);
-    Risalnik::narisi_besedilo(pisava, 0xff0000ff, mat::vec2(Risalnik::dobi_velikost_okna().x / 2, 400), 100, "TEST!!", Poravnava::desno);
     Risalnik::narisi_2D_objekt(kokos);
+    if (test.ali_je_miska_gor())
+        test.barva_besedila.nastavi(0x55, 'A');
+    else
+        test.barva_besedila.nastavi(0xff, 'A');
 }
 
 void Zacetna_scena::konec()

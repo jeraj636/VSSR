@@ -116,7 +116,7 @@ void Risalnik::zacetek_okvir()
     //* Nastavljanje matrik:
     // Ortho 2D matrika
     m_ortho_mat_2D = mat::mat3(1);
-    m_ortho_mat_2D = mat::ortho(m_ortho_mat_2D, 0, m_velikost_okna.x, m_velikost_okna.y, 0);
+    m_ortho_mat_2D = mat::ortho(m_ortho_mat_2D, 0, m_velikost_okna.x, 0, m_velikost_okna.y);
 
     // Proj 3D maatrika
     m_proj_mat_3D = mat::mat4(1);
@@ -513,12 +513,16 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat
     for (int i = 0; i < niz.size(); i++)
     {
         stbtt_GetBakedQuad(pisava.m_char_data, 512, 512, niz[i], &x, &y, &quad, false);
+        /*
+        ! Morda to ni potrebno
         quad.x0 *= velikost;
         quad.x1 *= velikost;
         quad.y0 *= -velikost;
         quad.y1 *= -velikost;
+        */
     }
-    std::cout << pozicija << "\n";
+
+    //* Zamik glede na poravnavo na osi x
     switch (poravnava_x)
     {
     case Poravnava::levo:
@@ -534,6 +538,7 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat
         std::cout << "Napaka! napačna poravnava besedila: " << niz << '\n';
         break;
     }
+
     //* Pisanje podatkov v tabele
     x = y = 0;
     for (int i = 0; i < niz.size(); i++)
@@ -542,8 +547,8 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat
 
         quad.x0 *= velikost;
         quad.x1 *= velikost;
-        quad.y0 *= -velikost;
-        quad.y1 *= -velikost;
+        quad.y0 *= velikost;
+        quad.y1 *= velikost;
 
         tocke[i * 16 + 0] = quad.x0;
         tocke[i * 16 + 1] = quad.y0;
