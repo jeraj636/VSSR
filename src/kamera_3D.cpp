@@ -27,10 +27,13 @@ void Kamera_3D::nastavi()
 
 void Kamera_3D::posodobi()
 {
+    //! Samo za testiranje
     if (Risalnik::dobi_tipko('R'))
     {
         nastavi();
     }
+
+    //* Izračun za koliko se je premaknil karalec gleda na prejsni frame
     mat::vec2 premik_kazalca;
     premik_kazalca = Risalnik::kazalec_miske.pozicija_kazalca - Risalnik::kazalec_miske.pr_pozicija_kazalca;
     premik_kazalca.y *= -1;
@@ -41,6 +44,7 @@ void Kamera_3D::posodobi()
         pitch += premik_kazalca.y * Cas::get_delta_cas() * hitrost_miske;
     }
 
+    //* Izračun rotacije
     pitch = mat::obrezi_st(pitch, -89.0f, 89.0f);
     smer.x = cos(degToRad(yaw)) * cos(degToRad(pitch));
     smer.y = sin(degToRad(pitch));
