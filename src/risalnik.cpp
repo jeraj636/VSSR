@@ -465,8 +465,8 @@ void Risalnik::narisi_3D_objekt(const Objekt_3D &obj)
     //* Priprava transformacijske matrike
     mat::mat4 transformacija(1);
     transformacija = mat::pozicijska(transformacija, obj.pozicija);
-    transformacija = mat::pozicijska(transformacija, obj.veliksot);
-    transformacija = mat::pozicijska(transformacija, obj.rotacija);
+    transformacija = mat::velikostna(transformacija, obj.veliksot);
+    transformacija = mat::rotacijska(transformacija, obj.rotacija);
 
     //* Množenje transformacije z kamero in projekcijo
     transformacija = kamera_3D.m_mat_pogled * transformacija;

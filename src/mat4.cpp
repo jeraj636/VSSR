@@ -184,7 +184,7 @@ namespace mat
         float a = visina / sirina;
         vidni_kot = vidni_kot / 2;
         tmp.mat[0][0] = (1 / tan(vidni_kot)) * a;
-        tmp.mat[1][1] = (1 / tan(vidni_kot)) / a; // /a na koncu //! ne vem ali je treba deliti
+        tmp.mat[1][1] = (1 / tan(vidni_kot)); // /a // /a na koncu //! Ne sme se deliti z a zazlog neznan
         tmp.mat[2][2] = z_dalec / (z_dalec - z_blizu);
         tmp.mat[3][2] = 1;
         tmp.mat[2][3] = (-z_dalec * z_blizu) / (z_dalec - z_blizu);

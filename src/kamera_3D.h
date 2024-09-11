@@ -20,6 +20,7 @@ public:
     float hitrost_premikanja;
     float hitrost_miske;
     bool inveertirana;
+    bool premikanje_kamere;
 
 protected:
     mat::mat4 m_mat_pogled;

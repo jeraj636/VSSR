@@ -16,6 +16,8 @@ Zacetna_scena::Zacetna_scena()
 
 void Zacetna_scena::zacetek()
 {
+    m_raketa = Objekt_3D(mat::vec3(10, -3, 0), mat::vec3(1.5), mat::vec3(0, 0, degToRad(Cas::get_cas())), 0xffffffff, true, "../sredstva/raketa.obj"); // morda malo nenavadno
+    Risalnik::kamera_3D.premikanje_kamere = false;
 }
 
 void Zacetna_scena::zanka()
@@ -24,11 +26,13 @@ void Zacetna_scena::zanka()
 
     m_naslov.pozicija = Risalnik::dobi_velikost_okna() / 2;
     m_naslov.pozicija.y -= 300;
+    m_naslov.narisi_me();
 
     m_podnaslov.pozicija = Risalnik::dobi_velikost_okna() / 2;
-    m_podnaslov.pozicija.y -= 200;
-    m_naslov.narisi_me();
+    m_podnaslov.pozicija.y -= 225;
     m_podnaslov.narisi_me();
+
+    Risalnik::narisi_3D_objekt(m_raketa);
 }
 
 void Zacetna_scena::konec()

@@ -4,6 +4,8 @@
 #include "pisava.h"
 #include "besedilo.h"
 #include "objekt_2D.h"
+#include "objekt_3D.h"
+
 class Zacetna_scena : public Scena
 {
 public:
@@ -22,6 +24,7 @@ private:
     Besedilo m_b_izhod;
     Besedilo m_naslov;
     Besedilo m_podnaslov;
+    Objekt_3D m_raketa;
 
 private:
     void posodobi_meni();
