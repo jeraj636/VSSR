@@ -608,6 +608,9 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat
     glBindVertexArray(0);
     glUseProgram(0);
 
+    //* Nastavljanje FPS na neomejeno
+    glfwSwapInterval(0);
+
     //* Sprostitev pomnilnika
     delete[] tocke;
     delete[] indeksi;

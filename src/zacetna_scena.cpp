@@ -16,11 +16,11 @@ Zacetna_scena::Zacetna_scena()
 
 void Zacetna_scena::zacetek()
 {
-    // morda malo nenavadno zdaj sem ze pozabil ka je nenavadno
+    // morda malo nenavadno zdaj sem ze pozabil kaj je nenavadno
     m_raketa = Objekt_3D(mat::vec3(10, -3, 0), mat::vec3(2.5), mat::vec3(0, 0, 45), 0xffffffff, true, "../sredstva/raketa.obj");
     m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true);
-    // Risalnik::kamera_3D.premikanje_kamere = false;
-    // Risalnik::aktivnost_kazalca_miske(true);
+    Risalnik::kamera_3D.premikanje_kamere = false;
+    Risalnik::aktivnost_kazalca_miske(true);
 }
 
 void Zacetna_scena::zanka()
@@ -28,6 +28,7 @@ void Zacetna_scena::zanka()
     Risalnik::nastavi_testiranje_globine(false);
     Risalnik::narisi_2D_objekt(m_zvezdno_nebo);
     Risalnik::nastavi_testiranje_globine(true);
+
     posodobi_meni();
 
     m_naslov.pozicija = Risalnik::dobi_velikost_okna() / 2;
