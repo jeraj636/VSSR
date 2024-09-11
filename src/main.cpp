@@ -8,13 +8,14 @@ int main()
 {
     Risalnik::odpri_okno("VSSR", 0x111111ff);
 
-    std::cout << "Pozdravljen sevet!\n";
     Zacetna_scena zs;
     zs.zacetek();
+
     while (!Risalnik::ali_je_okno_za_zapreti())
     {
         Risalnik::zacetek_okvir();
-        zs.zanka();
+        if (Risalnik::aktivna_scena_ptr)
+            Risalnik::aktivna_scena_ptr->zanka();
         Risalnik::konec_okvir();
     }
 }

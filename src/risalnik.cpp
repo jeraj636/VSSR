@@ -79,6 +79,7 @@ void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
     glGetIntegerv(GL_MAX_ELEMENTS_VERTICES, &maxBufferSize);
     std::cout << "Max buffer size: " << maxBufferSize << std::endl;
     */
+    aktivna_scena_ptr = nullptr;
 }
 
 void Risalnik::posodobi_velikost_okna(GLFWwindow *okno, int dolzina, int visina)

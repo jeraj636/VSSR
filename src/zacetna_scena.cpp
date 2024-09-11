@@ -21,6 +21,7 @@ void Zacetna_scena::zacetek()
     m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true);
     Risalnik::kamera_3D.premikanje_kamere = false;
     Risalnik::aktivnost_kazalca_miske(true);
+    Risalnik::aktivna_scena_ptr = this;
 }
 
 void Zacetna_scena::zanka()

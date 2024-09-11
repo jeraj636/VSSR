@@ -14,7 +14,7 @@ class Pisava;
 class Risalnik;
 class Objekt_2D;
 class Objekt_3D;
-
+class Scena;
 enum class Poravnava
 {
     zograj,
@@ -59,6 +59,7 @@ public:
     static inline Kamera_2D kamera_2D;
     static inline Kamera_3D kamera_3D;
     static mat::vec2 dobi_velikost_okna();
+    static inline Scena *aktivna_scena_ptr;
 
 private:
     static inline GLFWwindow *m_glfw_okno;
