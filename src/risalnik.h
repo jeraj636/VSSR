@@ -83,6 +83,7 @@ public:
     static bool ali_je_okno_za_zapreti();
     static bool dobi_tipko(int katera_tipka);
     static void zapri_okno();
+    static void aktivnost_kazalca_miske(bool aktivnost);
 
 private:
     static void posodobi_velikost_okna(GLFWwindow *okno, int dolzina, int visina);

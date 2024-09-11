@@ -6,7 +6,8 @@
   - [X] vec3
   - [X] mat3
   - [X] mat4
-- [X] Obj
+- [ ] Obj
+  - [ ] Barve
 - [X] Objekt 2D
 - [X] Objekt 3D
 - [X] Risalnik

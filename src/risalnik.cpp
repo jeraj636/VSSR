@@ -46,7 +46,7 @@ void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
     kazalec_miske.prvi = true;
 
     //* Zakrivanje kazalca miske
-    // glfwSetInputMode(m_glfw_okno, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(m_glfw_okno, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     //* Callback
     glfwSetFramebufferSizeCallback(m_glfw_okno, posodobi_velikost_okna);
@@ -637,4 +637,11 @@ void Risalnik::posodobi_gumb_miske(GLFWwindow *window, int gumb, int akcija, int
         miskin_gumb.desni_gumb = true;
     else
         miskin_gumb.desni_gumb = false;
+}
+void Risalnik::aktivnost_kazalca_miske(bool aktivnost)
+{
+    if (aktivnost)
+        glfwSetInputMode(m_glfw_okno, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    else
+        glfwSetInputMode(m_glfw_okno, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }

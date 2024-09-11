@@ -16,8 +16,9 @@ Zacetna_scena::Zacetna_scena()
 
 void Zacetna_scena::zacetek()
 {
-    m_raketa = Objekt_3D(mat::vec3(10, -3, 0), mat::vec3(1.5), mat::vec3(0, 0, degToRad(Cas::get_cas())), 0xffffffff, true, "../sredstva/raketa.obj"); // morda malo nenavadno
+    m_raketa = Objekt_3D(mat::vec3(10, -3, 0), mat::vec3(2.5), mat::vec3(0, 0, 45), 0xffffffff, true, "../sredstva/raketa.obj"); // morda malo nenavadno zdaj sem ze pozabil ka je nenavadno
     Risalnik::kamera_3D.premikanje_kamere = false;
+    Risalnik::aktivnost_kazalca_miske(true);
 }
 
 void Zacetna_scena::zanka()

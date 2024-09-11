@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <cstring>
 #include "matematika.h"
 void Objekt_3D::preberi_obj(const std::string &pot_do_objekta)
 {
@@ -30,6 +31,18 @@ void zamenjaj_znake(std ::string &s, char znak1, char znak2)
     for (int i = 0; i < s.size(); i++)
         if (s[i] == znak1)
             s[i] = znak2;
+}
+std::string zamenjaj_koncnico(const std::string &datoteka, const std::string &koncnica)
+{
+    size_t pozicija_pike = datoteka.find_last_of('.');
+
+    if (pozicija_pike == std::string::npos)
+    {
+        return datoteka;
+        std::cout << "Napaka! Datoteka:" << datoteka << " nima veljavne koncnice! \n ";
+    }
+
+    return datoteka.substr(0, pozicija_pike + 1) + koncnica;
 }
 void Objekt_3D::preberi_obj()
 {
@@ -109,7 +122,7 @@ void Objekt_3D::preberi_obj()
 
                 int tocka, normala;
                 tok_podatkov >> tocka >> kr_neki >> normala;
-
+                //* Pisanje podatkov v tabelo
                 m_tocke[poz_v_tockah] = v_tab[tocka - 1].x;
                 m_tocke[poz_v_tockah + 1] = v_tab[tocka - 1].y;
                 m_tocke[poz_v_tockah + 2] = v_tab[tocka - 1].z;
@@ -153,6 +166,33 @@ void Objekt_3D::preberi_obj()
                 prejsnja_normala = normala;
                 prejsnja_tocka = tocka;
                 poz_v_tockah += 9;
+            }
+        }
+        if (std::strncmp("usemtl", s.c_str(), std::strlen("usemtl")) == 0)
+        {
+            std::stringstream ss(s); //* dobivanje imena podatka
+            std::string ime_materiala;
+            std::string tmp;
+            ss >> tmp >> ime_materiala;
+
+            //* Odpiranje datoteke z opisom materialov
+            std::ifstream i_mtl_dat(zamenjaj_koncnico(m_pot_do_objekta, "mtl"));
+            std::string trenuten_material;
+            while (std::getline(i_mtl_dat, s))
+            {
+                if (std::strncmp("newmtl", s.c_str(), std::strlen("newmtl")) == 0)
+                {
+                    ss = std::stringstream(s);
+                    ss >> tmp >> trenuten_material; //! tu sem ostal
+                }
+                if (std::strncmp("Kd", s.c_str(), std::strlen("Kd")) == 0)
+                {
+                    if (trenuten_material == ime_materiala)
+                    {
+                        ss = std::stringstream(s);
+                        ss >> tmp >> trenutna_barva.r >> trenutna_barva.g >> trenutna_barva.b;
+                    }
+                }
             }
         }
     }
