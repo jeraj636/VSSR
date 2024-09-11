@@ -25,6 +25,7 @@ private:
     Besedilo m_naslov;
     Besedilo m_podnaslov;
     Objekt_3D m_raketa;
+    Objekt_2D m_zvezdno_nebo;
 
 private:
     void posodobi_meni();

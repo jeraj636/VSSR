@@ -84,6 +84,7 @@ public:
     static bool dobi_tipko(int katera_tipka);
     static void zapri_okno();
     static void aktivnost_kazalca_miske(bool aktivnost);
+    static void nastavi_testiranje_globine(bool aktivno);
 
 private:
     static void posodobi_velikost_okna(GLFWwindow *okno, int dolzina, int visina);

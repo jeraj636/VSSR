@@ -16,6 +16,7 @@ void main()
     frag_color = tekstura * u_barva;
 }
 )";
+
 const char *fragment_shader_2D_p_s = R"(
 #version 330 core
 in vec2 tek_poz;
@@ -28,6 +29,7 @@ void main()
     frag_color = tekstura.r * u_b_obj;
 }
 )";
+
 const char *fragment_shader_3D_s = R"(
 #version 330 core
 out vec4 frag_color;
@@ -56,6 +58,7 @@ vec3 rezultat = (ambient + diffuse) * barva;
 frag_color =  vec4(rezultat,1.0);
 }
 )";
+
 const char *vertex_shader_2D_p_s = R"(
 #version 330 core
 layout (location = 0) in vec2 a_poz;
@@ -72,6 +75,7 @@ void main()
     tek_poz = i_tek_poz;
 }
 )";
+
 const char *vertex_shader_2D_s = R"(
 #version 330 core
 layout (location = 0) in vec2 a_pos;
@@ -83,10 +87,11 @@ void main()
 {
     tex_poz = a_t_pos;
     gl_Position = vec4(u_transformacija * vec3(a_pos,1.0),1.0);
-    gl_Position.z =0;
+    gl_Position.z =-0.9;
 }
 
 )";
+
 const char *vertex_shader_3D_s = R"(
 #version 330 core
 layout (location = 0) in vec3 a_pos;
@@ -105,4 +110,5 @@ void main()
     frag_pos = vec3(gl_Position.x,gl_Position.y,gl_Position.z);
 }
 )";
+
 #endif

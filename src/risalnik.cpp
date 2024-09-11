@@ -645,3 +645,11 @@ void Risalnik::aktivnost_kazalca_miske(bool aktivnost)
     else
         glfwSetInputMode(m_glfw_okno, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
+
+void Risalnik::nastavi_testiranje_globine(bool aktivno)
+{
+    if (aktivno)
+        glEnable(GL_DEPTH_TEST);
+    else
+        glDisable(GL_DEPTH_TEST);
+}
