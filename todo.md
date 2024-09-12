@@ -6,11 +6,13 @@
   - [X] vec3
   - [X] mat3
   - [X] mat4
-- [ ] Obj
-  - [ ] Barve
+- [X] Obj
+  - [X] Barve
 - [X] Objekt 2D
 - [X] Objekt 3D
 - [X] Risalnik
 - [X] Tekstura
 - [X] Pisava
 - [X] Scena
+- [X] Polepsaj shaderje
+- [ ] Testiraj sockete

@@ -460,7 +460,7 @@ void Risalnik::narisi_3D_objekt(const Objekt_3D &obj)
 
     //* Pošiljanje barve in pozicije luči
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * obj.m_velikost_tock * 9, obj.m_tocke);
-    glUniform4f(glGetUniformLocation(m_shader_program_3D, "u_barva"), obj.barva.r, obj.barva.g, obj.barva.b, obj.barva.a);
+    glUniform3f(glGetUniformLocation(m_shader_program_3D, "u_barva"), obj.barva.r, obj.barva.g, obj.barva.b);
     glUniform3f(glGetUniformLocation(m_shader_program_3D, "u_pozicija_luci"), pozicija_3D_luci.x, pozicija_3D_luci.y, pozicija_3D_luci.z);
 
     //* Priprava transformacijske matrike
