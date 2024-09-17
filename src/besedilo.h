@@ -8,9 +8,9 @@ class Splosne_nastavitve_besedil
 public:
     Pisava pisava;
     Barva barva_besedil;
-    Poravnava poravnava_x;
+    uint8_t poravnava;
     float velikost;
-    Splosne_nastavitve_besedil(Pisava t_pisava, uint32_t t_barva_besedil, Poravnava t_poravnava_x, float t_velikost);
+    Splosne_nastavitve_besedil(Pisava t_pisava, uint32_t t_barva_besedil, uint8_t t_poravnava, float t_velikost);
 };
 class Besedilo
 {
@@ -20,12 +20,12 @@ public:
     float velikost;
     mat::vec2 pozicija;
     std::string niz;
-    Poravnava poravnava_x;
+    uint8_t poravnava;
     Barva barva_besedila;
-    Besedilo(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, Poravnava t_poravnava_x);
+    Besedilo(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, uint8_t t_poravnava);
     Besedilo(Pisava &t_pisava);
     Besedilo(Splosne_nastavitve_besedil t_spl_nst_bes);
-    void nastavi(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, Poravnava t_poravnava_x);
+    void nastavi(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, uint8_t t_poravnava);
     bool ali_je_miska_gor();
     void narisi_me();
 

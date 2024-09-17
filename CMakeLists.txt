@@ -32,6 +32,8 @@ src/cas.cpp
 src/pisava.cpp
 src/zacetna_scena.cpp
 src/besedilo.cpp
+src/igra_scena.cpp
+src/streznik_scena.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC

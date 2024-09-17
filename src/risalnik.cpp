@@ -14,8 +14,8 @@ void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     //* Odpiranje GLFW okna
-    m_glfw_okno = glfwCreateWindow(800, 600, naslov_okna.c_str(), NULL, NULL);
-    if (m_glfw_okno == NULL)
+    m_glfw_okno = glfwCreateWindow(800, 600, naslov_okna.c_str(), nullptr, nullptr);
+    if (m_glfw_okno == nullptr)
     {
         std::cout << "Ni uspelo odpreti okna!\n";
         glfwTerminate();
@@ -73,20 +73,14 @@ void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
     // kamera_2D.Nastavi(100, mat::vec2(0));
     kamera_3D.nastavi();
 
-    /*
-    ! Za ugotovitel maksimalne velikosti
-    int maxBufferSize;
-    glGetIntegerv(GL_MAX_ELEMENTS_VERTICES, &maxBufferSize);
-    std::cout << "Max buffer size: " << maxBufferSize << std::endl;
-    */
     aktivna_scena_ptr = nullptr;
+    m_razmerje_stranic = mat::vec2(16, 9);
 }
 
 void Risalnik::posodobi_velikost_okna(GLFWwindow *okno, int dolzina, int visina)
 {
     //* Nastavljanje velikosti okna
     glViewport(0, 0, dolzina, visina);
-
     kamera_3D.nastavi();
 }
 void Risalnik::posodobi_tipke(GLFWwindow *okno, int tipka, int koda_skeniranja, int akcija, int modi)
@@ -209,7 +203,7 @@ void Risalnik::ustvari_shaderje_2D()
 
     //* Ustvarjanje vertex shaderja
     uint32_t vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_shader, 1, &vertex_shader_2D_s, NULL);
+    glShaderSource(vertex_shader, 1, &vertex_shader_2D_s, nullptr);
 
     glCompileShader(vertex_shader);
 
@@ -218,13 +212,13 @@ void Risalnik::ustvari_shaderje_2D()
     //* Preverjanje napak
     if (!uspeh)
     {
-        glGetShaderInfoLog(vertex_shader, 512, NULL, informacije);
+        glGetShaderInfoLog(vertex_shader, 512, nullptr, informacije);
         std::cout << "Napaka: vertex_shader_2D.glsl" << informacije << "\n";
     }
 
     //* Ustvarjanje fragment shaderja
     uint32_t fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &fragment_shader_2D_s, NULL);
+    glShaderSource(fragment_shader, 1, &fragment_shader_2D_s, nullptr);
 
     glCompileShader(fragment_shader);
 
@@ -233,7 +227,7 @@ void Risalnik::ustvari_shaderje_2D()
     //* Preverjanje napak
     if (!uspeh)
     {
-        glGetShaderInfoLog(fragment_shader, 512, NULL, informacije);
+        glGetShaderInfoLog(fragment_shader, 512, nullptr, informacije);
         snprintf(informacije, sizeof(informacije), "NAPAKA %s", informacije);
         std::cout << "Napaka: fragment_shader_2D.glsl " << informacije << "\n";
         glfwTerminate();
@@ -250,7 +244,7 @@ void Risalnik::ustvari_shaderje_2D()
     glGetProgramiv(m_shader_program_2D, GL_LINK_STATUS, &uspeh);
     if (!uspeh)
     {
-        glGetProgramInfoLog(m_shader_program_2D, 512, NULL, informacije);
+        glGetProgramInfoLog(m_shader_program_2D, 512, nullptr, informacije);
         std::cout << "Napaka: " << informacije << "\n";
         glfwTerminate();
         exit(1);
@@ -270,7 +264,7 @@ void Risalnik::ustvari_bufferje_3D()
     //* Ustvarjanje VBO-ja
     glGenBuffers(1, &m_VBO_3D);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO_3D);
-    glBufferData(GL_ARRAY_BUFFER, 100000, NULL, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 100000, nullptr, GL_DYNAMIC_DRAW);
 
     //* Nastavljanje attrib kazalcev
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void *)0);
@@ -288,7 +282,7 @@ void Risalnik::ustvari_shaderje_3D()
 
     //* ustvarjanje verex shaderja
     uint32_t vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_shader, 1, &vertex_shader_3D_s, NULL);
+    glShaderSource(vertex_shader, 1, &vertex_shader_3D_s, nullptr);
 
     glCompileShader(vertex_shader);
 
@@ -297,14 +291,14 @@ void Risalnik::ustvari_shaderje_3D()
 
     if (!uspeh)
     {
-        glGetShaderInfoLog(vertex_shader, 512, NULL, informacije);
+        glGetShaderInfoLog(vertex_shader, 512, nullptr, informacije);
         std::cout << "Napaka: vertex_shader_3D.glsl " << informacije << '\n';
         glfwTerminate();
         exit(1);
     }
 
     uint32_t fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &fragment_shader_3D_s, NULL);
+    glShaderSource(fragment_shader, 1, &fragment_shader_3D_s, nullptr);
 
     glCompileShader(fragment_shader);
 
@@ -313,7 +307,7 @@ void Risalnik::ustvari_shaderje_3D()
 
     if (!uspeh)
     {
-        glGetShaderInfoLog(fragment_shader, 512, NULL, informacije);
+        glGetShaderInfoLog(fragment_shader, 512, nullptr, informacije);
         snprintf(informacije, sizeof(informacije), "NAPAKA %s", informacije);
         std::cout << "Napaka: fragment_shader_3D.glsl " << informacije << '\n';
         glfwTerminate();
@@ -329,7 +323,7 @@ void Risalnik::ustvari_shaderje_3D()
     glGetProgramiv(m_shader_program_3D, GL_LINK_STATUS, &uspeh);
     if (!uspeh)
     {
-        glGetProgramInfoLog(m_shader_program_3D, 512, NULL, informacije);
+        glGetProgramInfoLog(m_shader_program_3D, 512, nullptr, informacije);
         std::cout << "Napaka: " << informacije;
         glfwTerminate();
         exit(1);
@@ -348,12 +342,12 @@ void Risalnik::ustvari_bufferje_2D_p()
     //* Ustvarjanje VBO-ja
     glGenBuffers(1, &m_VBO_2D_p);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO_2D_p);
-    glBufferData(GL_ARRAY_BUFFER, 2000, NULL, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 2000, nullptr, GL_DYNAMIC_DRAW);
 
     //* Ustavarjanje EBO-ja
     glGenBuffers(1, &m_EBO_2D_p);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO_2D_p);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2000, NULL, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2000, nullptr, GL_DYNAMIC_DRAW);
 
     //* Nastavljanje attrib kazalcev
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
@@ -369,7 +363,7 @@ void Risalnik::ustvari_shaderje_2D_p()
 
     //* ustvarjanje verex shaderja
     uint32_t vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_shader, 1, &vertex_shader_2D_p_s, NULL);
+    glShaderSource(vertex_shader, 1, &vertex_shader_2D_p_s, nullptr);
 
     glCompileShader(vertex_shader);
 
@@ -378,14 +372,14 @@ void Risalnik::ustvari_shaderje_2D_p()
 
     if (!uspeh)
     {
-        glGetShaderInfoLog(vertex_shader, 512, NULL, informacije);
+        glGetShaderInfoLog(vertex_shader, 512, nullptr, informacije);
         std::cout << "Napaka: vertex_shader_2D_p.glsl" << informacije << '\n';
         glfwTerminate();
         exit(1);
     }
 
     uint32_t fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &fragment_shader_2D_p_s, NULL);
+    glShaderSource(fragment_shader, 1, &fragment_shader_2D_p_s, nullptr);
 
     glCompileShader(fragment_shader);
 
@@ -394,7 +388,7 @@ void Risalnik::ustvari_shaderje_2D_p()
 
     if (!uspeh)
     {
-        glGetShaderInfoLog(fragment_shader, 512, NULL, informacije);
+        glGetShaderInfoLog(fragment_shader, 512, nullptr, informacije);
         snprintf(informacije, sizeof(informacije), "NAPAKA %s", informacije);
         std::cout << "Napaka: fragment_shader_2D_p.glsl " << informacije << '\n';
         glfwTerminate();
@@ -410,7 +404,7 @@ void Risalnik::ustvari_shaderje_2D_p()
     glGetProgramiv(m_shader_program_2D_p, GL_LINK_STATUS, &uspeh);
     if (!uspeh)
     {
-        glGetProgramInfoLog(m_shader_program_2D_p, 512, NULL, informacije);
+        glGetProgramInfoLog(m_shader_program_2D_p, 512, nullptr, informacije);
         std::cout << "Napaka: " << informacije;
         glfwTerminate();
         exit(1);
@@ -495,7 +489,7 @@ bool Risalnik::dobi_tipko(int katera_tipka)
         return false;
 }
 
-void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat::vec2 pozicija, float velikost, const std::string niz, Poravnava poravnava_x)
+void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat::vec2 pozicija, float velikost, const std::string niz, uint8_t zastavice)
 {
     //* Rezervacija prostora v pomilniku
     float *tocke = new float[16 * niz.size()];
@@ -514,31 +508,15 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat
     for (int i = 0; i < niz.size(); i++)
     {
         stbtt_GetBakedQuad(pisava.m_char_data, 512, 512, niz[i], &x, &y, &quad, false);
-        /*
-        ! Morda to ni potrebno
-        quad.x0 *= velikost;
-        quad.x1 *= velikost;
-        quad.y0 *= -velikost;
-        quad.y1 *= -velikost;
-        */
     }
 
     //* Zamik glede na poravnavo na osi x
-    switch (poravnava_x)
+    if ((zastavice & R_P_X_SREDINA) == R_P_X_SREDINA)
     {
-    case Poravnava::levo:
-        break;
-    case Poravnava::sredina:
         pozicija.x -= (x * velikost) / 2;
-        break;
-    case Poravnava::desno:
-        pozicija.x -= x * velikost;
-        break;
-
-    default:
-        std::cout << "Napaka! napačna poravnava besedila: " << niz << '\n';
-        break;
     }
+    if ((zastavice & R_P_DESNO) == R_P_DESNO)
+        pozicija.x -= x * velikost;
 
     //* Pisanje podatkov v tabele
     x = y = 0;

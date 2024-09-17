@@ -1,22 +1,22 @@
 #include "besedilo.h"
 #include "pisava.h"
 #include <iostream>
-Splosne_nastavitve_besedil::Splosne_nastavitve_besedil(Pisava t_pisava, uint32_t t_barva_besedil, Poravnava t_poravnava_x, float t_velikost)
+Splosne_nastavitve_besedil::Splosne_nastavitve_besedil(Pisava t_pisava, uint32_t t_barva_besedil, uint8_t t_poravnava, float t_velikost)
     : pisava(t_pisava)
 {
     barva_besedil = t_barva_besedil;
-    poravnava_x = t_poravnava_x;
+    poravnava = t_poravnava;
     velikost = t_velikost;
 }
 
-Besedilo::Besedilo(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, Poravnava t_poravnava_x)
+Besedilo::Besedilo(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, uint8_t t_poravnava)
     : pisava(t_pisava)
 {
     barva_besedila = t_barva_besedila;
     pozicija = t_pozicija;
     velikost = t_velikost;
     niz = t_niz;
-    poravnava_x = t_poravnava_x;
+    poravnava = t_poravnava;
 }
 Besedilo::Besedilo(Pisava &t_pisava)
     : pisava(t_pisava)
@@ -27,18 +27,18 @@ Besedilo::Besedilo(Splosne_nastavitve_besedil t_spl_nst_bes)
     : pisava(t_spl_nst_bes.pisava)
 {
     barva_besedila = t_spl_nst_bes.barva_besedil;
-    poravnava_x = t_spl_nst_bes.poravnava_x;
+    poravnava = t_spl_nst_bes.poravnava;
     velikost = t_spl_nst_bes.velikost;
 }
 
-void Besedilo::nastavi(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, Poravnava t_poravnava_x)
+void Besedilo::nastavi(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, uint8_t t_poravnava)
 {
     pisava = t_pisava;
     barva_besedila = t_barva_besedila;
     pozicija = t_pozicija;
     velikost = t_velikost;
     niz = t_niz;
-    poravnava_x = t_poravnava_x;
+    poravnava = t_poravnava;
 }
 bool Besedilo::ali_je_miska_gor()
 {
@@ -55,7 +55,7 @@ bool Besedilo::ali_je_miska_gor()
 }
 void Besedilo::narisi_me()
 {
-    Risalnik::narisi_besedilo(pisava, barva_besedila, pozicija, velikost, niz, poravnava_x);
+    Risalnik::narisi_besedilo(pisava, barva_besedila, pozicija, velikost, niz, poravnava);
 }
 void Besedilo::posodobi()
 {
@@ -80,17 +80,10 @@ void Besedilo::posodobi()
 
     //* Izračun zamika po osi x glede na poravnavo besedila
     m_leva_pozicija = pozicija;
-    switch (poravnava_x)
-    {
-    case Poravnava::levo:
-        break;
-    case Poravnava::desno:
-        m_leva_pozicija.x -= x * mnozitelj_velikosti;
-        break;
-    case Poravnava::sredina:
-        m_leva_pozicija.x -= (x * mnozitelj_velikosti) / 2;
-        break;
-    }
+    if (poravnava & R_P_X_SREDINA == R_P_X_SREDINA)
+        pozicija.x -= (x * velikost) / 2;
+    if (poravnava & R_P_DESNO == R_P_DESNO)
+        pozicija.x -= x * velikost;
 
     m_dejanska_velikost = mat::vec2(x * mnozitelj_velikosti /* velikost po x je treba povečati ali pomanjšati*/,
                                     std::abs(min_y) + std::abs(max_y) /*Velikost na y se izračuna s seštevkom absolutnih vrednosti min_y in max_y*/);
