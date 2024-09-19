@@ -73,7 +73,8 @@ private:
     static inline mat::mat4 m_proj_mat_3D;
     static inline mat::vec2 m_velikost_okna;
     static inline bool m_tipke[512];
-    static inline mat::vec2 m_razmerje_stranic;
+    static inline mat::vec2 m_resolucija;
+    static inline bool m_razsiljivo_okno = true;
 
 public:
     static void odpri_okno(const std::string &naslov_okna, Barva t_barva_okna);
@@ -92,6 +93,7 @@ private:
     static void posodobi_velikost_okna(GLFWwindow *okno, int dolzina, int visina);
     static void posodobi_tipke(GLFWwindow *okno, int tipka, int koda_skeniranja, int akcija, int modi);
     static void posodobi_gumb_miske(GLFWwindow *window, int gumb, int akcija, int mods);
+    static void posodobi_besedilo_vhod(GLFWwindow *okno, uint32_t unicode);
     static void ustvari_bufferje_2D();
     static void ustvari_bufferje_3D();
     static void ustvari_bufferje_2D_p();

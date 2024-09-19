@@ -51,6 +51,11 @@ void Streznik::zazeni(int st_porta)
     nit_poslusaj.join();
 #endif
 #ifdef WIN
+    std::cout << "Zagno streznika\n";
+    for (int i = 0; i < 15; i++)
+        Igra::objekti[i] = 0;
+    Igra::st_igralcev = 0;
+    streznik_tece = true;
     m_port = st_porta;
     //* Odpiranje vticnika
     WSAStartup(MAKEWORD(2, 0), &m_WSAData);
@@ -73,13 +78,11 @@ void Streznik::zazeni(int st_porta)
         std::cout << "Napaka pri bindanju streznik_naslov v streznik\n";
         // exit(1);
     }
-
+    std::cout << "Poslusam!\n";
     //* Ustvarjanje niti za poslusanje
     std::thread nit_poslusaj(poslusaj);
     nit_poslusaj.detach();
-    while (!nit_poslusaj.joinable())
-        ;
-    nit_poslusaj.join();
+
 #endif
 }
 
@@ -115,29 +118,34 @@ void Streznik::poslusaj()
 #ifdef WIN
     for (;;)
     {
-        if (Igra::st_igralcev < 14)
+        if (!streznik_tece)
+            return;
+        if (Igra::st_igralcev < 14 && streznik_tece)
         {
             Odjemalec odjemalec;
 
-            listen(m_streznik, 0);
+            listen(m_streznik, 5);
 
             //* Sprejemanje povezava
             odjemalec.velikost_odjemalca = sizeof(odjemalec.naslov_odjemalca);
             odjemalec.odjeamlec = accept(m_streznik, (SOCKADDR *)&odjemalec.naslov_odjemalca, &odjemalec.velikost_odjemalca);
-            /*
+
             if (odjemalec.odjeamlec < 0)
             {
                 std::cout << "Napaka pri sprejemanju povezave!\n";
                 ugasni();
             }
-            */
+            if (streznik_tece)
+            {
 
-            Igra::objekti[Igra::st_igralcev] = new Objekt;
-            Igra::objekti[Igra::st_igralcev]->objekt_id = Igra::st_igralcev;
-            Igra::objekti[Igra::st_igralcev]->odjemalec = odjemalec;
-            std::cout << "Nova povezava: " << Igra::st_igralcev << "\n";
-            std::thread nova_nit(std::thread(vzdrzuj_povezavo, odjemalec, Igra::objekti[Igra::st_igralcev++]));
-            nova_nit.detach();
+                Igra::objekti[Igra::st_igralcev] = new Objekt;
+                Igra::objekti[Igra::st_igralcev]->objekt_id = Igra::st_igralcev;
+                Igra::objekti[Igra::st_igralcev]->odjemalec = odjemalec;
+                std::cout << "Nova povezava: " << Igra::st_igralcev << "\n";
+                // std::thread nova_nit(std::thread(vzdrzuj_povezavo, odjemalec, Igra::objekti[Igra::st_igralcev++]));
+                nit = std::thread(std::thread(vzdrzuj_povezavo, odjemalec, Igra::objekti[Igra::st_igralcev++]));
+                // nova_nit.detach();
+            }
         }
     }
 #endif
@@ -197,6 +205,8 @@ void Streznik::vzdrzuj_povezavo(Odjemalec odjeamlec, Objekt *objekt)
 #ifdef WIN
     while (1)
     {
+        if (!streznik_tece)
+            return;
         char buffer[256];
         int n = recv(odjeamlec.odjeamlec, buffer, 255, 0);
 
@@ -251,10 +261,15 @@ void Streznik::ugasni()
     close(m_vticnik_fd);
 #endif
 #ifdef WIN
+    streznik_tece = false;
     for (int i = 0; i < Igra::st_igralcev; i++)
-        closesocket(Igra::objekti[i]->odjemalec);
-    closesocket(Streznik::m_streznik);
+        if (Igra::objekti[i] != nullptr)
+            closesocket(Igra::objekti[i]->odjemalec.odjeamlec);
     WSACleanup();
+    closesocket(Streznik::m_streznik);
+    // nit.join();
+    std::cout << "tukaj\n";
+
 #endif
 }
 /*

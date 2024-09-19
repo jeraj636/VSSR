@@ -17,10 +17,14 @@ Besedilo::Besedilo(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozi
     velikost = t_velikost;
     niz = t_niz;
     poravnava = t_poravnava;
+    aktiven = true;
+    cakaj_do = Cas::get_cas();
 }
 Besedilo::Besedilo(Pisava &t_pisava)
     : pisava(t_pisava)
 {
+    aktiven = true;
+    cakaj_do = Cas::get_cas();
 }
 
 Besedilo::Besedilo(Splosne_nastavitve_besedil t_spl_nst_bes)
@@ -29,6 +33,8 @@ Besedilo::Besedilo(Splosne_nastavitve_besedil t_spl_nst_bes)
     barva_besedila = t_spl_nst_bes.barva_besedil;
     poravnava = t_spl_nst_bes.poravnava;
     velikost = t_spl_nst_bes.velikost;
+    aktiven = true;
+    cakaj_do = Cas::get_cas();
 }
 
 void Besedilo::nastavi(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, uint8_t t_poravnava)
@@ -39,6 +45,8 @@ void Besedilo::nastavi(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_
     velikost = t_velikost;
     niz = t_niz;
     poravnava = t_poravnava;
+    aktiven = true;
+    cakaj_do = Cas::get_cas();
 }
 bool Besedilo::ali_je_miska_gor()
 {
@@ -59,6 +67,11 @@ void Besedilo::narisi_me()
 }
 void Besedilo::posodobi()
 {
+    if (cakaj_do <= Cas::get_cas())
+        aktiven = true;
+    else
+        aktiven = false;
+
     float x = 0, y = 0;
     stbtt_aligned_quad quad;
     float mnozitelj_velikosti = velikost / pisava.m_velikost;
@@ -80,10 +93,10 @@ void Besedilo::posodobi()
 
     //* Izračun zamika po osi x glede na poravnavo besedila
     m_leva_pozicija = pozicija;
-    if (poravnava & R_P_X_SREDINA == R_P_X_SREDINA)
-        pozicija.x -= (x * velikost) / 2;
-    if (poravnava & R_P_DESNO == R_P_DESNO)
-        pozicija.x -= x * velikost;
+    if ((poravnava & R_P_X_SREDINA) == R_P_X_SREDINA)
+        m_leva_pozicija.x -= (x) / 2;
+    if ((poravnava & R_P_DESNO) == R_P_DESNO)
+        pozicija.x -= x;
 
     m_dejanska_velikost = mat::vec2(x * mnozitelj_velikosti /* velikost po x je treba povečati ali pomanjšati*/,
                                     std::abs(min_y) + std::abs(max_y) /*Velikost na y se izračuna s seštevkom absolutnih vrednosti min_y in max_y*/);

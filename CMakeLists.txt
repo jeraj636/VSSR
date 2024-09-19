@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(VSSR)
-
-option(JE_WIN "Gradim za windows?" OFF)
+set(CMAKE_CXX_STANDARD 20)
+option(JE_WIN "Gradim za windows?" ON)
 
 if(JE_WIN)
     set(OPEN_GL_LIB opengl32)
@@ -34,6 +34,9 @@ src/zacetna_scena.cpp
 src/besedilo.cpp
 src/igra_scena.cpp
 src/streznik_scena.cpp
+src/nastavitve_scena.cpp
+src/streznik.cpp
+src/odjemalec.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -45,4 +48,5 @@ lib/stb/
 target_link_libraries(${PROJECT_NAME}
 glfw
 ${OPEN_GL_LIB}
+ws2_32
 )

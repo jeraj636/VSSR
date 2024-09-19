@@ -1,7 +1,7 @@
 #ifndef STREZNIK_H
 #define STREZNIK_H
 
-#define LINUX
+#define WIN
 #ifdef LINUX
 #include <unistd.h>
 #include <sys/types.h>
@@ -70,6 +70,8 @@ private:
     static inline WSADATA m_WSAData;
     static inline SOCKET m_streznik;
     static inline SOCKADDR_IN m_streznik_naslov;
+    static inline std::thread nit;
+    static inline bool streznik_tece;
 #endif
 };
 #endif

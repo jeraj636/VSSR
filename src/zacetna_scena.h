@@ -7,6 +7,7 @@
 #include "objekt_3D.h"
 #include "igra_scena.h"
 #include "streznik_scena.h"
+#include "nastaviteve_scena.h"
 class Zacetna_scena : public Scena
 {
 public:
@@ -17,6 +18,7 @@ public:
 
     Igra_scena *p_igra_scena;
     Streznik_scena *p_streznik_scena;
+    Nastavitve_scena *p_nastavitve_scena;
 
 private:
     Pisava m_pisava_naslov;

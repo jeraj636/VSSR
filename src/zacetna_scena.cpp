@@ -85,6 +85,11 @@ void Zacetna_scena::posodobi_meni()
     if (m_b_nastavitve.ali_je_miska_gor())
     {
         m_b_nastavitve.barva_besedila.a = 0.5;
+        if (Risalnik::miskin_gumb.levi_gumb)
+        {
+            konec();
+            p_nastavitve_scena->zacetek();
+        }
     }
     else
         m_b_nastavitve.barva_besedila.a = 1;

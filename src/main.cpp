@@ -5,6 +5,7 @@
 #include "objekt_2D.h"
 #include "zacetna_scena.h"
 #include "igra_scena.h"
+#include "nastaviteve_scena.h"
 #include "streznik_scena.h"
 int main()
 {
@@ -12,10 +13,13 @@ int main()
 
     Streznik_scena ss;
     Igra_scena is;
+    Nastavitve_scena ns;
+
     Zacetna_scena zs;
 
     zs.p_igra_scena = &is;
     zs.p_streznik_scena = &ss;
+    zs.p_nastavitve_scena = &ns;
 
     zs.zacetek();
 

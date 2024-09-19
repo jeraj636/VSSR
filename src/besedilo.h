@@ -28,6 +28,8 @@ public:
     void nastavi(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, uint8_t t_poravnava);
     bool ali_je_miska_gor();
     void narisi_me();
+    bool aktiven;
+    double cakaj_do;
 
 private:
     void posodobi();

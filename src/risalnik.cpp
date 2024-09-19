@@ -7,6 +7,7 @@
 #include "pisava.h"
 void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
 {
+    m_resolucija = mat::vec2(850, 850);
     //* Inicializacija GLFW-ja
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -14,7 +15,7 @@ void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     //* Odpiranje GLFW okna
-    m_glfw_okno = glfwCreateWindow(800, 600, naslov_okna.c_str(), nullptr, nullptr);
+    m_glfw_okno = glfwCreateWindow(m_resolucija.x, m_resolucija.y, naslov_okna.c_str(), nullptr, nullptr);
     if (m_glfw_okno == nullptr)
     {
         std::cout << "Ni uspelo odpreti okna!\n";
@@ -30,7 +31,7 @@ void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
         glfwTerminate();
         exit(1);
     }
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, m_resolucija.x, m_resolucija.y);
 
     //* nastavljanje tipk na na zacetno mesto
     for (int i = 0; i < 512; i++)
@@ -41,8 +42,8 @@ void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
     barva_okna = t_barva_okna;
 
     //*Inicializacija kazačca miske
-    kazalec_miske.pozicija_kazalca = (mat::vec2){0, 0};
-    kazalec_miske.pr_pozicija_kazalca = (mat::vec2){0, 0};
+    kazalec_miske.pozicija_kazalca = mat::vec2(0);
+    kazalec_miske.pr_pozicija_kazalca = mat::vec2(0);
     kazalec_miske.prvi = true;
 
     //* Zakrivanje kazalca miske
@@ -74,13 +75,21 @@ void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
     kamera_3D.nastavi();
 
     aktivna_scena_ptr = nullptr;
-    m_razmerje_stranic = mat::vec2(16, 9);
 }
 
 void Risalnik::posodobi_velikost_okna(GLFWwindow *okno, int dolzina, int visina)
 {
     //* Nastavljanje velikosti okna
-    glViewport(0, 0, dolzina, visina);
+    if (m_razsiljivo_okno)
+    {
+
+        glViewport(0, 0, dolzina, visina);
+    }
+    else
+    {
+        glViewport(0, 0, m_resolucija.x, m_resolucija.y);
+        glfwSetWindowSize(m_glfw_okno, m_resolucija.x, m_resolucija.y);
+    }
     kamera_3D.nastavi();
 }
 void Risalnik::posodobi_tipke(GLFWwindow *okno, int tipka, int koda_skeniranja, int akcija, int modi)
@@ -100,6 +109,7 @@ void Risalnik::posodobi_tipke(GLFWwindow *okno, int tipka, int koda_skeniranja, 
 
 void Risalnik::zacetek_okvir()
 {
+
     //* Čiščenje okna
     glClearColor(barva_okna.r, barva_okna.g, barva_okna.b, barva_okna.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
