@@ -96,8 +96,11 @@ void Besedilo::posodobi()
     if ((poravnava & R_P_X_SREDINA) == R_P_X_SREDINA)
         m_leva_pozicija.x -= (x) / 2;
     if ((poravnava & R_P_DESNO) == R_P_DESNO)
-        pozicija.x -= x;
-
+        m_leva_pozicija.x -= x;
+    if ((poravnava & R_P_Y_SREDINA) == R_P_Y_SREDINA)
+        m_leva_pozicija.y += (std::abs(min_y) + std::abs(max_y)) / 2;
+    if ((poravnava & R_P_ZGORAJ) == R_P_Y_SREDINA)
+        m_leva_pozicija.y += std::abs(min_y) + std::abs(max_y);
     m_dejanska_velikost = mat::vec2(x * mnozitelj_velikosti /* velikost po x je treba povečati ali pomanjšati*/,
                                     std::abs(min_y) + std::abs(max_y) /*Velikost na y se izračuna s seštevkom absolutnih vrednosti min_y in max_y*/);
 }

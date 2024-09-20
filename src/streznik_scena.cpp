@@ -26,12 +26,15 @@ void Streznik_scena::zanka()
 {
     Risalnik::nastavi_testiranje_globine(false);
 
+    // Risanje odzadja
     m_zvezdno_nebo.velikost = Risalnik::dobi_velikost_okna();
     m_zvezdno_nebo.pozicija = Risalnik::dobi_velikost_okna() / 2;
     Risalnik::narisi_2D_objekt(m_zvezdno_nebo);
 
+    // Naslov
     Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(Risalnik::dobi_velikost_okna().x / 2, 200), 55, "Streznik", R_P_X_SREDINA);
 
+    // Kvadrat za vpis
     m_polje_za_vpisovanje.pozicija = Risalnik::dobi_velikost_okna() / 2;
     m_polje_za_vpisovanje.pozicija.y -= 100;
     Risalnik::narisi_2D_objekt(m_polje_za_vpisovanje);
@@ -43,9 +46,10 @@ void Streznik_scena::zanka()
             Risalnik::buffer_za_vpis_podatkov = &m_st_porta;
     }
     else
-        m_polje_za_vpisovanje.barva.a = 1.0f;
+        m_polje_za_vpisovanje.barva.a = 0.8f;
 
-    Risalnik::narisi_besedilo(m_pisava, 0x000000ff, m_polje_za_vpisovanje.pozicija, 40, m_st_porta, R_P_X_SREDINA);
+    // Vpisano besedilo
+    Risalnik::narisi_besedilo(m_pisava, 0x000000ff, mat::vec2(m_polje_za_vpisovanje.pozicija.x - m_polje_za_vpisovanje.velikost.x / 2, m_polje_za_vpisovanje.pozicija.y), 40, m_st_porta, R_P_LEVO | R_P_Y_SREDINA);
 
     m_gumb_za_vkop_izklop_streznika.pozicija = Risalnik::dobi_velikost_okna() / 2;
     m_gumb_za_vkop_izklop_streznika.pozicija.y += 100;

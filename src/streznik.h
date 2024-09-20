@@ -1,6 +1,6 @@
 #ifndef STREZNIK_H
 #define STREZNIK_H
-#define WINDOWS
+#include "define.h"
 #ifdef LINUX
 #include <unistd.h>
 #include <sys/types.h>

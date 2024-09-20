@@ -103,8 +103,14 @@ void Risalnik::posodobi_tipke(GLFWwindow *okno, int tipka, int koda_skeniranja, 
     if (akcija == GLFW_PRESS) // Tipka pritisnjena!
     {
         m_tipke[tipka] = true;
+#ifdef LINUX
         if (koda_skeniranja == 22)
             buffer_za_vpis_podatkov->pop_back();
+#endif
+#ifdef WINDOWS
+        if (koda_skeniranja == 14)
+            buffer_za_vpis_podatkov->pop_back();
+#endif
     }
     if (akcija == GLFW_RELEASE) // Tipka spuščena!
     {
@@ -515,6 +521,7 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat
 
     stbtt_aligned_quad quad;
     float x = 0, y = 0;
+    float min_y = 1000, max_y = -1000;
     //* Pridobivanje x in y velikosti
     /*
         y velikost dobimo na načim da najdemo y_max in y_min in izračunamo razliko
@@ -523,15 +530,26 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat
     for (int i = 0; i < niz.size(); i++)
     {
         stbtt_GetBakedQuad(pisava.m_char_data, 512, 512, niz[i], &x, &y, &quad, false);
+
+        quad.y0 *= velikost; //* prirejanje velikosti za y (x ni potreben)
+        quad.y1 *= velikost;
+
+        //* iskanje najmanjše in največje vrednosti
+        if (max_y < quad.y1)
+            max_y = quad.y1;
+        if (min_y > quad.y0)
+            min_y = quad.y0;
     }
 
     //* Zamik glede na poravnavo na osi x
     if ((zastavice & R_P_X_SREDINA) == R_P_X_SREDINA)
-    {
         pozicija.x -= (x * velikost) / 2;
-    }
     if ((zastavice & R_P_DESNO) == R_P_DESNO)
         pozicija.x -= x * velikost;
+    if ((zastavice & R_P_Y_SREDINA) == R_P_Y_SREDINA)
+        pozicija.y += (std::abs(min_y) + std::abs(max_y)) / 2;
+    if ((zastavice & R_P_ZGORAJ) == R_P_Y_SREDINA)
+        pozicija.y += std::abs(min_y) + std::abs(max_y);
 
     //* Pisanje podatkov v tabele
     x = y = 0;

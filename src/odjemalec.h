@@ -1,6 +1,6 @@
 #ifndef ODJEMALEC_H
 #define ODJEMALEC_H
-#define WIN
+#include "define.h"
 
 #ifdef LINUX
 #include <sys/types.h>

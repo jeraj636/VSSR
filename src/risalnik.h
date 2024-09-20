@@ -1,10 +1,10 @@
 #ifndef RISALNIK
 #define RISALNIK
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <string>
 
+#include "define.h"
 #include "matematika.h"
 #include "barva.h"
 #include "kamera_2D.h"
