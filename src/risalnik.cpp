@@ -448,9 +448,22 @@ void Risalnik::narisi_2D_objekt(const Objekt_2D &obj)
     glBindTexture(GL_TEXTURE_2D, obj.m_tekstura_id);
     glUniform1i(glGetUniformLocation(m_shader_program_2D, "u_tekstura"), 1);
 
+    mat::vec2 poz = obj.pozicija;
+
+    //* Zamik glede na poravanvo
+    //! Potrebno testirati
+    if ((obj.poravnava & R_P_LEVO) == R_P_LEVO)
+        poz.x += obj.velikost.x / 2;
+    if ((obj.poravnava & R_P_DESNO) == R_P_DESNO)
+        poz.x -= obj.velikost.x / 2;
+    if ((obj.poravnava & R_P_SPODAJ) == R_P_Y_SREDINA)
+        poz.y -= obj.velikost.x / 2;
+    if ((obj.poravnava & R_P_ZGORAJ) == R_P_ZGORAJ)
+        poz.y += obj.velikost.x / 2;
+
     //* Pripravljanje transformacijske matrike
     mat::mat3 transformacija(1);
-    transformacija = mat::pozicijska(transformacija, obj.pozicija);
+    transformacija = mat::pozicijska(transformacija, poz);
     transformacija = mat::rotacijska(transformacija, degToRad(obj.rotacija));
     transformacija = mat::velikostna(transformacija, obj.velikost);
 

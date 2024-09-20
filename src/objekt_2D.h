@@ -11,6 +11,8 @@ public:
     float rotacija;
     Barva barva;
     bool aktiven;
+    double cakaj_do;
+    uint8_t poravnava;
 
 public:
     Objekt_2D();

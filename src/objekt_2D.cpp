@@ -68,10 +68,23 @@ void Objekt_2D::nastavi(mat::vec2 t_pozicija, mat::vec2 t_velikost, float t_rota
 
 bool Objekt_2D::ali_je_miska_gor()
 {
-    if (Risalnik::kazalec_miske.pozicija_kazalca.x > pozicija.x - velikost.x / 2 &&
-        Risalnik::kazalec_miske.pozicija_kazalca.x < pozicija.x + velikost.x / 2 &&
-        Risalnik::kazalec_miske.pozicija_kazalca.y > pozicija.y - velikost.y / 2 &&
-        Risalnik::kazalec_miske.pozicija_kazalca.y < pozicija.y + velikost.y / 2)
+    mat::vec2 poz = pozicija;
+    //* Zamik glede na poravanvo
+    //! Potrebno testirati
+    if ((poravnava & R_P_LEVO) == R_P_LEVO)
+        poz.x += velikost.x / 2;
+    if ((poravnava & R_P_DESNO) == R_P_DESNO)
+        poz.x -= velikost.x / 2;
+    if ((poravnava & R_P_SPODAJ) == R_P_Y_SREDINA)
+        poz.y -= velikost.x / 2;
+    if ((poravnava & R_P_ZGORAJ) == R_P_ZGORAJ)
+        poz.y += velikost.x / 2;
+
+    // if ((poravnava & R_P_ZGORAJ) == R_P_Y_SREDINA)
+    if (Risalnik::kazalec_miske.pozicija_kazalca.x > poz.x - velikost.x / 2 &&
+        Risalnik::kazalec_miske.pozicija_kazalca.x < poz.x + velikost.x / 2 &&
+        Risalnik::kazalec_miske.pozicija_kazalca.y > poz.y - velikost.y / 2 &&
+        Risalnik::kazalec_miske.pozicija_kazalca.y < poz.y + velikost.y / 2)
 
         return true;
     return false;
