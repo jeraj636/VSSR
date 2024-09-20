@@ -13,8 +13,8 @@ Streznik_scena::Streznik_scena()
 void Streznik_scena::zacetek()
 {
     //* Nastavljanje objektov
-    m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true);
-    m_polje_za_vpisovanje = Objekt_2D(mat::vec2(0), mat::vec2(200, 55), 0, 0xffffffff, "../sredstva/prazen.png", true);
+    m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);
+    m_polje_za_vpisovanje = Objekt_2D(mat::vec2(0), mat::vec2(200, 55), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);
 
     //* Nastavljanje miske
     Risalnik::kamera_3D.premikanje_kamere = false;
@@ -54,6 +54,7 @@ void Streznik_scena::zanka()
     m_gumb_za_vkop_izklop_streznika.pozicija = Risalnik::dobi_velikost_okna() / 2;
     m_gumb_za_vkop_izklop_streznika.pozicija.y += 100;
 
+    // gumb za streznik (nastavljanje besedila)
     if (m_ali_je_streznik_vklopljen)
     {
         m_gumb_za_vkop_izklop_streznika.niz = "Izklop";
@@ -61,6 +62,7 @@ void Streznik_scena::zanka()
     else
         m_gumb_za_vkop_izklop_streznika.niz = "Vklop";
 
+    // gumb za streznik
     if (m_gumb_za_vkop_izklop_streznika.ali_je_miska_gor())
     {
         m_gumb_za_vkop_izklop_streznika.barva_besedila.a = 0.5;
@@ -81,6 +83,22 @@ void Streznik_scena::zanka()
         m_gumb_za_vkop_izklop_streznika.barva_besedila.a = 1;
 
     m_gumb_za_vkop_izklop_streznika.narisi_me();
+
+    m_gumb_za_na_meni.pozicija = Risalnik::dobi_velikost_okna() / 2;
+    m_gumb_za_na_meni.pozicija.y += 300;
+
+    if (m_gumb_za_na_meni.ali_je_miska_gor())
+    {
+        m_gumb_za_na_meni.barva_besedila.a = 0.5f;
+        if (Risalnik::miskin_gumb.levi_gumb)
+        {
+            konec();
+            Risalnik::aktivna_scena_ptr = p_zacena_scena;
+        }
+    }
+    else
+        m_gumb_za_na_meni.barva_besedila.a = 1.0f;
+    m_gumb_za_na_meni.narisi_me();
     Risalnik::nastavi_testiranje_globine(true);
 }
 

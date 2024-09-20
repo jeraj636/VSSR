@@ -456,7 +456,7 @@ void Risalnik::narisi_2D_objekt(const Objekt_2D &obj)
         poz.x += obj.velikost.x / 2;
     if ((obj.poravnava & R_P_DESNO) == R_P_DESNO)
         poz.x -= obj.velikost.x / 2;
-    if ((obj.poravnava & R_P_SPODAJ) == R_P_Y_SREDINA)
+    if ((obj.poravnava & R_P_SPODAJ) == R_P_SPODAJ)
         poz.y -= obj.velikost.x / 2;
     if ((obj.poravnava & R_P_ZGORAJ) == R_P_ZGORAJ)
         poz.y += obj.velikost.x / 2;

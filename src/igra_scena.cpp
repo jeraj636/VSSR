@@ -9,7 +9,7 @@ Igra_scena::Igra_scena()
 void Igra_scena::zacetek()
 {
     // morda malo nenavadno zdaj sem ze pozabil kaj je nenavadno
-    m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true);
+    m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);
     Risalnik::kamera_3D.premikanje_kamere = true;
     Risalnik::nastavi_aktivnost_kazalca_miske(false);
     Risalnik::aktivna_scena_ptr = this;

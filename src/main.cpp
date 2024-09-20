@@ -21,6 +21,8 @@ int main()
     zs.p_streznik_scena = &ss;
     zs.p_nastavitve_scena = &ns;
 
+    ss.p_zacena_scena = &zs;
+
     zs.zacetek();
 
     while (!Risalnik::ali_je_okno_za_zapreti())

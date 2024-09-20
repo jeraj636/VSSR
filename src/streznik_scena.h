@@ -14,6 +14,7 @@ public:
     void zacetek() override;
     void zanka() override;
     void konec() override;
+    Scena *p_zacena_scena;
 
 private:
     Pisava m_pisava;
