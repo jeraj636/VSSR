@@ -60,6 +60,7 @@ public:
     static inline Kamera_3D kamera_3D;
     static mat::vec2 dobi_velikost_okna();
     static inline Scena *aktivna_scena_ptr;
+    static inline std::string *buffer_za_vpis_podatkov;
 
 private:
     static inline GLFWwindow *m_glfw_okno;
@@ -86,7 +87,7 @@ public:
     static bool ali_je_okno_za_zapreti();
     static bool dobi_tipko(int katera_tipka);
     static void zapri_okno();
-    static void aktivnost_kazalca_miske(bool aktivnost);
+    static void nastavi_aktivnost_kazalca_miske(bool aktivnost);
     static void nastavi_testiranje_globine(bool aktivno);
 
 private:

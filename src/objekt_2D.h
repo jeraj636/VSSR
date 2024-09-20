@@ -21,6 +21,7 @@ public:
     void nastavi_teksturo(const std::string &pot_do_teksture);
     ~Objekt_2D();
     friend class Risalnik;
+    bool ali_je_miska_gor();
 
 protected:
     uint32_t m_tekstura_id;

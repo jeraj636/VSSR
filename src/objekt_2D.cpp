@@ -1,5 +1,6 @@
 #include "objekt_2D.h"
 #include "tekstura.h"
+#include "risalnik.h"
 Objekt_2D::Objekt_2D()
 {
     m_tekstura_id = -1;
@@ -63,4 +64,15 @@ void Objekt_2D::nastavi(mat::vec2 t_pozicija, mat::vec2 t_velikost, float t_rota
     m_tekstura_id = nalozi_teksturo(pot_do_teksture);
     m_pot_do_teksture = pot_do_teksture;
     aktiven = t_aktiven;
+}
+
+bool Objekt_2D::ali_je_miska_gor()
+{
+    if (Risalnik::kazalec_miske.pozicija_kazalca.x > pozicija.x - velikost.x / 2 &&
+        Risalnik::kazalec_miske.pozicija_kazalca.x < pozicija.x + velikost.x / 2 &&
+        Risalnik::kazalec_miske.pozicija_kazalca.y > pozicija.y - velikost.y / 2 &&
+        Risalnik::kazalec_miske.pozicija_kazalca.y < pozicija.y + velikost.y / 2)
+
+        return true;
+    return false;
 }

@@ -12,7 +12,7 @@ void Nastavitve_scena::zacetek()
     // morda malo nenavadno zdaj sem ze pozabil kaj je nenavadno
     m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true);
     Risalnik::kamera_3D.premikanje_kamere = false;
-    Risalnik::aktivnost_kazalca_miske(true);
+    Risalnik::nastavi_aktivnost_kazalca_miske(true);
     Risalnik::aktivna_scena_ptr = this;
 }
 

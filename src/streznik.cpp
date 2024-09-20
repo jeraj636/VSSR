@@ -7,6 +7,8 @@ bool Streznik::zazeni(int port)
     m_vticnik_fd = socket(AF_INET, SOCK_STREAM, 0);
     bzero((char *)&naslov_streznika, sizeof(naslov_streznika));
 
+    std::cout << "Odpiranje streznika na portu: " << port << "\n";
+
     int zastavice = fcntl(m_vticnik_fd, F_GETFL, 0);
     fcntl(m_vticnik_fd, F_SETFL, zastavice | O_NONBLOCK);
 
@@ -101,17 +103,14 @@ void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
 void Streznik::ugasni()
 {
     m_streznik_tece = false;
-    std::cout << odjemalci.size() << "\n";
     if (odjemalci.size() == 0)
         m_nit_za_poslusanje.join();
     while (odjemalci.size() != 0)
     {
-        // shutdown(odjemalci.back()->m_nov_vticnik_fd, SHUT_RDWR);
         close(odjemalci.back()->m_nov_vticnik_fd);
         delete odjemalci.back();
         odjemalci.pop_back();
     }
-    std::cout << "tukaj\n";
 
     close(m_vticnik_fd);
     std::cout << "Konec streznik!\n";

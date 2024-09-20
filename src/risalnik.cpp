@@ -53,6 +53,8 @@ void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
     glfwSetFramebufferSizeCallback(m_glfw_okno, posodobi_velikost_okna);
     glfwSetKeyCallback(m_glfw_okno, posodobi_tipke);
     glfwSetMouseButtonCallback(m_glfw_okno, posodobi_gumb_miske);
+    glfwSetCharCallback(m_glfw_okno, posodobi_besedilo_vhod);
+
     //* Ustvarjanje bufferjev
     ustvari_bufferje_2D_p();
     ustvari_bufferje_2D();
@@ -75,6 +77,7 @@ void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
     kamera_3D.nastavi();
 
     aktivna_scena_ptr = nullptr;
+    buffer_za_vpis_podatkov = nullptr;
 }
 
 void Risalnik::posodobi_velikost_okna(GLFWwindow *okno, int dolzina, int visina)
@@ -100,6 +103,8 @@ void Risalnik::posodobi_tipke(GLFWwindow *okno, int tipka, int koda_skeniranja, 
     if (akcija == GLFW_PRESS) // Tipka pritisnjena!
     {
         m_tipke[tipka] = true;
+        if (koda_skeniranja == 22)
+            buffer_za_vpis_podatkov->pop_back();
     }
     if (akcija == GLFW_RELEASE) // Tipka spuščena!
     {
@@ -630,7 +635,20 @@ void Risalnik::posodobi_gumb_miske(GLFWwindow *window, int gumb, int akcija, int
     else
         miskin_gumb.desni_gumb = false;
 }
-void Risalnik::aktivnost_kazalca_miske(bool aktivnost)
+void Risalnik::posodobi_besedilo_vhod(GLFWwindow *okno, uint32_t unicode)
+{
+    if (buffer_za_vpis_podatkov != nullptr)
+    {
+        if (unicode == '\r' || unicode == '\n')
+        {
+            buffer_za_vpis_podatkov = nullptr;
+            return;
+        }
+        buffer_za_vpis_podatkov->push_back(unicode);
+    }
+}
+
+void Risalnik::nastavi_aktivnost_kazalca_miske(bool aktivnost)
 {
     if (aktivnost)
         glfwSetInputMode(m_glfw_okno, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
