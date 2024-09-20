@@ -52,8 +52,8 @@ void Streznik_scena::zanka()
         if (Risalnik::miskin_gumb.levi_gumb && m_gumb_za_vkop_izklop_streznika.aktiven)
             if (!m_ali_je_streznik_vklopljen)
             {
-                m_ali_je_streznik_vklopljen = true;
-                Streznik::zazeni(69);
+                m_ali_je_streznik_vklopljen = Streznik::zazeni(69);
+
                 m_gumb_za_vkop_izklop_streznika.cakaj_do = Cas::get_cas() + 1;
             }
             else
