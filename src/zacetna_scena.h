@@ -6,7 +6,6 @@
 #include "objekt_2D.h"
 #include "objekt_3D.h"
 #include "igra_scena.h"
-#include "streznik_scena.h"
 #include "nastaviteve_scena.h"
 class Zacetna_scena : public Scena
 {
@@ -17,7 +16,6 @@ public:
     void konec() override;
 
     Igra_scena *p_igra_scena;
-    Streznik_scena *p_streznik_scena;
     Nastavitve_scena *p_nastavitve_scena;
 
 private:
@@ -25,7 +23,6 @@ private:
     Pisava m_pisava;
 
     Besedilo m_b_igraj;
-    Besedilo m_b_streznik;
     Besedilo m_b_nastavitve;
     Besedilo m_b_navodila;
     Besedilo m_b_zasluge;

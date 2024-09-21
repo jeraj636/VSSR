@@ -2,7 +2,9 @@
 
 bool Streznik::zazeni(int port)
 {
+#ifdef DEBUG
     std::cout << "Odpiranje streznika na portu: " << port << "\n";
+#endif
 #ifdef LINUX
 
     sockaddr_in naslov_streznika;
@@ -50,12 +52,19 @@ bool Streznik::zazeni(int port)
 
     m_streznik_tece = true;
     m_nit_za_poslusanje = std::thread(poslusaj);
+
+#ifdef DEBUG
     std::cout << "Streznik zagnan!\n";
+#endif
+
     return true;
 }
 void Streznik::poslusaj()
 {
+#ifdef DEBUG
     std::cout << "Poslusam!\n";
+#endif
+
 #ifdef LINUX
     listen(m_vticnik_fd, 20);
     while (m_streznik_tece)
@@ -70,8 +79,9 @@ void Streznik::poslusaj()
             delete odjemalec;
             continue;
         }
-
+#ifdef DEBUG
         std::cout << "Nova povezava: " << m_st_vseh_odjemalcev << "\n";
+#endif
         odjemalec->odjemalec_id = m_st_vseh_odjemalcev++;
         odjemalci.push_back(odjemalec);
         std::thread nit(vzdrzuj_povezavo, odjemalec);
@@ -91,8 +101,9 @@ void Streznik::poslusaj()
             delete odjemalec;
             continue;
         }
-
+#ifdef DEBUG
         std::cout << "Nova povezava: " << m_st_vseh_odjemalcev << "\n";
+#endif
         odjemalec->odjemalec_id = m_st_vseh_odjemalcev++;
         odjemalci.push_back(odjemalec);
         std::thread nit(vzdrzuj_povezavo, odjemalec);
@@ -109,11 +120,11 @@ void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
     int zastavice = fcntl(odjemalec->m_nov_vticnik_fd, F_GETFL, 0);
     if (zastavice == -1)
     {
-        std::cerr << "Napaka pri pridobivanju zastavic: " << strerror(errno) << "\n";
+        std::cout << "Napaka pri pridobivanju zastavic: " << strerror(errno) << "\n";
     }
     if (fcntl(odjemalec->m_nov_vticnik_fd, F_SETFL, zastavice | O_NONBLOCK) == -1)
     {
-        std::cerr << "Napaka pri nastavitvi neblokirnega nacina: " << strerror(errno) << "\n";
+        std::cout << "Napaka pri nastavitvi neblokirnega nacina: " << strerror(errno) << "\n";
     }
 
     while (m_streznik_tece)
@@ -180,7 +191,9 @@ void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
         m_nit_za_poslusanje.join();
     }
 #endif
+#ifdef DEBUG
     std::cout << "Konec povezave!\n";
+#endif
 }
 
 void Streznik::ugasni()
@@ -197,7 +210,9 @@ void Streznik::ugasni()
     }
 
     close(m_vticnik_fd);
+#ifdef DEBUG
     std::cout << "Konec streznik!\n";
+#endif
 #endif
 #ifdef WINDOWS
     m_streznik_tece = false;
@@ -212,6 +227,8 @@ void Streznik::ugasni()
 
     closesocket(m_vticnik);
     WSACleanup();
+#ifdef DEBUG
     std::cout << "Konec streznik!\n";
+#endif
 #endif
 }

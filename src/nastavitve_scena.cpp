@@ -2,12 +2,15 @@
 #include "risalnik.h"
 #include <iostream>
 #include <fstream>
+#include "streznik.h"
 Nastavitve_scena::Nastavitve_scena()
     : m_pisava("../sredstva/Cascadia.ttf", 55),
-      m_vrata_streznika(m_pisava, 0x000000ff, mat::vec2(0), 45, "", R_P_LEVO | R_P_Y_SREDINA),
+      m_vrata_odjemalca(m_pisava, 0x000000ff, mat::vec2(0), 45, "", R_P_LEVO | R_P_Y_SREDINA),
       m_streznik(m_pisava, 0x000000ff, mat::vec2(0), 45, "", R_P_LEVO | R_P_Y_SREDINA),
       m_hitrost_miske(m_pisava, 0x000000ff, mat::vec2(0), 45, "", R_P_LEVO | R_P_Y_SREDINA),
-      m_gumb_za_na_meni(m_pisava, 0xffffffff, mat::vec2(0), 45, "Meni", R_P_X_SREDINA | R_P_Y_SREDINA)
+      m_gumb_za_na_meni(m_pisava, 0xffffffff, mat::vec2(0), 45, "Meni", R_P_X_SREDINA | R_P_Y_SREDINA),
+      m_vrata_streznika(m_pisava, 0x000000ff, mat::vec2(0), 45, "", R_P_LEVO | R_P_Y_SREDINA),
+      m_gumb_za_vklop_izkop_streznika(m_pisava, 0xffffffff, mat::vec2(0), 45, "", R_P_LEVO | R_P_Y_SREDINA)
 {
 
     //* Branje nastavitev iz datoteke
@@ -18,9 +21,12 @@ Nastavitve_scena::Nastavitve_scena()
         exit(1);
     }
     std::getline(i_dat, m_streznik.niz);
-    std::getline(i_dat, m_vrata_streznika.niz);
+    std::getline(i_dat, m_vrata_odjemalca.niz);
     std::getline(i_dat, m_hitrost_miske.niz);
+    std::getline(i_dat, m_vrata_streznika.niz);
     i_dat.close();
+
+    m_ali_streznik_tece = false;
 }
 
 void Nastavitve_scena::zacetek()
@@ -29,8 +35,11 @@ void Nastavitve_scena::zacetek()
     m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);
 
     m_polje_za_vpis_streznika.nastavi(mat::vec2(400, 250), mat::vec2(300, 46), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
-    m_polje_za_vpis_vrat.nastavi(mat::vec2(400, 300), mat::vec2(150, 46), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
+    m_polje_za_vpis_vrat_odjemalca.nastavi(mat::vec2(400, 300), mat::vec2(150, 46), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
     m_polje_za_vpis_hitrosti_miske.nastavi(mat::vec2(500, 400), mat::vec2(150, 46), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
+    m_polje_za_vpis_vrat_streznika.nastavi(mat::vec2(325, 500), mat::vec2(150, 46), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
+
+    m_gumb_za_vklop_izkop_streznika.pozicija = mat::vec2(500, 500);
 
     //* Nastavljanje miske
     Risalnik::kamera_3D.premikanje_kamere = false;
@@ -52,18 +61,23 @@ void Nastavitve_scena::zanka()
     Risalnik::narisi_besedilo(m_pisava, 0xffffffcc, mat::vec2(150, 300), 45, "Vrata:", R_P_LEVO | R_P_Y_SREDINA);
     Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(100, 350), 45, "Igra:", R_P_LEVO | R_P_Y_SREDINA);
     Risalnik::narisi_besedilo(m_pisava, 0xffffffcc, mat::vec2(150, 400), 45, "Hirtost miske:", R_P_LEVO | R_P_Y_SREDINA);
+    Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(100, 450), 45, "Streznik:", R_P_LEVO | R_P_Y_SREDINA);
+    Risalnik::narisi_besedilo(m_pisava, 0xffffffcc, mat::vec2(150, 500), 45, "Vrata:", R_P_LEVO | R_P_Y_SREDINA);
 
     posodobi_gumbe();
     posodobi_besedila();
 
     Risalnik::narisi_2D_objekt(m_polje_za_vpis_streznika);
-    Risalnik::narisi_2D_objekt(m_polje_za_vpis_vrat);
+    Risalnik::narisi_2D_objekt(m_polje_za_vpis_vrat_odjemalca);
     Risalnik::narisi_2D_objekt(m_polje_za_vpis_hitrosti_miske);
+    Risalnik::narisi_2D_objekt(m_polje_za_vpis_vrat_streznika);
 
-    m_vrata_streznika.narisi_me();
+    m_vrata_odjemalca.narisi_me();
     m_streznik.narisi_me();
     m_hitrost_miske.narisi_me();
+    m_vrata_streznika.narisi_me();
 
+    //* gumb za na meni
     m_gumb_za_na_meni.pozicija = mat::vec2(Risalnik::dobi_velikost_okna().x / 2, Risalnik::dobi_velikost_okna().y - 100);
     if (m_gumb_za_na_meni.ali_je_miska_gor())
     {
@@ -78,6 +92,34 @@ void Nastavitve_scena::zanka()
         m_gumb_za_na_meni.barva_besedila.a = 1;
     m_gumb_za_na_meni.narisi_me();
 
+    //* Gumb za vklop izkop streznika
+    if (m_ali_streznik_tece)
+        m_gumb_za_vklop_izkop_streznika.niz = "Izkop";
+    else
+        m_gumb_za_vklop_izkop_streznika.niz = "Vklop";
+
+    if (m_gumb_za_vklop_izkop_streznika.ali_je_miska_gor())
+    {
+        m_gumb_za_vklop_izkop_streznika.barva_besedila.a = 0.5;
+        if (Risalnik::miskin_gumb.levi_gumb && m_gumb_za_vklop_izkop_streznika.aktiven)
+        {
+            if (!m_ali_streznik_tece)
+            {
+                m_ali_streznik_tece = Streznik::zazeni(atoi(m_vrata_streznika.niz.c_str()));
+                m_gumb_za_vklop_izkop_streznika.cakaj_do = Cas::get_cas() + 1;
+            }
+            else
+            {
+                m_ali_streznik_tece = false;
+                Streznik::ugasni();
+                m_gumb_za_vklop_izkop_streznika.cakaj_do = Cas::get_cas() + 1;
+            }
+        }
+    }
+    else
+        m_gumb_za_vklop_izkop_streznika.barva_besedila.a = 1;
+
+    m_gumb_za_vklop_izkop_streznika.narisi_me();
     Risalnik::nastavi_testiranje_globine(true);
 }
 
@@ -85,8 +127,9 @@ void Nastavitve_scena::konec()
 {
     std::ofstream o_dat("../sredstva/nastavitve.txt");
     o_dat << m_streznik.niz << "\n";
-    o_dat << m_vrata_streznika.niz << "\n";
+    o_dat << m_vrata_odjemalca.niz << "\n";
     o_dat << m_hitrost_miske.niz << "\n";
+    o_dat << m_vrata_streznika.niz << "\n";
 }
 
 void Nastavitve_scena::posodobi_gumbe()
@@ -104,18 +147,18 @@ void Nastavitve_scena::posodobi_gumbe()
     else
         m_polje_za_vpis_streznika.barva.a = 1;
 
-    if (m_polje_za_vpis_vrat.ali_je_miska_gor())
+    if (m_polje_za_vpis_vrat_odjemalca.ali_je_miska_gor())
     {
-        m_polje_za_vpis_vrat.barva.a = 0.5;
-        if (Risalnik::miskin_gumb.levi_gumb && m_polje_za_vpis_vrat.aktiven)
+        m_polje_za_vpis_vrat_odjemalca.barva.a = 0.5;
+        if (Risalnik::miskin_gumb.levi_gumb && m_polje_za_vpis_vrat_odjemalca.aktiven)
         {
-            m_vrata_streznika.niz = "";
-            m_polje_za_vpis_vrat.cakaj_do = Cas::get_cas() + 1;
-            Risalnik::buffer_za_vpis_podatkov = &m_vrata_streznika.niz;
+            m_vrata_odjemalca.niz = "";
+            m_polje_za_vpis_vrat_odjemalca.cakaj_do = Cas::get_cas() + 1;
+            Risalnik::buffer_za_vpis_podatkov = &m_vrata_odjemalca.niz;
         }
     }
     else
-        m_polje_za_vpis_vrat.barva.a = 1;
+        m_polje_za_vpis_vrat_odjemalca.barva.a = 1;
 
     if (m_polje_za_vpis_hitrosti_miske.ali_je_miska_gor())
     {
@@ -129,11 +172,30 @@ void Nastavitve_scena::posodobi_gumbe()
     }
     else
         m_polje_za_vpis_hitrosti_miske.barva.a = 1;
+
+    if (m_polje_za_vpis_vrat_streznika.ali_je_miska_gor())
+    {
+        m_polje_za_vpis_vrat_streznika.barva.a = 0.5;
+        if (Risalnik::miskin_gumb.levi_gumb && m_polje_za_vpis_vrat_streznika.aktiven)
+        {
+            m_vrata_streznika.niz = "";
+            m_polje_za_vpis_vrat_streznika.cakaj_do = Cas::get_cas() + 1;
+            Risalnik::buffer_za_vpis_podatkov = &m_vrata_streznika.niz;
+            if (m_ali_streznik_tece)
+            {
+                Streznik::ugasni();
+                m_ali_streznik_tece = false;
+            }
+        }
+    }
+    else
+        m_polje_za_vpis_vrat_streznika.barva.a = 1;
 }
 
 void Nastavitve_scena::posodobi_besedila()
 {
     m_streznik.pozicija = m_polje_za_vpis_streznika.pozicija;
-    m_vrata_streznika.pozicija = m_polje_za_vpis_vrat.pozicija;
+    m_vrata_odjemalca.pozicija = m_polje_za_vpis_vrat_odjemalca.pozicija;
     m_hitrost_miske.pozicija = m_polje_za_vpis_hitrosti_miske.pozicija;
+    m_vrata_streznika.pozicija = m_polje_za_vpis_vrat_streznika.pozicija;
 }

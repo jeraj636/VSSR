@@ -10,7 +10,7 @@
 #include <unistd.h>
 #endif
 
-#ifdef WIN
+#ifdef WINDOWS
 #include <WinSock2.h>
 #endif
 
@@ -35,7 +35,7 @@ private:
     sockaddr_in m_naslov_streznika;
     hostent *m_streznik;
 #endif
-#ifdef WIN
+#ifdef WINDOWS
     WSADATA m_WSAData;
     SOCKET m_streznik;
     SOCKADDR_IN m_streznik_nalov;

@@ -6,25 +6,19 @@
 #include "zacetna_scena.h"
 #include "igra_scena.h"
 #include "nastaviteve_scena.h"
-#include "streznik_scena.h"
 int main()
 {
     Risalnik::odpri_okno("VSSR", 0x111111ff);
 
-    Streznik_scena ss;
     Igra_scena is;
     Nastavitve_scena ns;
 
     Zacetna_scena zs;
 
     zs.p_igra_scena = &is;
-    zs.p_streznik_scena = &ss;
     zs.p_nastavitve_scena = &ns;
 
-    ss.p_zacena_scena = &zs;
-
     ns.p_zacetna_scena = &zs;
-
     zs.zacetek();
 
     while (!Risalnik::ali_je_okno_za_zapreti())

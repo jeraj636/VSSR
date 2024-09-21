@@ -1,1 +1,2 @@
 #define LINUX
+#define DEBUG

@@ -16,7 +16,7 @@ void Odjemalec::beri_iz_povezave(Odjemalec *o)
         std::cout << buffer << "\n";
     }
 #endif
-#ifdef WIN
+#ifdef WINDOWS
     while (true)
     {
 
@@ -72,7 +72,7 @@ void Odjemalec::zazeni(std::string naslov, int port)
         exit(1);
     }
 #endif
-#ifdef WIN
+#ifdef WINDOWS
     m_port = port;
 
     //* Nstvarjanje vticnika
@@ -99,7 +99,7 @@ void Odjemalec::poslji(std::string vsebina)
     if (n < 0)
         std::cout << "Napaka pri posiljanju!\n";
 #endif
-#ifdef WIN
+#ifdef WINDOWS
     if (send(m_streznik, vsebina.c_str(), vsebina.size(), 0) < 0)
         std::cout << "Napaka pri posiljanju!\n";
 #endif
@@ -111,7 +111,7 @@ std::string Odjemalec::prejmi()
     int n = read(m_vticnik_fd, buff, 255);
     return buff;
 #endif
-#ifdef WIN
+#ifdef WINDOWS
     char buff[256];
     int n = recv(m_streznik, buff, 255, 0);
     return buff;
@@ -123,7 +123,7 @@ Odjemalec::~Odjemalec()
 #ifdef LINUX
     close(m_vticnik_fd);
 #endif
-#ifdef WIN
+#ifdef WINDOWS
     closesocket(m_streznik);
     WSACleanup();
 #endif
