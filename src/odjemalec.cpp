@@ -46,8 +46,8 @@ void Odjemalec::zazeni(std::string naslov, int port)
     }
 
     //* Iskanje streznika
-    m_vticnik = gethostbyname(naslov.c_str());
-    if (m_vticnik == nullptr)
+    m_streznik = gethostbyname(naslov.c_str());
+    if (m_streznik == nullptr)
     {
         std::cout << "Napaka pri iskanju strenika: " << naslov << ":" << port << "\n";
         close(m_vticnik_fd);
@@ -58,9 +58,9 @@ void Odjemalec::zazeni(std::string naslov, int port)
     bzero((char *)&m_naslov_streznika, sizeof(m_naslov_streznika));
     m_naslov_streznika.sin_family = AF_INET;
 
-    bcopy((char *)m_vticnik->h_addr,
+    bcopy((char *)m_streznik->h_addr,
           (char *)&m_naslov_streznika.sin_addr.s_addr,
-          m_vticnik->h_length);
+          m_streznik->h_length);
 
     m_naslov_streznika.sin_port = htons(m_port);
 
@@ -128,6 +128,7 @@ Odjemalec::~Odjemalec()
     WSACleanup();
 #endif
 }
+
 /*
 int main(int argc, char *argv[])
 {

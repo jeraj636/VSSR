@@ -35,6 +35,7 @@ src/besedilo.cpp
 src/igra_scena.cpp
 src/nastavitve_scena.cpp
 src/streznik.cpp
+src/odjemalec.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC

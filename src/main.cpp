@@ -19,7 +19,9 @@ int main()
     zs.p_nastavitve_scena = &ns;
 
     ns.p_zacetna_scena = &zs;
+
     is.p_zacena_scena = &zs;
+    is.p_nastavitve_scena = &ns;
 
     zs.zacetek();
 

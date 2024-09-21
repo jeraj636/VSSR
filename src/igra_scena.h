@@ -5,7 +5,8 @@
 #include "besedilo.h"
 #include "objekt_2D.h"
 #include "objekt_3D.h"
-
+#include "odjemalec.h"
+#include "nastaviteve_scena.h"
 class Igra_scena : public Scena
 {
 public:
@@ -15,6 +16,7 @@ public:
     void konec() override;
 
     Scena *p_zacena_scena;
+    Nastavitve_scena *p_nastavitve_scena;
 
 private:
     Pisava m_pisava;
@@ -22,6 +24,8 @@ private:
     Objekt_3D m_kamni1[10];
 
     bool m_pavza;
+
+    Odjemalec m_odjmalec;
 
     Besedilo m_gumb_za_na_meni;
     Besedilo m_gumb_za_nadaljevanje;

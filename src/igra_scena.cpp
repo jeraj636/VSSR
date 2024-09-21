@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
 Igra_scena::Igra_scena()
     : m_pisava("../sredstva/Cascadia.ttf", 55),
       m_gumb_za_na_meni(m_pisava, 0xffffffff, mat::vec2(0), 45, "Meni", R_P_X_SREDINA | R_P_Y_SREDINA),
@@ -37,6 +38,8 @@ void Igra_scena::zacetek()
         m_kamni1[i].nastavi(poz, mat::vec3(vel), rot, 0xffffffff, true, "../sredstva/kamni/K1.obj");
     }
     i_dat.close();
+
+    m_odjmalec.zazeni(p_nastavitve_scena->m_streznik.niz, atoi(p_nastavitve_scena->m_vrata_odjemalca.niz.c_str()));
 }
 
 void Igra_scena::zanka()
