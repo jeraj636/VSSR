@@ -435,8 +435,14 @@ void Risalnik::ustvari_shaderje_2D_p()
     glDeleteShader(vertex_shader);
 }
 
-void Risalnik::narisi_2D_objekt(const Objekt_2D &obj)
+void Risalnik::narisi_2D_objekt(Objekt_2D &obj)
 {
+    //* posodabljanje stanja aktivnosti objekta
+    if (obj.cakaj_do <= Cas::get_cas())
+        obj.aktiven = true;
+    else
+        obj.aktiven = false;
+
     glUseProgram(m_shader_program_2D);
     glBindVertexArray(m_VAO_2D);
 

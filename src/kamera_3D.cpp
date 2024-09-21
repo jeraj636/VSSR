@@ -11,7 +11,7 @@ Kamera_3D::Kamera_3D()
 
 void Kamera_3D::nastavi()
 {
-    pozicija = mat::vec3(0, 0, 25);
+    pozicija = mat::vec3(0, 0, 0);
     smer = mat::vec3(0, 0, 1);
     tarca = mat::vec3(0, 0, 0);
     spredaj = mat::vec3(0, 0, -1);
@@ -19,8 +19,8 @@ void Kamera_3D::nastavi()
     yaw = -90;
     pitch = 0;
     vidno_polje = 60;
-    hitrost_premikanja = 10;
-    hitrost_miske = 1;
+    hitrost_premikanja = 50;
+    hitrost_miske = 100;
     m_kamera_gor = mat::vec3(0);
     m_mat_pogled = mat::mat4(0);
 }
@@ -66,6 +66,11 @@ void Kamera_3D::posodobi()
         if (Risalnik::dobi_tipko('D'))
             pozicija -= mat::normaliziraj(mat::vektorski_produkt(spredaj, gor)) * hitrost_premikanja * Cas::get_delta_cas();
     }
+
+    //* omejitev igralnega prostora!
+    pozicija.x = mat::obrezi_st(pozicija.x, -100.0f, 100.0f);
+    pozicija.y = mat::obrezi_st(pozicija.y, -100.0f, 100.0f);
+    pozicija.z = mat::obrezi_st(pozicija.z, -100.0f, 100.0f);
 
     m_mat_pogled = mat::poglej(pozicija, pozicija + spredaj, m_kamera_gor);
 }

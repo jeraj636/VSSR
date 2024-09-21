@@ -15,4 +15,4 @@
 - [X] Pisava
 - [X] Scena
 - [X] Polepsaj shaderje
-- [ ] Testiraj sockete
+- [X] Testiraj sockete

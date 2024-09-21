@@ -32,7 +32,7 @@ protected:
     socklen_t m_odjemalec_vel;
     sockaddr_in m_naslov_odjemalca;
     int m_nov_vticnik_fd;
-#endif LINUX
+#endif
 #ifdef WINDOWS
     SOCKET m_nov_vticnik;
     SOCKADDR_IN m_naslov_odjemalca;

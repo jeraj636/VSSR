@@ -17,7 +17,9 @@ public:
 private:
     Pisava m_pisava;
     Objekt_2D m_zvezdno_nebo;
+    Objekt_3D m_kamni1[10];
 
 private:
 };
+
 #endif
