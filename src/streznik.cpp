@@ -179,8 +179,7 @@ void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
         if (buffer[0] == 'k')
             break;
         if (n > 0)
-            std::cout << buffer << "\n";
-        std::cout << "Cakam:  " << odjemalec->odjemalec_id << "  " << n << "\n";
+            odjemalec->obdelaj_sporocilo(buffer);
     }
     if (!m_streznik_tece)
     {
