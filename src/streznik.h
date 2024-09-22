@@ -26,6 +26,7 @@ class Odjemalec_zs
 {
 public:
     friend class Streznik;
+    void obdelaj_sporocilo(char buffer[]);
 
 protected:
 #ifdef LINUX

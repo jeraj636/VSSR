@@ -22,8 +22,9 @@
 class Odjemalec
 {
 public:
-    void zazeni(std::string naslov, int port);
-    void poslji(std::string vsebina);
+    bool zazeni(std::string naslov, int port);
+    void ustavi();
+    void poslji(char buff[], int vel);
     std::string prejmi();
     static void beri_iz_povezave(Odjemalec *o);
     ~Odjemalec();

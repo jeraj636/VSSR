@@ -1,6 +1,6 @@
 #include "zacetna_scena.h"
 #include "risalnik.h"
-
+#include "streznik.h"
 Zacetna_scena::Zacetna_scena()
     : m_pisava_naslov("../sredstva/Cascadia.ttf", 80),
       m_pisava("../sredstva/Cascadia.ttf", 55),
@@ -64,10 +64,11 @@ void Zacetna_scena::posodobi_meni()
     if (m_b_igraj.ali_je_miska_gor())
     {
         m_b_igraj.barva_besedila.a = 0.5;
-        if (Risalnik::miskin_gumb.levi_gumb)
+        if (Risalnik::miskin_gumb.levi_gumb && m_b_igraj.aktiven)
         {
             konec();
             p_igra_scena->zacetek();
+            m_b_igraj.cakaj_do = Cas::get_cas() + 1;
         }
     }
     else
@@ -103,7 +104,11 @@ void Zacetna_scena::posodobi_meni()
     {
         m_b_izhod.barva_besedila.a = 0.5;
         if (Risalnik::miskin_gumb.levi_gumb)
+        {
+            if (p_nastavitve_scena->m_ali_streznik_tece)
+                Streznik::ugasni();
             Risalnik::zapri_okno();
+        }
     }
     else
         m_b_izhod.barva_besedila.a = 1;

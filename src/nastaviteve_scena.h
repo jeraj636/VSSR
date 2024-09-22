@@ -18,6 +18,7 @@ public:
     Scena *p_zacetna_scena;
 
     friend class Igra_scena;
+    friend class Zacetna_scena;
 
 private:
     Pisava m_pisava;
@@ -31,9 +32,8 @@ private:
     Besedilo m_gumb_za_na_meni;
     Besedilo m_gumb_za_vklop_izkop_streznika;
 
-    bool m_ali_streznik_tece;
-
 protected:
+    bool m_ali_streznik_tece;
     Besedilo m_vrata_odjemalca;
     Besedilo m_streznik;
     Besedilo m_hitrost_miske;

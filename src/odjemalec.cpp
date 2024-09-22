@@ -32,7 +32,7 @@ void Odjemalec::beri_iz_povezave(Odjemalec *o)
 #endif
 }
 
-void Odjemalec::zazeni(std::string naslov, int port)
+bool Odjemalec::zazeni(std::string naslov, int port)
 {
 #ifdef LINUX
     m_port = port;
@@ -42,7 +42,8 @@ void Odjemalec::zazeni(std::string naslov, int port)
     if (m_vticnik_fd < 0)
     {
         std::cout << "Napaka pri odpiranju vticnika!\n";
-        exit(1);
+        return false;
+        // exit(1);
     }
 
     //* Iskanje streznika
@@ -51,7 +52,7 @@ void Odjemalec::zazeni(std::string naslov, int port)
     {
         std::cout << "Napaka pri iskanju strenika: " << naslov << ":" << port << "\n";
         close(m_vticnik_fd);
-        exit(1);
+        return false;
     }
 
     //* Nastavljanje drugih parametrov streznika
@@ -69,7 +70,7 @@ void Odjemalec::zazeni(std::string naslov, int port)
     {
         std::cout << "Napaka pri povezovanjnu!\n";
         close(m_vticnik_fd);
-        exit(1);
+        return false;
     }
 #endif
 #ifdef WINDOWS
@@ -88,19 +89,20 @@ void Odjemalec::zazeni(std::string naslov, int port)
     if (connect(m_streznik, (SOCKADDR *)&m_streznik_nalov, sizeof(m_streznik_nalov)))
     {
         std::cout << "Napaka pri povezavi na: " << naslov << ":" << m_port << "\n";
-        exit(1);
+        return false;
     }
 #endif
+    return true;
 }
-void Odjemalec::poslji(std::string vsebina)
+void Odjemalec::poslji(char buff[], int vel)
 {
 #ifdef LINUX
-    int n = write(m_vticnik_fd, vsebina.c_str(), vsebina.size());
+    int n = write(m_vticnik_fd, buff, vel);
     if (n < 0)
         std::cout << "Napaka pri posiljanju!\n";
 #endif
 #ifdef WINDOWS
-    if (send(m_streznik, vsebina.c_str(), vsebina.size(), 0) < 0)
+    if (send(m_streznik, buff, vel, 0) < 0)
         std::cout << "Napaka pri posiljanju!\n";
 #endif
 }
@@ -117,7 +119,16 @@ std::string Odjemalec::prejmi()
     return buff;
 #endif
 }
-
+void Odjemalec::ustavi()
+{
+#ifdef LINUX
+    close(m_vticnik_fd);
+#endif
+#ifdef WINDOWS
+    closesocket(m_streznik);
+    WSACleanup();
+#endif
+}
 Odjemalec::~Odjemalec()
 {
 #ifdef LINUX

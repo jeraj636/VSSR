@@ -39,7 +39,12 @@ void Igra_scena::zacetek()
     }
     i_dat.close();
 
-    m_odjmalec.zazeni(p_nastavitve_scena->m_streznik.niz, atoi(p_nastavitve_scena->m_vrata_odjemalca.niz.c_str()));
+    if (!m_odjmalec.zazeni(p_nastavitve_scena->m_streznik.niz, atoi(p_nastavitve_scena->m_vrata_odjemalca.niz.c_str())))
+        p_zacena_scena->zacetek();
+
+    char buff[10];
+    buff[0] = 1;
+    m_odjmalec.poslji(buff, 1);
 }
 
 void Igra_scena::zanka()
@@ -102,4 +107,8 @@ void Igra_scena::zanka()
 
 void Igra_scena::konec()
 {
+    char buff[10];
+    buff[0] = 0;
+    m_odjmalec.poslji(buff, 1);
+    m_odjmalec.ustavi();
 }

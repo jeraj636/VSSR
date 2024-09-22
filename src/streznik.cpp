@@ -1,5 +1,13 @@
 #include "streznik.h"
 
+void Odjemalec_zs::obdelaj_sporocilo(char buff[])
+{
+    if (buff[0] == 1)
+    {
+        std::cout << odjemalec_id << " :: " << "Pozz streznik!\n";
+    }
+}
+
 bool Streznik::zazeni(int port)
 {
 #ifdef DEBUG
@@ -133,12 +141,11 @@ void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
         int n = read(odjemalec->m_nov_vticnik_fd, buffer, 255);
         if (n <= 0)
             continue;
-        if (buffer[0] == 'k')
+        if (buffer[0] == 0)
             break;
-        if (n > 0)
-            std::cout.write(buffer, n);
-        std::cout << "Cakam: " << odjemalec->odjemalec_id << "\n";
+        odjemalec->obdelaj_sporocilo(buffer);
     }
+
     if (!m_streznik_tece)
     {
         close(odjemalec->m_nov_vticnik_fd);
@@ -153,10 +160,13 @@ void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
             }
         }
     }
+    /*
     if (m_nit_za_poslusanje.joinable())
     {
         m_nit_za_poslusanje.join();
     }
+    */
+
 #endif
 
 #ifdef WINDOWS
@@ -200,14 +210,16 @@ void Streznik::ugasni()
 {
 #ifdef LINUX
     m_streznik_tece = false;
-    if (odjemalci.size() == 0)
-        m_nit_za_poslusanje.join();
+    // if (odjemalci.size() == 0)
+
     while (odjemalci.size() != 0)
     {
         close(odjemalci.back()->m_nov_vticnik_fd);
+        odjemalci.back() = nullptr;
         delete odjemalci.back();
         odjemalci.pop_back();
     }
+    m_nit_za_poslusanje.join();
 
     close(m_vticnik_fd);
 #ifdef DEBUG
