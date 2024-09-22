@@ -213,9 +213,11 @@ void Streznik::ugasni()
 
     while (odjemalci.size() != 0)
     {
+        /*
         char buff[5];
         buff[0] = 0;
         poslji(buff, 1, odjemalci.back()->m_nov_vticnik_fd);
+        */
         close(odjemalci.back()->m_nov_vticnik_fd);
         odjemalci.back() = nullptr;
         delete odjemalci.back();
@@ -234,9 +236,11 @@ void Streznik::ugasni()
         m_nit_za_poslusanje.join();
     while (odjemalci.size() != 0)
     {
+        /*
         char buff[5];
         buff[0] = 0;
         poslji(buff, 1, odjemalci.back()->m_nov_vticnik);
+        */
         closesocket(odjemalci.back()->m_nov_vticnik);
         delete odjemalci.back();
         odjemalci.pop_back();
