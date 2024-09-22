@@ -64,5 +64,11 @@ private:
 private:
     static void vzdrzuj_povezavo(Odjemalec_zs *odjemalec);
     static void poslusaj();
+#ifdef WINDOWS
+    static void poslji(char buffer[], int vel, SOCKET vticnik);
+#endif
+#ifdef LINUX
+    static void poslji(char buffer[], int vel, int vticnik);
+#endif
 };
 #endif
