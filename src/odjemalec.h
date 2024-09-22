@@ -26,7 +26,7 @@ public:
     void ustavi();
     void poslji(char buff[], int vel);
     std::string prejmi();
-    static void beri_iz_povezave(Odjemalec *o);
+    bool beri_iz_povezave(char buffer[]);
     ~Odjemalec();
 
 private:

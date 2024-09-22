@@ -1,2 +1,2 @@
-#define WINDOWS
+#define LINUX
 #define DEBUG

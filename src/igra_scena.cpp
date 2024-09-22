@@ -45,6 +45,10 @@ void Igra_scena::zacetek()
     char buff[10];
     buff[0] = 1;
     m_odjmalec.poslji(buff, 1);
+    m_sem_povezan = true;
+
+    std::thread nit(vzdrzuj_povezavo, this);
+    nit.detach();
 }
 
 void Igra_scena::zanka()
@@ -103,8 +107,30 @@ void Igra_scena::zanka()
         m_gumb_za_nadaljevanje.narisi_me();
         m_gumb_za_na_meni.narisi_me();
     }
-}
 
+    if (!m_sem_povezan)
+    {
+        konec();
+        p_zacena_scena->zacetek();
+    }
+}
+void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
+{
+    while (is->m_sem_povezan)
+    {
+        std::cout << "tukaj\n";
+        char buffer[10];
+        if (!is->m_odjmalec.beri_iz_povezave(buffer))
+        {
+            is->m_sem_povezan = false;
+            break;
+        }
+        if (buffer[0] == 0)
+        {
+            is->m_sem_povezan = false;
+        }
+    }
+}
 void Igra_scena::konec()
 {
     char buff[10];

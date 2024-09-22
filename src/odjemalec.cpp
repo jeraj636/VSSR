@@ -1,34 +1,23 @@
 #include "odjemalec.h"
 
-void Odjemalec::beri_iz_povezave(Odjemalec *o)
+bool Odjemalec::beri_iz_povezave(char buffer[])
 {
 #ifdef LINUX
-    while (true)
-    {
 
-        char buffer[256];
-        bzero(buffer, 256);
-        int n = read(o->m_vticnik_fd, buffer, 255);
-        if (n <= 0)
-        {
-            break;
-        }
-        std::cout << buffer << "\n";
+    int n = read(m_vticnik_fd, buffer, 255);
+    if (n <= 0)
+    {
+        return false;
     }
+    return true;
 #endif
 #ifdef WINDOWS
-    while (true)
+    int n = recv(m_streznik, buffer, 255, 0);
+    if (n <= 0)
     {
-
-        char buffer[256];
-        (buffer, 256);
-        int n = recv(o->m_streznik, buffer, 255, 0);
-        if (n <= 0)
-        {
-            break;
-        }
-        std::cout << buffer << "\n";
+        return false;
     }
+    return true;
 #endif
 }
 

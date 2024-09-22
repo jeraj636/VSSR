@@ -22,8 +22,9 @@ private:
     Pisava m_pisava;
     Objekt_2D m_zvezdno_nebo;
     Objekt_3D m_kamni1[10];
-
+    static void vzdrzuj_povezavo(Igra_scena *is);
     bool m_pavza;
+    bool m_sem_povezan;
 
     Odjemalec m_odjmalec;
 
