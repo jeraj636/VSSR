@@ -19,9 +19,9 @@ void napaka(const char *sporocilo, ...) //* Sporocilo o napaki
 #endif
 #ifdef WINDOWS
                 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-                SetConsoleTextAttribute(hConsole, FOREGROUND_RED); // rdeca barva
+                SetConsoleTextAttribute(hConsole, FOREGROUND_RED); // Zeleni tekst
 #endif
-                va_list parametri; //* Izpis spremenljivega seznama na zaslon
+                va_list parametri;
                 va_start(parametri, sporocilo);
                 vprintf(sporocilo, parametri);
                 va_end(parametri);
@@ -45,9 +45,9 @@ void opozorilo(const char *sporocilo, ...)
 #endif
 #ifdef WINDOWS
                 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-                SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE); // Modra barva
+                SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE); // Zeleni tekst
 #endif
-                va_list parametri; //* Izpis spremenljivega seznama na zaslon
+                va_list parametri;
                 va_start(parametri, sporocilo);
                 vprintf(sporocilo, parametri);
                 va_end(parametri);
@@ -73,7 +73,7 @@ void sporocilo(const char *sporocilo, ...)
                 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
                 SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN); // Zeleni tekst
 #endif
-                va_list parametri; //* Izpis spremenljivega seznama na zaslon
+                va_list parametri;
                 va_start(parametri, sporocilo);
                 vprintf(sporocilo, parametri);
                 va_end(parametri);
@@ -90,10 +90,11 @@ void sporocilo(const char *sporocilo, ...)
 void izpis(const char *sporocilo, ...)
 {
 #ifdef DEBUG
-        va_list parametri; //* Izpis spremenljivega seznama na zaslon
+        va_list parametri;
         va_start(parametri, sporocilo);
         vprintf(sporocilo, parametri);
         va_end(parametri);
         fflush(stdout);
+}
 #endif
 }
