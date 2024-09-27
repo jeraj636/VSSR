@@ -221,8 +221,7 @@ void Streznik::ugasni()
 #endif
 #ifdef WINDOWS
     m_streznik_tece = false;
-    if (odjemalci.size() == 0)
-        m_nit_za_poslusanje.join();
+    // if (odjemalci.size() == 0)
     while (odjemalci.size() != 0)
     {
         /*
@@ -234,6 +233,7 @@ void Streznik::ugasni()
         delete odjemalci.back();
         odjemalci.pop_back();
     }
+    m_nit_za_poslusanje.join();
 
     closesocket(m_vticnik);
     WSACleanup();
