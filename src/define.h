@@ -1,3 +1,3 @@
 #define LINUX
 #define DEBUG
-#define STOPNJA_SPOROCANJA 2
+#define STOPNJA_SPOROCANJA 4

@@ -90,11 +90,13 @@ void sporocilo(const char *sporocilo, ...)
 void izpis(const char *sporocilo, ...)
 {
 #ifdef DEBUG
-        va_list parametri;
-        va_start(parametri, sporocilo);
-        vprintf(sporocilo, parametri);
-        va_end(parametri);
-        fflush(stdout);
-}
+        if (STOPNJA_SPOROCANJA >= 4)
+        {
+                va_list parametri;
+                va_start(parametri, sporocilo);
+                vprintf(sporocilo, parametri);
+                va_end(parametri);
+                fflush(stdout);
+        }
 #endif
 }

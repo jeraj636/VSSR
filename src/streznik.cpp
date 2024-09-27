@@ -22,6 +22,14 @@ bool Streznik::zazeni(int port)
     //* Odpiranje socketa
     m_vticnik_fd = socket(AF_INET, SOCK_STREAM, 0);
 
+    //* Da se lahko večkrat odpre povezava na item vticniku
+    int opcija = 1;
+    if (setsockopt(m_vticnik_fd, SOL_SOCKET, SO_REUSEADDR, &opcija, sizeof(opcija)) < 0)
+    {
+        napaka("streznik.cpp :: Napaka pri nastavljanju SO_REUSEADDR!\n");
+        return false;
+    }
+
     //* Nastavljanje neblokiranega načina
     int zastavice = fcntl(m_vticnik_fd, F_GETFL, 0);
     fcntl(m_vticnik_fd, F_SETFL, zastavice | O_NONBLOCK);
@@ -90,7 +98,6 @@ void Streznik::poslusaj()
             delete odjemalec;
             continue;
         }
-
         sporocilo("streznik.cpp :: Nova povezava: %i\n", m_st_vseh_odjemalcev);
 
         odjemalec->odjemalec_id = m_st_vseh_odjemalcev++; //* Dodajanje nove povezave v tabelo
@@ -150,12 +157,13 @@ void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
         }
     */
     sporocilo("C %i :: Konec povezave!\n", odjemalec->odjemalec_id);
-    close(odjemalec->m_nov_vticnik_fd);        //* ugašanje vtičnika
+
     for (int i = 0; i < odjemalci.size(); i++) //* poišče objekt s porekinjeno povezevo in sprosti ponilnik
     {
         if (odjemalec->odjemalec_id == odjemalci[i]->odjemalec_id)
         {
             std::swap(odjemalci[i], odjemalci.back());
+            close(odjemalci[i]->m_nov_vticnik_fd);
             delete odjemalci.back();
             odjemalci.pop_back();
             break;
@@ -209,25 +217,16 @@ void Streznik::ugasni()
 {
 #ifdef LINUX
     // if (odjemalci.size() == 0)
+    m_streznik_tece = false;
+    m_nit_za_poslusanje.join();
 
     for (int i = 0; i < odjemalci.size(); i++)
     {
 
         char buff[5];
-        buff[0] = 0;
+        buff[0] = P_KONEC_POVEZAVE;
         poslji(buff, 1, odjemalci[i]->m_nov_vticnik_fd);
-
-        /*
-                close(odjemalci.back()->m_nov_vticnik_fd);
-                delete odjemalci.back();
-                odjemalci.back() = nullptr;
-                odjemalci.pop_back();
-        */
     }
-    m_streznik_tece = false;
-
-    m_nit_za_poslusanje.join();
-
     close(m_vticnik_fd);
 
 #endif
@@ -236,8 +235,8 @@ void Streznik::ugasni()
     for (int i = 0; i < odjemalci.size(); i++)
     {
         char buff[5];
-        buff[0] = 0;
-        poslji(buff, 1, odjemalci.back()->m_nov_vticnik);
+        buff[0] = P_KONEC_POVEZAVE;
+        poslji(buff, 1, odjemalci[i]->m_nov_vticnik);
         /*
            closesocket(odjemalci.back()->m_nov_vticnik);
            delete odjemalci.back();
