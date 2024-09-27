@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(VSSR)
 set(CMAKE_CXX_STANDARD 20)
-option(JE_WIN "Gradim za windows?" OFF)
+option(JE_WIN "Gradim za windows?" ON)
 
 if(JE_WIN)
     set(OPEN_GL_LIB opengl32 ws2_32)
@@ -49,5 +49,4 @@ lib/stb/fmt/include/
 target_link_libraries(${PROJECT_NAME}
 glfw
 ${OPEN_GL_LIB}
-fmt
 )
