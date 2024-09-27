@@ -125,22 +125,14 @@ void Streznik::poslusaj()
 void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
 {
 #ifdef LINUX
-    int zastavice = fcntl(odjemalec->m_nov_vticnik_fd, F_GETFL, 0);
-    if (zastavice == -1)
-    {
-        std::cout << "Napaka pri pridobivanju zastavic: " << strerror(errno) << "\n";
-    }
-    if (fcntl(odjemalec->m_nov_vticnik_fd, F_SETFL, zastavice | O_NONBLOCK) == -1)
-    {
-        std::cout << "Napaka pri nastavitvi neblokirnega nacina: " << strerror(errno) << "\n";
-    }
 
     while (m_streznik_tece)
     {
         char buffer[256];
         int n = read(odjemalec->m_nov_vticnik_fd, buffer, 255);
         if (n <= 0)
-            continue;
+            break;
+
         if (buffer[0] == 0)
             break;
         odjemalec->obdelaj_sporocilo(buffer);
@@ -160,12 +152,6 @@ void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
             }
         }
     }
-    /*
-    if (m_nit_za_poslusanje.joinable())
-    {
-        m_nit_za_poslusanje.join();
-    }
-    */
 
 #endif
 
@@ -208,21 +194,24 @@ void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
 void Streznik::ugasni()
 {
 #ifdef LINUX
-    m_streznik_tece = false;
     // if (odjemalci.size() == 0)
 
-    while (odjemalci.size() != 0)
+    for (int i = 0; i < odjemalci.size(); i++)
     {
-        /*
+
         char buff[5];
         buff[0] = 0;
-        poslji(buff, 1, odjemalci.back()->m_nov_vticnik_fd);
+        poslji(buff, 1, odjemalci[i]->m_nov_vticnik_fd);
+
+        /*
+                close(odjemalci.back()->m_nov_vticnik_fd);
+                delete odjemalci.back();
+                odjemalci.back() = nullptr;
+                odjemalci.pop_back();
         */
-        close(odjemalci.back()->m_nov_vticnik_fd);
-        odjemalci.back() = nullptr;
-        delete odjemalci.back();
-        odjemalci.pop_back();
     }
+    m_streznik_tece = false;
+
     m_nit_za_poslusanje.join();
 
     close(m_vticnik_fd);
@@ -264,7 +253,9 @@ void Streznik::poslji(char buffer[], int vel, SOCKET vticnik)
 void Streznik::poslji(char buffer[], int vel, int vticnik)
 {
     int n = write(vticnik, buffer, vel);
+    /*
     if (n < 0)
         std::cout << "Napaka pri posiljanju!\n";
+    */
 }
 #endif

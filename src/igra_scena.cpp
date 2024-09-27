@@ -42,7 +42,7 @@ void Igra_scena::zacetek()
     if (!m_odjmalec.zazeni(p_nastavitve_scena->m_streznik.niz, atoi(p_nastavitve_scena->m_vrata_odjemalca.niz.c_str())))
         p_zacena_scena->zacetek();
 
-    char buff[10];
+    char buff[10]; //* Koda za pozz
     buff[0] = 1;
     m_odjmalec.poslji(buff, 1);
     m_sem_povezan = true;
@@ -118,7 +118,6 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
 {
     while (is->m_sem_povezan)
     {
-        std::cout << "tukaj\n";
         char buffer[10];
         if (!is->m_odjmalec.beri_iz_povezave(buffer))
         {
@@ -127,7 +126,12 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
         }
         if (buffer[0] == 0)
         {
+            is->m_odjmalec.poslji(buffer, 1);
             is->m_sem_povezan = false;
+        }
+        if (buffer[0] == 1)
+        {
+            std::cout << "S :: Pozdravljen odjemalec\n";
         }
     }
 }
