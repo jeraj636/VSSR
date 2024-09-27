@@ -160,9 +160,12 @@ void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
     {
         char buffer[256];
         int n = recv(odjemalec->m_nov_vticnik, buffer, 255, 0);
+        /*
         if (n <= 0 || buffer[0] == '\n' || buffer[0] == '\r')
             continue;
-        if (buffer[0] == 'k')
+        */
+
+        if (buffer[0] == 0)
             break;
         if (n > 0)
             odjemalec->obdelaj_sporocilo(buffer);
@@ -181,10 +184,7 @@ void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
             }
         }
     }
-    if (m_nit_za_poslusanje.joinable())
-    {
-        m_nit_za_poslusanje.join();
-    }
+
 #endif
 #ifdef DEBUG
     std::cout << "Konec povezave!\n";
@@ -220,19 +220,20 @@ void Streznik::ugasni()
 #endif
 #endif
 #ifdef WINDOWS
-    m_streznik_tece = false;
     // if (odjemalci.size() == 0)
-    while (odjemalci.size() != 0)
+    for (int i = 0; i < odjemalci.size(); i++)
     {
-        /*
         char buff[5];
         buff[0] = 0;
         poslji(buff, 1, odjemalci.back()->m_nov_vticnik);
-        */
-        closesocket(odjemalci.back()->m_nov_vticnik);
-        delete odjemalci.back();
-        odjemalci.pop_back();
+        /*
+           closesocket(odjemalci.back()->m_nov_vticnik);
+           delete odjemalci.back();
+           odjemalci.pop_back();
+           */
     }
+    m_streznik_tece = false;
+
     m_nit_za_poslusanje.join();
 
     closesocket(m_vticnik);
