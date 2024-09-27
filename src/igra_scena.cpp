@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
+#include "dnevnik.h"
 Igra_scena::Igra_scena()
     : m_pisava("../sredstva/Cascadia.ttf", 55),
       m_gumb_za_na_meni(m_pisava, 0xffffffff, mat::vec2(0), 45, "Meni", R_P_X_SREDINA | R_P_Y_SREDINA),
@@ -15,11 +15,16 @@ void Igra_scena::zacetek()
 {
     m_pavza = false;
     // morda malo nenavadno! zdaj sem ze pozabil kaj je nenavadno? nic ni nenavadno.
-    m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);
+    // m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);//! to je bilo nenavadno
+    m_zvezdno_nebo.nastavi(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA); // naredi sicer podobno (isto)
+
+    //* Nastavljanje kamere in kazalca
     Risalnik::kamera_3D.premikanje_kamere = true;
     Risalnik::nastavi_aktivnost_kazalca_miske(false);
     Risalnik::aktivna_scena_ptr = this;
 
+    //* Nastavljanje okolja
+    //* Prebere se zemljevid (mapa) igre
     std::ifstream i_dat("../sredstva/kamni/podatki_o_kamnih.txt");
     if (!i_dat.is_open())
     {
@@ -39,15 +44,16 @@ void Igra_scena::zacetek()
     }
     i_dat.close();
 
+    //* Povezava na streznik
     if (!m_odjmalec.zazeni(p_nastavitve_scena->m_streznik.niz, atoi(p_nastavitve_scena->m_vrata_odjemalca.niz.c_str())))
         p_zacena_scena->zacetek();
 
     char buff[10]; //* Koda za pozz
-    buff[0] = 1;
+    buff[0] = P_POZDRAV;
     m_odjmalec.poslji(buff, 1);
     m_sem_povezan = true;
 
-    std::thread nit(vzdrzuj_povezavo, this);
+    std::thread nit(vzdrzuj_povezavo, this); //* Nit za branje iz vticnika
     nit.detach();
 }
 
@@ -61,10 +67,10 @@ void Igra_scena::zanka()
     m_zvezdno_nebo.velikost = Risalnik::dobi_velikost_okna();
     m_zvezdno_nebo.pozicija = Risalnik::dobi_velikost_okna() / 2;
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 10; i++) //* Risanje zemljevida
         Risalnik::narisi_3D_objekt(m_kamni1[i]);
 
-    if (Risalnik::dobi_tipko(256))
+    if (Risalnik::dobi_tipko(256 /*Tipka ESC*/))
     {
         m_pavza = true;
         Risalnik::kamera_3D.premikanje_kamere = false;
@@ -91,6 +97,7 @@ void Igra_scena::zanka()
 
         m_gumb_za_nadaljevanje.pozicija = Risalnik::dobi_velikost_okna() / 2;
         m_gumb_za_nadaljevanje.pozicija.y -= 150;
+
         if (m_gumb_za_nadaljevanje.ali_je_miska_gor())
         {
             m_gumb_za_nadaljevanje.barva_besedila.a = 0.5;
@@ -108,7 +115,7 @@ void Igra_scena::zanka()
         m_gumb_za_na_meni.narisi_me();
     }
 
-    if (!m_sem_povezan)
+    if (!m_sem_povezan && !m_pavza /*Ko je pavza == true se kliče konec preko gumba ne pa če se povezava prekine*/) //* Če se povezava s strežnikom prekine se vrne na glavni meni
     {
         konec();
         p_zacena_scena->zacetek();
@@ -119,26 +126,29 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
     while (is->m_sem_povezan)
     {
         char buffer[10];
-        if (!is->m_odjmalec.beri_iz_povezave(buffer))
+        if (!is->m_odjmalec.beri_iz_povezave(buffer)) //* Napaka pri branju
         {
             is->m_sem_povezan = false;
             break;
         }
-        if (buffer[0] == 0)
+        if (buffer[0] == P_KONEC_POVEZAVE)
         {
-            is->m_odjmalec.poslji(buffer, 1);
+            is->m_odjmalec.poslji(buffer, 1); //* Odjemalec odgovori s istim sporočilom
             is->m_sem_povezan = false;
         }
         if (buffer[0] == 1)
         {
-            std::cout << "S :: Pozdravljen odjemalec\n";
+            sporocilo("S :: Pozdravljen odjemalec\n");
         }
     }
 }
 void Igra_scena::konec()
 {
+    /*
+    ! Morda deluje tudi brez tega
+    */
     char buff[10];
     buff[0] = 0;
     m_odjmalec.poslji(buff, 1);
-    m_odjmalec.ustavi();
+    m_odjmalec.ustavi(); //* Konec povezave
 }

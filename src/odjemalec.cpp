@@ -1,11 +1,11 @@
 #include "odjemalec.h"
-
+#include "dnevnik.h"
 bool Odjemalec::beri_iz_povezave(char buffer[])
 {
 #ifdef LINUX
 
     int n = read(m_vticnik_fd, buffer, 255);
-    if (n <= 0)
+    if (n <= 0) // Napaka pri branju
     {
         return false;
     }
@@ -13,7 +13,7 @@ bool Odjemalec::beri_iz_povezave(char buffer[])
 #endif
 #ifdef WINDOWS
     int n = recv(m_streznik, buffer, 255, 0);
-    if (n <= 0)
+    if (n <= 0) // Napaka pri branju
     {
         return false;
     }
@@ -23,6 +23,7 @@ bool Odjemalec::beri_iz_povezave(char buffer[])
 
 bool Odjemalec::zazeni(std::string naslov, int port)
 {
+    sporocilo("odjemalec.cpp :: Povezovanje na %s : %i\n", naslov.c_str(), port);
 #ifdef LINUX
     m_port = port;
 
@@ -30,7 +31,7 @@ bool Odjemalec::zazeni(std::string naslov, int port)
     m_vticnik_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (m_vticnik_fd < 0)
     {
-        std::cout << "Napaka pri odpiranju vticnika!\n";
+        napaka("odjemalec.cpp :: Napaka pri odpiranju vticnika!\n");
         return false;
         // exit(1);
     }
@@ -39,7 +40,7 @@ bool Odjemalec::zazeni(std::string naslov, int port)
     m_streznik = gethostbyname(naslov.c_str());
     if (m_streznik == nullptr)
     {
-        std::cout << "Napaka pri iskanju strenika: " << naslov << ":" << port << "\n";
+        napaka("odjemalec.cpp :: Napaka pri iskanju streznika: %s : %i\n", naslov.c_str(), port);
         close(m_vticnik_fd);
         return false;
     }
@@ -57,7 +58,7 @@ bool Odjemalec::zazeni(std::string naslov, int port)
     //* Povezovanje s streznikom
     if (connect(m_vticnik_fd, (sockaddr *)&m_naslov_streznika, sizeof(m_naslov_streznika)) < 0)
     {
-        std::cout << "Napaka pri povezovanjnu!\n";
+        napaka("odjemalec.cpp :: Napaka pri povezovanju na: %s : %i\n", naslov.c_str(), port);
         close(m_vticnik_fd);
         return false;
     }
@@ -77,7 +78,8 @@ bool Odjemalec::zazeni(std::string naslov, int port)
     //* Vzpostalvjanje povezava
     if (connect(m_streznik, (SOCKADDR *)&m_streznik_nalov, sizeof(m_streznik_nalov)))
     {
-        std::cout << "Napaka pri povezavi na: " << naslov << ":" << m_port << "\n";
+        napaka("odjemalec.cpp :: Napaka pri povezovanju na: %s : %i\n", naslov.c_str(), port);
+        closesocket(m_streznik);
         return false;
     }
 #endif
@@ -88,11 +90,11 @@ void Odjemalec::poslji(char buff[], int vel)
 #ifdef LINUX
     int n = write(m_vticnik_fd, buff, vel);
     if (n < 0)
-        std::cout << "Napaka pri posiljanju!\n";
+        napaka("odjemalec.cpp :: Napaka pri posiljanju!\n");
 #endif
 #ifdef WINDOWS
     if (send(m_streznik, buff, vel, 0) < 0)
-        std::cout << "Napaka pri posiljanju!\n";
+        napaka("odjemalec.cpp :: Napaka pri posiljanju!\n");
 #endif
 }
 std::string Odjemalec::prejmi()
@@ -110,6 +112,7 @@ std::string Odjemalec::prejmi()
 }
 void Odjemalec::ustavi()
 {
+    sporocilo("odjemalec.cpp :: Ugasanje povezave!\n");
 #ifdef LINUX
     close(m_vticnik_fd);
 #endif

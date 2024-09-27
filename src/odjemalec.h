@@ -1,7 +1,7 @@
 #ifndef ODJEMALEC_H
 #define ODJEMALEC_H
 #include "define.h"
-
+#include "sporocila_za_komunikacijo.h"
 #ifdef LINUX
 #include <sys/types.h>
 #include <sys/socket.h>

@@ -12,10 +12,7 @@
 int main()
 {
     Risalnik::odpri_okno("VSSR", 0x111111ff);
-    napaka("NAPAKA\n");
-    opozorilo("OPOZORILO\n");
-    sporocilo("SPOROCILO\n");
-    izpis("IZPIS\n");
+
     Igra_scena is;
     Nastavitve_scena ns;
     Zacetna_scena zs;

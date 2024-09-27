@@ -19,7 +19,6 @@ public:
     Nastavitve_scena *p_nastavitve_scena;
 
 private:
-    Pisava m_pisava_naslov;
     Pisava m_pisava;
 
     Besedilo m_b_igraj;

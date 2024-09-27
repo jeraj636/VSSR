@@ -2,14 +2,13 @@
 #include "risalnik.h"
 #include "streznik.h"
 Zacetna_scena::Zacetna_scena()
-    : m_pisava_naslov("../sredstva/Cascadia.ttf", 80),
-      m_pisava("../sredstva/Cascadia.ttf", 55),
-      m_b_igraj(m_pisava_naslov, 0xffffffff, mat::vec2(100, 0), 55, "Igraj", R_P_LEVO),
+    : m_pisava("../sredstva/Cascadia.ttf", 80),
+      m_b_igraj(m_pisava, 0xffffffff, mat::vec2(100, 0), 55, "Igraj", R_P_LEVO),
       m_b_nastavitve(m_pisava, 0xffffffff, mat::vec2(100, 0), 55, "Nastavitve", R_P_LEVO),
       m_b_navodila(m_pisava, 0xffffffff, mat::vec2(100, 0), 55, "Navodila", R_P_LEVO),
       m_b_zasluge(m_pisava, 0xffffffff, mat::vec2(100, 0), 55, "Zasluge", R_P_LEVO),
       m_b_izhod(m_pisava, 0xffffffff, mat::vec2(100, 0), 55, "Izhod", R_P_LEVO),
-      m_naslov(m_pisava_naslov, 0xffffffff, mat::vec2(100, 0), 80, "VSSR", R_P_X_SREDINA),
+      m_naslov(m_pisava, 0xffffffff, mat::vec2(100, 0), 80, "VSSR", R_P_X_SREDINA),
       m_podnaslov(m_pisava, 0xffffffff, mat::vec2(100, 0), 55, "Vesoljski spopad super raket", R_P_X_SREDINA)
 {
 }
@@ -34,7 +33,6 @@ void Zacetna_scena::zanka()
     Risalnik::nastavi_testiranje_globine(true);
 
     posodobi_meni();
-
     m_naslov.pozicija = Risalnik::dobi_velikost_okna() / 2;
     m_naslov.pozicija.y -= 300;
     m_naslov.narisi_me();

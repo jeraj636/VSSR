@@ -5,9 +5,10 @@
 #include <stdlib.h>
 #include "shaderji.h"
 #include "pisava.h"
+#include "dnevnik.h"
 void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
 {
-    m_resolucija = mat::vec2(850, 850);
+    m_resolucija = mat::vec2(800, 600);
     //* Inicializacija GLFW-ja
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -18,7 +19,7 @@ void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
     m_glfw_okno = glfwCreateWindow(m_resolucija.x, m_resolucija.y, naslov_okna.c_str(), nullptr, nullptr);
     if (m_glfw_okno == nullptr)
     {
-        std::cout << "Ni uspelo odpreti okna!\n";
+        napaka("risalnik.cpp :: Ni uspelo odpreti okna: %s\n", naslov_okna.c_str());
         glfwTerminate();
         exit(1);
     }
@@ -27,7 +28,7 @@ void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
     //* Inicializacija GLAD-a
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        std::cout << "Ni uspelo inicializirati GLFW-ja!\n";
+        napaka("risalnik.cpp :: Ni uspelo inicializirati GLFW-ja!\n", naslov_okna.c_str());
         glfwTerminate();
         exit(1);
     }
@@ -234,7 +235,7 @@ void Risalnik::ustvari_shaderje_2D()
     if (!uspeh)
     {
         glGetShaderInfoLog(vertex_shader, 512, nullptr, informacije);
-        std::cout << "Napaka: vertex_shader_2D.glsl" << informacije << "\n";
+        napaka("risalnik.cpp :: Napaka: vertex_shader_2D.glsl: %s\n", informacije);
     }
 
     //* Ustvarjanje fragment shaderja
@@ -249,8 +250,7 @@ void Risalnik::ustvari_shaderje_2D()
     if (!uspeh)
     {
         glGetShaderInfoLog(fragment_shader, 512, nullptr, informacije);
-        snprintf(informacije, sizeof(informacije), "NAPAKA %s", informacije);
-        std::cout << "Napaka: fragment_shader_2D.glsl " << informacije << "\n";
+        napaka("risalnik.cpp :: Napaka: fragment_shader_2D.glsl: %s\n", informacije);
         glfwTerminate();
         exit(1);
     }
@@ -266,7 +266,7 @@ void Risalnik::ustvari_shaderje_2D()
     if (!uspeh)
     {
         glGetProgramInfoLog(m_shader_program_2D, 512, nullptr, informacije);
-        std::cout << "Napaka: " << informacije << "\n";
+        napaka("risalnik.cpp :: Napaka: pri povezovanju m_shader_program_2D:  %s\n", informacije);
         glfwTerminate();
         exit(1);
     }
@@ -313,7 +313,7 @@ void Risalnik::ustvari_shaderje_3D()
     if (!uspeh)
     {
         glGetShaderInfoLog(vertex_shader, 512, nullptr, informacije);
-        std::cout << "Napaka: vertex_shader_3D.glsl " << informacije << '\n';
+        napaka("risalnik.cpp :: Napaka: vertex_shader_3D.glsl: %s\n", informacije);
         glfwTerminate();
         exit(1);
     }
@@ -330,7 +330,7 @@ void Risalnik::ustvari_shaderje_3D()
     {
         glGetShaderInfoLog(fragment_shader, 512, nullptr, informacije);
         snprintf(informacije, sizeof(informacije), "NAPAKA %s", informacije);
-        std::cout << "Napaka: fragment_shader_3D.glsl " << informacije << '\n';
+        napaka("risalnik.cpp :: Napaka: fragment_shader_3D.glsl: %s\n", informacije);
         glfwTerminate();
         exit(1);
     }
@@ -345,7 +345,7 @@ void Risalnik::ustvari_shaderje_3D()
     if (!uspeh)
     {
         glGetProgramInfoLog(m_shader_program_3D, 512, nullptr, informacije);
-        std::cout << "Napaka: " << informacije;
+        napaka("risalnik.cpp :: Napaka: pri povezovanju m_shader_program_3D:  %s\n", informacije);
         glfwTerminate();
         exit(1);
     }
@@ -394,7 +394,7 @@ void Risalnik::ustvari_shaderje_2D_p()
     if (!uspeh)
     {
         glGetShaderInfoLog(vertex_shader, 512, nullptr, informacije);
-        std::cout << "Napaka: vertex_shader_2D_p.glsl" << informacije << '\n';
+        napaka("risalnik.cpp :: Napaka: vertex_shader_2D_p.glsl: %s\n", informacije);
         glfwTerminate();
         exit(1);
     }
@@ -411,7 +411,7 @@ void Risalnik::ustvari_shaderje_2D_p()
     {
         glGetShaderInfoLog(fragment_shader, 512, nullptr, informacije);
         snprintf(informacije, sizeof(informacije), "NAPAKA %s", informacije);
-        std::cout << "Napaka: fragment_shader_2D_p.glsl " << informacije << '\n';
+        napaka("risalnik.cpp :: Napaka: fragment_shader_2D_p.glsl: %s\n", informacije);
         glfwTerminate();
         exit(1);
     }
@@ -426,7 +426,7 @@ void Risalnik::ustvari_shaderje_2D_p()
     if (!uspeh)
     {
         glGetProgramInfoLog(m_shader_program_2D_p, 512, nullptr, informacije);
-        std::cout << "Napaka: " << informacije;
+        napaka("risalnik.cpp :: Napaka: pri povezovanju m_shader_program_2D_p:  %s\n", informacije);
         glfwTerminate();
         exit(1);
     }

@@ -31,8 +31,9 @@ Nastavitve_scena::Nastavitve_scena()
 
 void Nastavitve_scena::zacetek()
 {
-    // morda malo nenavadno zdaj sem ze pozabil kaj je nenavadno
-    m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);
+    // morda malo nenavadno! zdaj sem ze pozabil kaj je nenavadno? nic ni nenavadno.
+    // m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);//! to je bilo nenavadno
+    m_zvezdno_nebo.nastavi(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA); // naredi sicer podobno (isto)
 
     m_polje_za_vpis_streznika.nastavi(mat::vec2(400, 250), mat::vec2(300, 46), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
     m_polje_za_vpis_vrat_odjemalca.nastavi(mat::vec2(400, 300), mat::vec2(150, 46), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
