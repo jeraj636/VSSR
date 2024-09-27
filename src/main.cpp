@@ -6,13 +6,18 @@
 #include "zacetna_scena.h"
 #include "igra_scena.h"
 #include "nastaviteve_scena.h"
+
+#include "dnevnik.h"
+
 int main()
 {
     Risalnik::odpri_okno("VSSR", 0x111111ff);
-
+    napaka("NAPAKA\n");
+    opozorilo("OPOZORILO\n");
+    sporocilo("SPOROCILO\n");
+    izpis("IZPIS\n");
     Igra_scena is;
     Nastavitve_scena ns;
-
     Zacetna_scena zs;
 
     zs.p_igra_scena = &is;

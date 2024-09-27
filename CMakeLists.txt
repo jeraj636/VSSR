@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.20)
 
 project(VSSR)
 set(CMAKE_CXX_STANDARD 20)
-option(JE_WIN "Gradim za windows?" ON)
+option(JE_WIN "Gradim za windows?" OFF)
 
 if(JE_WIN)
-    set(OPEN_GL_LIB opengl32)
+    set(OPEN_GL_LIB opengl32 ws2_32)
 else()
     set(OPEN_GL_LIB GL)
 endif()
@@ -36,16 +36,18 @@ src/igra_scena.cpp
 src/nastavitve_scena.cpp
 src/streznik.cpp
 src/odjemalec.cpp
+src/dnevnik.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 lib/glad/include/
 lib/glfw/include/
 lib/stb/
+lib/stb/fmt/include/
 )
 
 target_link_libraries(${PROJECT_NAME}
 glfw
 ${OPEN_GL_LIB}
-ws2_32
+fmt
 )
