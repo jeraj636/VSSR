@@ -232,6 +232,9 @@ void Streznik::ugasni()
 #endif
 #ifdef WINDOWS
     // if (odjemalci.size() == 0)
+    m_streznik_tece = false;
+
+    m_nit_za_poslusanje.join();
     for (int i = 0; i < odjemalci.size(); i++)
     {
         char buff[5];
@@ -243,9 +246,6 @@ void Streznik::ugasni()
            odjemalci.pop_back();
            */
     }
-    m_streznik_tece = false;
-
-    m_nit_za_poslusanje.join();
 
     closesocket(m_vticnik);
     WSACleanup();
