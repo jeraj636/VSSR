@@ -9,6 +9,7 @@ Igra_scena::Igra_scena()
       m_gumb_za_na_meni(m_pisava, 0xffffffff, mat::vec2(0), 45, "Meni", R_P_X_SREDINA | R_P_Y_SREDINA),
       m_gumb_za_nadaljevanje(m_pisava, 0xffffffff, mat::vec2(0), 45, "Nadaljuj", R_P_X_SREDINA | R_P_Y_SREDINA)
 {
+    Nasprotnik::raketa.nastavi(mat::vec3(0), mat::vec3(1), mat::vec3(0), 0xffffffff, true, "../sredstva/raketa.obj");
 }
 
 void Igra_scena::zacetek()
@@ -69,7 +70,11 @@ void Igra_scena::zanka()
 
     for (int i = 0; i < 10; i++) //* Risanje zemljevida
         Risalnik::narisi_3D_objekt(m_kamni1[i]);
-
+    for (int i = 0; i < nasprotniki.size(); i++)
+    {
+        Nasprotnik::raketa.pozicija = nasprotniki[i].pozicija;
+        Risalnik::narisi_3D_objekt(Nasprotnik::raketa);
+    }
     if (Risalnik::dobi_tipko(256 /*Tipka ESC*/))
     {
         m_pavza = true;
@@ -114,7 +119,6 @@ void Igra_scena::zanka()
         m_gumb_za_nadaljevanje.narisi_me();
         m_gumb_za_na_meni.narisi_me();
     }
-
     if (!m_sem_povezan && !m_pavza /*Ko je pavza == true se kliče konec preko gumba ne pa če se povezava prekine*/) //* Če se povezava s strežnikom prekine se vrne na glavni meni
     {
         konec();
@@ -125,7 +129,7 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
 {
     while (is->m_sem_povezan)
     {
-        char buffer[10];
+        char buffer[256];
         if (!is->m_odjmalec.beri_iz_povezave(buffer)) //* Napaka pri branju
         {
             is->m_sem_povezan = false;
@@ -136,9 +140,40 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
             is->m_odjmalec.poslji(buffer, 1); //* Odjemalec odgovori s istim sporočilom
             is->m_sem_povezan = false;
         }
-        if (buffer[0] == 1)
+        if (buffer[0] == P_POZDRAV)
         {
             sporocilo("S :: Pozdravljen odjemalec\n");
+        }
+        if (buffer[0] == P_NOV_IGRLEC)
+        {
+            is->nasprotniki.push_back(Nasprotnik());
+            is->nasprotniki.back().pozicija.x;
+            int poz = 1;
+            memcpy((char *)&is->nasprotniki.back().pozicija.x, &buffer[poz], sizeof(float));
+            poz += 4;
+            memcpy((char *)&is->nasprotniki.back().pozicija.y, &buffer[poz], sizeof(float));
+            poz += 4;
+            memcpy((char *)&is->nasprotniki.back().pozicija.z, &buffer[poz], sizeof(float));
+        }
+
+        if (buffer[0] == P_PODATKI_O_IGRALCIH)
+        {
+            int vel;
+            memcpy((char *)&vel, &buffer[1], sizeof(vel));
+            int poz = 5;
+            while (is->nasprotniki.size() < vel)
+                is->nasprotniki.push_back(Nasprotnik());
+
+            for (int i = 0; i < is->nasprotniki.size(); i++)
+            {
+                memcpy((char *)&is->nasprotniki[i].id, &buffer[poz], sizeof(is->nasprotniki[i].id));
+                poz += 4;
+                memcpy((char *)&is->nasprotniki[i].pozicija.x, &buffer[poz], sizeof(is->nasprotniki[i].pozicija.x));
+                poz += 4;
+                memcpy((char *)&is->nasprotniki[i].pozicija.y, &buffer[poz], sizeof(is->nasprotniki[i].pozicija.y));
+                poz += 4;
+                memcpy((char *)&is->nasprotniki[i].pozicija.z, &buffer[poz], sizeof(is->nasprotniki[i].pozicija.z));
+            }
         }
     }
 }
@@ -147,6 +182,8 @@ void Igra_scena::konec()
     /*
     ! Morda deluje tudi brez tega
     */
+    while (nasprotniki.size() != 0)
+        nasprotniki.pop_back();
     char buff[10];
     buff[0] = 0;
     m_odjmalec.poslji(buff, 1);

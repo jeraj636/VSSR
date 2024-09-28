@@ -12,7 +12,7 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #endif
-
+#include "matematika.h"
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,6 +27,7 @@ class Odjemalec_zs
 public:
     friend class Streznik;
     void obdelaj_sporocilo(char buffer[]);
+    mat::vec3 pozicija;
 
 protected:
 #ifdef LINUX
@@ -47,6 +48,7 @@ class Streznik
 public:
     static bool zazeni(int port);
     static void ugasni();
+    friend class Odjemalec_zs;
 
 private:
     static inline std::thread m_nit_za_poslusanje;

@@ -6,6 +6,43 @@ void Odjemalec_zs::obdelaj_sporocilo(char buff[])
     if (buff[0] == P_POZDRAV)
     {
         sporocilo("C %i :: Pozdravljen streznik\n", odjemalec_id);
+
+        buff[0] = P_NOV_IGRLEC;
+        memcpy(&buff[1], (char *)&odjemalec_id, sizeof(int));
+        int poz = 5;
+        memcpy(&buff[poz], (char *)&pozicija.x, sizeof(float));
+        poz += 4;
+        memcpy(&buff[poz], (char *)&pozicija.y, sizeof(float));
+        poz += 4;
+        memcpy(&buff[poz], (char *)&pozicija.z, sizeof(float));
+        poz += 4;
+        for (int i = 0; i < Streznik::odjemalci.size(); i++)
+        {
+            if (Streznik::odjemalci[i]->odjemalec_id != odjemalec_id)
+            {
+                Streznik::poslji(buff, poz, Streznik::odjemalci[i]->m_nov_vticnik_fd);
+            }
+        }
+
+        buff[0] = P_PODATKI_O_IGRALCIH;
+        int vel = Streznik::odjemalci.size() - 1;
+        memcpy(&buff[1], (char *)&vel, sizeof(vel));
+        poz = 5;
+        for (int i = 0; i < Streznik::odjemalci.size(); i++)
+        {
+            if (Streznik::odjemalci[i]->odjemalec_id != odjemalec_id)
+            {
+                memcpy(&buff[poz], (char *)&Streznik::odjemalci[i]->odjemalec_id, sizeof(Streznik::odjemalci[i]->odjemalec_id));
+                poz += 4;
+                memcpy(&buff[poz], (char *)&Streznik::odjemalci[i]->pozicija.x, sizeof(Streznik::odjemalci[i]->pozicija.x));
+                poz += 4;
+                memcpy(&buff[poz], (char *)&Streznik::odjemalci[i]->pozicija.y, sizeof(Streznik::odjemalci[i]->pozicija.y));
+                poz += 4;
+                memcpy(&buff[poz], (char *)&Streznik::odjemalci[i]->pozicija.z, sizeof(Streznik::odjemalci[i]->pozicija.z));
+                poz += 4;
+            }
+        }
+        Streznik::poslji(buff, poz, m_nov_vticnik_fd);
     }
 }
 

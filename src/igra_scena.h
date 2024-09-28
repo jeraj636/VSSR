@@ -7,6 +7,14 @@
 #include "objekt_3D.h"
 #include "odjemalec.h"
 #include "nastaviteve_scena.h"
+#include <vector>
+class Nasprotnik
+{
+public:
+    static inline Objekt_3D raketa;
+    mat::vec3 pozicija;
+    int id;
+};
 class Igra_scena : public Scena
 {
 public:
@@ -30,6 +38,7 @@ private:
 
     Besedilo m_gumb_za_na_meni;
     Besedilo m_gumb_za_nadaljevanje;
+    std::vector<Nasprotnik> nasprotniki;
 
 private:
 };
