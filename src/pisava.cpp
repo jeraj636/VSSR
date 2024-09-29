@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <fstream>
 #include <iostream>
-
+#include "dnevnik.h"
 #include "pisava.h"
 #include "risalnik.h"
 
@@ -40,7 +40,7 @@ void Pisava::nalozi_pisavo()
 
     if (!i_dat.is_open())
     {
-        std::cout << "Napaka! ni datoteke: " << m_pot_do_pisave << "\n";
+        napaka("pisava.cpp :: Ni datoteke: %s\n", m_pot_do_pisave.c_str());
         exit(0);
     }
     //* Ugotavljanje velikosti datoteke
@@ -56,7 +56,7 @@ void Pisava::nalozi_pisavo()
     i_dat.read((char *)ttf_podatki, velikost_datoteke);
     if (i_dat.fail())
     {
-        std::cout << "Napaka pri branju datoteke: " << m_pot_do_pisave << "\n";
+        napaka("pisava.cpp :: Napaka pri branju datoteke: %s\n", m_pot_do_pisave.c_str());
         exit(0);
     }
 

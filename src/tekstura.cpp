@@ -2,6 +2,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include "risalnik.h"
+#include "dnevnik.h"
 #include <iostream>
 uint32_t nalozi_teksturo(const std::string &pot_do_teksture)
 {
@@ -12,7 +13,7 @@ uint32_t nalozi_teksturo(const std::string &pot_do_teksture)
 
     if (podatki == NULL)
     {
-        std::cout << "Napaka pri nalaganju slike: " << pot_do_teksture << '\n';
+        napaka("tekstura.cpp :: Napaka pri nalaganju slike: %s", pot_do_teksture.c_str());
         glfwTerminate();
         exit(1);
     }

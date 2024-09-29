@@ -6,6 +6,7 @@
 #include <sstream>
 #include <cstring>
 #include "matematika.h"
+#include "dnevnik.h"
 void Objekt_3D::preberi_obj(const std::string &pot_do_objekta)
 {
     if (m_pot_do_objekta.size() != 0) //* sprostitev pomnilnika
@@ -44,7 +45,7 @@ std::string zamenjaj_koncnico(const std::string &datoteka, const std::string &ko
     if (pozicija_pike == std::string::npos)
     {
         return datoteka;
-        std::cout << "Napaka! Datoteka:" << datoteka << " nima veljavne koncnice! \n ";
+        napaka("obj.cpp :: Datoteka: %s nime veljavnje koncnice\n", datoteka.c_str());
     }
     //* Če pika obstaja se vse do pike ohrani in temu doda novo konnico in vrne
     return datoteka.substr(0, pozicija_pike + 1) + koncnica;
@@ -55,7 +56,7 @@ void Objekt_3D::preberi_obj()
     std::ifstream i_dat(m_pot_do_objekta);
 
     if (!i_dat.is_open())
-        std::cout << "Napaka pri odpiranju datoteke: " << m_pot_do_objekta << '\n';
+        napaka("obj.cpp :: Napaka pri odpiranju datoteke: %s\n", m_pot_do_objekta.c_str());
 
     std::vector<mat::vec3> v_tab;  //*podatki o tockah
     std::vector<mat::vec3> vn_tab; //* podatki o normalah

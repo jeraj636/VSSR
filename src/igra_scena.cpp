@@ -135,11 +135,11 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
             is->m_sem_povezan = false;
             break;
         }
-        std::cout << "Sporocilo\n";
         if (buffer[0] == P_KONEC_POVEZAVE)
         {
             is->m_odjmalec.poslji(buffer, 1); //* Odjemalec odgovori s istim sporočilom
             is->m_sem_povezan = false;
+            sporocilo("S :: Konec povezave!\n");
         }
         if (buffer[0] == P_POZDRAV)
         {
@@ -178,13 +178,13 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
                 poz += 4;
                 memcpy((char *)&is->nasprotniki[i].pozicija.z, &buffer[poz], sizeof(is->nasprotniki[i].pozicija.z));
             }
+            sporocilo("S :: Podatki o igralcih\n");
         }
 
         if (buffer[0] == P_IGRALEC_ZAPUSTIL)
         {
             int id_igralca;
             memcpy((char *)&id_igralca, &buffer[1], sizeof(id_igralca));
-            std::cout << "Zapustil   " << id_igralca << "\n";
 
             for (int i = 0; i < is->nasprotniki.size(); i++)
             {
@@ -194,14 +194,12 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
                     is->nasprotniki.pop_back();
                 }
             }
+            sporocilo("S :: Igralec: %i je zapustil igro\n", id_igralca);
         }
     }
 }
 void Igra_scena::konec()
 {
-    /*
-    ! Morda deluje tudi brez tega
-    */
     while (nasprotniki.size() != 0)
         nasprotniki.pop_back();
     char buff[10];
