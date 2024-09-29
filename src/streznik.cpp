@@ -163,8 +163,8 @@ void Streznik::poslusaj()
         Odjemalec_zs *odjemalec = new Odjemalec_zs;
 
         odjemalec->m_odjemalec_vel = sizeof(odjemalec->m_naslov_odjemalca);
-        odjemalec->m_nov_vticnik = accept(m_vticnik, (sockaddr *)&odjemalec->m_naslov_odjemalca, &odjemalec->m_odjemalec_vel); //* Sprejemanje nove povezave
-        if (odjemalec->m_nov_vticnik == INVALID_SOCKET || WSAGetLastError() == WSAEWOULDBLOCK)
+        odjemalec->m_nov_vticnik_fd = accept(m_vticnik, (sockaddr *)&odjemalec->m_naslov_odjemalca, &odjemalec->m_odjemalec_vel); //* Sprejemanje nove povezave
+        if (odjemalec->m_nov_vticnik_fd == INVALID_SOCKET || WSAGetLastError() == WSAEWOULDBLOCK)
         {
             delete odjemalec;
             continue;
@@ -227,7 +227,7 @@ void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
     while (m_streznik_tece)
     {
         char buffer[256];
-        int n = recv(odjemalec->m_nov_vticnik, buffer, 255, 0);
+        int n = recv(odjemalec->m_nov_vticnik_fd, buffer, 255, 0);
         /*
         *Naj bi delovalo brez tega
         !Raje pusti zakomentirano
@@ -249,7 +249,7 @@ void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
         }
     */
     sporocilo("C %i :: Konec povezave!\n", odjemalec->odjemalec_id);
-    closesocket(odjemalec->m_nov_vticnik);     //* zapiranje vticnika
+    closesocket(odjemalec->m_nov_vticnik_fd);  //* zapiranje vticnika
     for (int i = 0; i < odjemalci.size(); i++) //* Iskanje odjemalca v tabeli odjemalcev in sprostitev pomnilnika
     {
         if (odjemalec->odjemalec_id == odjemalci[i]->odjemalec_id)
@@ -290,7 +290,7 @@ void Streznik::ugasni()
     {
         char buff[5];
         buff[0] = P_KONEC_POVEZAVE;
-        poslji(buff, 1, odjemalci[i]->m_nov_vticnik);
+        poslji(buff, 1, odjemalci[i]->m_nov_vticnik_fd);
         /*
            closesocket(odjemalci.back()->m_nov_vticnik);
            delete odjemalci.back();

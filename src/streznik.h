@@ -36,7 +36,7 @@ protected:
     int m_nov_vticnik_fd;
 #endif
 #ifdef WINDOWS
-    SOCKET m_nov_vticnik;
+    SOCKET m_nov_vticnik_fd;
     SOCKADDR_IN m_naslov_odjemalca;
     int m_odjemalec_vel;
 #endif
