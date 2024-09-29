@@ -135,6 +135,7 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
             is->m_sem_povezan = false;
             break;
         }
+        std::cout << "Sporocilo\n";
         if (buffer[0] == P_KONEC_POVEZAVE)
         {
             is->m_odjmalec.poslji(buffer, 1); //* Odjemalec odgovori s istim sporočilom
@@ -156,6 +157,7 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
             memcpy((char *)&is->nasprotniki.back().pozicija.y, &buffer[poz], sizeof(float));
             poz += 4;
             memcpy((char *)&is->nasprotniki.back().pozicija.z, &buffer[poz], sizeof(float));
+            sporocilo("S :: Nov igralec %i", is->nasprotniki.back().id);
         }
 
         if (buffer[0] == P_PODATKI_O_IGRALCIH)

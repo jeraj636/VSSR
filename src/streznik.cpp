@@ -21,6 +21,7 @@ void Odjemalec_zs::obdelaj_sporocilo(char buff[])
         {
             if (Streznik::odjemalci[i]->odjemalec_id != odjemalec_id)
             {
+                std::cout << "Posiljam nov igralec na: " << Streznik::odjemalci[i]->odjemalec_id << "\n";
                 Streznik::poslji(buff, poz, Streznik::odjemalci[i]->m_nov_vticnik_fd);
             }
         }
@@ -212,8 +213,8 @@ void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
                 }
             }
 
-            std::swap(odjemalci[i], odjemalci.back());
             close(odjemalci[i]->m_nov_vticnik_fd);
+            std::swap(odjemalci[i], odjemalci.back());
             delete odjemalci.back();
             odjemalci.pop_back();
             break;
