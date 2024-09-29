@@ -190,7 +190,6 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
                 {
                     std::swap(is->nasprotniki[i], is->nasprotniki.back());
                     is->nasprotniki.pop_back();
-                    break;
                 }
             }
         }
