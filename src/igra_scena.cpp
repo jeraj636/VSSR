@@ -149,6 +149,8 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
             is->nasprotniki.push_back(Nasprotnik());
             is->nasprotniki.back().pozicija.x;
             int poz = 1;
+            memcpy((char *)&is->nasprotniki.back().id, &buffer[poz], sizeof(is->nasprotniki.back().id));
+            poz += 4;
             memcpy((char *)&is->nasprotniki.back().pozicija.x, &buffer[poz], sizeof(float));
             poz += 4;
             memcpy((char *)&is->nasprotniki.back().pozicija.y, &buffer[poz], sizeof(float));
@@ -173,6 +175,23 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
                 memcpy((char *)&is->nasprotniki[i].pozicija.y, &buffer[poz], sizeof(is->nasprotniki[i].pozicija.y));
                 poz += 4;
                 memcpy((char *)&is->nasprotniki[i].pozicija.z, &buffer[poz], sizeof(is->nasprotniki[i].pozicija.z));
+            }
+        }
+
+        if (buffer[0] == P_IGRALEC_ZAPUSTIL)
+        {
+            int id_igralca;
+            memcpy((char *)&id_igralca, &buffer[1], sizeof(id_igralca));
+            std::cout << "Zapustil   " << id_igralca << "\n";
+
+            for (int i = 0; i < is->nasprotniki.size(); i++)
+            {
+                if (id_igralca == is->nasprotniki[i].id)
+                {
+                    std::swap(is->nasprotniki[i], is->nasprotniki.back());
+                    is->nasprotniki.pop_back();
+                    break;
+                }
             }
         }
     }

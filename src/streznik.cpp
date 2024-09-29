@@ -3,6 +3,19 @@
 #include "dnevnik.h"
 void Odjemalec_zs::obdelaj_sporocilo(char buff[])
 {
+    if (buff[0] == P_KONEC_POVEZAVE)
+    {
+        buff[0] = P_IGRALEC_ZAPUSTIL;
+        memcpy(&buff[1], (char *)&odjemalec_id, sizeof(odjemalec_id));
+        for (int i = 0; i < Streznik::odjemalci.size(); i++)
+        {
+            if (Streznik::odjemalci[i]->odjemalec_id != odjemalec_id)
+            {
+                std::cout << odjemalec_id << "  " << Streznik::odjemalci[i]->odjemalec_id << "tukaj\n";
+                Streznik::poslji(buff, 5, Streznik::odjemalci[i]->m_nov_vticnik_fd);
+            }
+        }
+    }
     if (buff[0] == P_POZDRAV)
     {
         sporocilo("C %i :: Pozdravljen streznik\n", odjemalec_id);
@@ -180,10 +193,11 @@ void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
 
         if (n <= 0) //* "napake" pri katerih se povezava prekine
             break;
-        if (buffer[0] == P_KONEC_POVEZAVE)
-            break;
 
         odjemalec->obdelaj_sporocilo(buffer);
+
+        if (buffer[0] == P_KONEC_POVEZAVE)
+            break;
     }
 
     /*
