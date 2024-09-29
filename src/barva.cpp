@@ -1,5 +1,7 @@
-#include "barva.h"
 #include <iostream>
+
+#include "barva.h"
+
 Barva::Barva()
 {
     r = 0;
@@ -7,6 +9,7 @@ Barva::Barva()
     b = 0;
     a = 0;
 }
+
 Barva::Barva(uint32_t hex_barva)
 {
     a = (hex_barva & 0xff) / 255.0f;
@@ -14,6 +17,7 @@ Barva::Barva(uint32_t hex_barva)
     g = ((hex_barva >> 16) & 0xff) / 255.0f;
     r = ((hex_barva >> 24) & 0xff) / 255.0f;
 }
+
 void Barva::nastavi(short vrednost, char katera_barva)
 {
     switch (katera_barva)
@@ -43,6 +47,7 @@ void Barva::nastavi(short vrednost, char katera_barva)
         break;
     }
 }
+
 std::ostream &operator<<(std::ostream &os, const Barva &t)
 {
     os << t.r << " " << t.g << " " << t.b << " " << t.a;

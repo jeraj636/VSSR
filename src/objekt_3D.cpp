@@ -6,6 +6,7 @@ Objekt_3D::Objekt_3D()
     m_velikost_tock = 0;
     m_pot_do_objekta = "";
 }
+
 Objekt_3D::Objekt_3D(const Objekt_3D &t)
 {
     pozicija = t.pozicija;
@@ -18,6 +19,7 @@ Objekt_3D::Objekt_3D(const Objekt_3D &t)
     m_velikost_tock = 0;
     preberi_obj();
 }
+
 Objekt_3D::Objekt_3D(mat::vec3 t_pozicija, mat::vec3 t_velikost, mat::vec3 t_rotacija, uint32_t t_barva, bool t_aktiven, const std::string &t_pot_do_objekta)
 {
     pozicija = t_pozicija;
@@ -30,6 +32,7 @@ Objekt_3D::Objekt_3D(mat::vec3 t_pozicija, mat::vec3 t_velikost, mat::vec3 t_rot
     m_velikost_tock = 0;
     preberi_obj();
 }
+
 Objekt_3D &Objekt_3D::operator=(const Objekt_3D &t)
 {
     pozicija = t.pozicija;
@@ -55,6 +58,7 @@ Objekt_3D::~Objekt_3D()
     if (m_pot_do_objekta.size() != 0 && m_tocke != nullptr) //* sprostitev pomnilnika
         delete[] m_tocke;
 }
+
 void Objekt_3D::nastavi(mat::vec3 t_pozicija, mat::vec3 t_velikost, mat::vec3 t_rotacija, uint32_t t_barva, bool t_aktiven, const std::string &t_pot_do_objekta)
 {
     pozicija = t_pozicija; //! Potrebno testiranje

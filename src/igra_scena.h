@@ -1,5 +1,8 @@
 #ifndef IGRA_SCENA_H
 #define IGRA_SCENA_H
+
+#include <vector>
+
 #include "scena.h"
 #include "pisava.h"
 #include "besedilo.h"
@@ -7,7 +10,7 @@
 #include "objekt_3D.h"
 #include "odjemalec.h"
 #include "nastaviteve_scena.h"
-#include <vector>
+
 class Nasprotnik
 {
 public:
@@ -15,6 +18,7 @@ public:
     mat::vec3 pozicija;
     int id;
 };
+
 class Igra_scena : public Scena
 {
 public:

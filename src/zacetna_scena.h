@@ -1,5 +1,6 @@
 #ifndef ZACETNA_SCENA_H
 #define ZACETNA_SCENA_H
+
 #include "scena.h"
 #include "pisava.h"
 #include "besedilo.h"
@@ -7,6 +8,7 @@
 #include "objekt_3D.h"
 #include "igra_scena.h"
 #include "nastaviteve_scena.h"
+
 class Zacetna_scena : public Scena
 {
 public:
@@ -35,4 +37,5 @@ private:
 private:
     void posodobi_meni();
 };
+
 #endif

@@ -1,4 +1,5 @@
 #include <iostream>
+
 #include "objekt_3D.h"
 #include "risalnik.h"
 #include "pisava.h"
@@ -6,7 +7,6 @@
 #include "zacetna_scena.h"
 #include "igra_scena.h"
 #include "nastaviteve_scena.h"
-
 #include "dnevnik.h"
 
 int main()

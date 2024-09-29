@@ -2,6 +2,7 @@
 #define OBJEKT_3D_H
 
 #include <stdint.h>
+
 #include "matematika.h"
 #include "barva.h"
 

@@ -1,5 +1,6 @@
 #include "odjemalec.h"
 #include "dnevnik.h"
+
 bool Odjemalec::beri_iz_povezave(char buffer[])
 {
 #ifdef LINUX
@@ -85,6 +86,7 @@ bool Odjemalec::zazeni(std::string naslov, int port)
 #endif
     return true;
 }
+
 void Odjemalec::poslji(char buff[], int vel)
 {
 #ifdef LINUX
@@ -97,6 +99,7 @@ void Odjemalec::poslji(char buff[], int vel)
         napaka("odjemalec.cpp :: Napaka pri posiljanju!\n");
 #endif
 }
+
 std::string Odjemalec::prejmi()
 {
 #ifdef LINUX
@@ -110,6 +113,7 @@ std::string Odjemalec::prejmi()
     return buff;
 #endif
 }
+
 void Odjemalec::ustavi()
 {
     sporocilo("odjemalec.cpp :: Ugasanje povezave!\n");

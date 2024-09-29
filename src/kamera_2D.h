@@ -1,6 +1,8 @@
 #ifndef KAMERA_2D_H
 #define KAMERA_2D_H
+
 #include "matematika.h"
+
 class Risalnik;
 
 class Kamera_2D

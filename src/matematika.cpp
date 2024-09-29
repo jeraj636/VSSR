@@ -1,4 +1,5 @@
 #include <cmath>
+
 #include "matematika.h"
 
 template <typename T>

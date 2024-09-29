@@ -1,6 +1,8 @@
-#include "matematika.h"
 #include <cmath>
 #include <iostream>
+
+#include "matematika.h"
+
 using namespace mat;
 vec2::vec2()
 {

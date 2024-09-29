@@ -2,12 +2,13 @@
 #include <GLFW/glfw3.h>
 #include <fstream>
 #include <iostream>
-#include "dnevnik.h"
-#include "pisava.h"
-#include "risalnik.h"
 
 #define STB_TRUETYPE_IMPLEMENTATION
 #include <stb_true_type.h>
+
+#include "dnevnik.h"
+#include "pisava.h"
+#include "risalnik.h"
 
 Pisava::Pisava(const std::string &pot, uint32_t velikost)
 {
@@ -16,6 +17,7 @@ Pisava::Pisava(const std::string &pot, uint32_t velikost)
     m_velikost = velikost;
     nalozi_pisavo();
 }
+
 Pisava &Pisava::operator=(const Pisava &t)
 {
     //* Če je že nalozena kaksna pisava
@@ -29,10 +31,12 @@ Pisava &Pisava::operator=(const Pisava &t)
     nalozi_pisavo();
     return *this;
 }
+
 Pisava::~Pisava()
 {
     unici();
 }
+
 void Pisava::nalozi_pisavo()
 {
     //* Odpiranje datoteke s pisavo
@@ -81,6 +85,7 @@ void Pisava::nalozi_pisavo()
     delete[] ttf_podatki;
     delete[] bitmap;
 }
+
 void Pisava::nastavi(const std::string &pot, uint32_t velikost)
 {
     //* Če je že naložena kakšna pisava
@@ -92,6 +97,7 @@ void Pisava::nastavi(const std::string &pot, uint32_t velikost)
     m_velikost = velikost;
     nalozi_pisavo();
 }
+
 void Pisava::unici()
 {
     //* Sprostitev pomnilnika

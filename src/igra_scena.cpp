@@ -1,9 +1,11 @@
-#include "igra_scena.h"
-#include "risalnik.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
+#include "igra_scena.h"
+#include "risalnik.h"
 #include "dnevnik.h"
+
 Igra_scena::Igra_scena()
     : m_pisava("../sredstva/Cascadia.ttf", 55),
       m_gumb_za_na_meni(m_pisava, 0xffffffff, mat::vec2(0), 45, "Meni", R_P_X_SREDINA | R_P_Y_SREDINA),
@@ -125,6 +127,7 @@ void Igra_scena::zanka()
         p_zacena_scena->zacetek();
     }
 }
+
 void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
 {
     while (is->m_sem_povezan)
@@ -198,6 +201,7 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
         }
     }
 }
+
 void Igra_scena::konec()
 {
     while (nasprotniki.size() != 0)

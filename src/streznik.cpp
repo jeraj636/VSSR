@@ -1,6 +1,7 @@
 #include "streznik.h"
 #include "sporocila_za_komunikacijo.h"
 #include "dnevnik.h"
+
 void Odjemalec_zs::obdelaj_sporocilo(char buff[])
 {
 
@@ -116,6 +117,7 @@ bool Streznik::zazeni(int port)
 
     return true;
 }
+
 void Streznik::poslusaj()
 {
     sporocilo("streznik.cpp :: Poslusam za nove povezave!\n");
@@ -144,6 +146,7 @@ void Streznik::poslusaj()
         nit.detach();
     }
 #endif
+
 #ifdef WINDOWS
     listen(m_vticnik, 20);
     while (m_streznik_tece)
@@ -302,6 +305,7 @@ void Streznik::ugasni()
 #endif
     sporocilo("streznik.cpp :: Konec streznika!\n");
 }
+
 #ifdef WINDOWS
 void Streznik::poslji(char buffer[], int vel, SOCKET vticnik)
 {
@@ -309,6 +313,7 @@ void Streznik::poslji(char buffer[], int vel, SOCKET vticnik)
         napaka("streznik.cpp :: Napaka pri posiljanju!\n");
 }
 #endif
+
 #ifdef LINUX
 void Streznik::poslji(char buffer[], int vel, int vticnik)
 {
@@ -316,4 +321,5 @@ void Streznik::poslji(char buffer[], int vel, int vticnik)
     if (n < 0)
         napaka("streznik.cpp :: Napaka pri posiljanju!\n");
 }
+
 #endif

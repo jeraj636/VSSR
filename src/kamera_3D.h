@@ -2,7 +2,9 @@
 #define KAMERA_3D_H
 
 #include "matematika.h"
+
 class Risalnik;
+
 class Kamera_3D
 {
 public:

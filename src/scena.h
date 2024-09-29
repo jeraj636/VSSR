@@ -1,5 +1,6 @@
 #ifndef SCENA_H
 #define SCENA_H
+
 class Scena
 {
 public:
@@ -7,4 +8,5 @@ public:
     virtual void zanka() = 0;
     virtual void konec() = 0;
 };
+
 #endif

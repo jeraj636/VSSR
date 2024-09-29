@@ -1,12 +1,14 @@
-#include "objekt_3D.h"
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
 #include <sstream>
 #include <cstring>
+
+#include "objekt_3D.h"
 #include "matematika.h"
 #include "dnevnik.h"
+
 void Objekt_3D::preberi_obj(const std::string &pot_do_objekta)
 {
     if (m_pot_do_objekta.size() != 0) //* sprostitev pomnilnika
@@ -50,6 +52,7 @@ std::string zamenjaj_koncnico(const std::string &datoteka, const std::string &ko
     //* Če pika obstaja se vse do pike ohrani in temu doda novo konnico in vrne
     return datoteka.substr(0, pozicija_pike + 1) + koncnica;
 }
+
 void Objekt_3D::preberi_obj()
 {
     //* Odpiranje datoteke

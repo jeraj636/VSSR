@@ -1,5 +1,6 @@
 #ifndef TEKSTURA_H
 #define TEKSTURA_H
+
 #include <string>
 #include <stdint.h>
 

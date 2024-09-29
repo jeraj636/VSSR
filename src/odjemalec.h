@@ -1,7 +1,12 @@
 #ifndef ODJEMALEC_H
 #define ODJEMALEC_H
-#include "define.h"
-#include "sporocila_za_komunikacijo.h"
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <iostream>
+#include <thread>
+
 #ifdef LINUX
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -14,11 +19,9 @@
 #include <WinSock2.h>
 #endif
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <iostream>
-#include <thread>
+#include "sporocila_za_komunikacijo.h"
+#include "define.h"
+
 class Odjemalec
 {
 public:

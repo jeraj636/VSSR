@@ -1,6 +1,8 @@
+#include <iostream>
+
 #include "besedilo.h"
 #include "pisava.h"
-#include <iostream>
+
 Splosne_nastavitve_besedil::Splosne_nastavitve_besedil(Pisava t_pisava, uint32_t t_barva_besedil, uint8_t t_poravnava, float t_velikost)
     : pisava(t_pisava)
 {

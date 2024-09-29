@@ -1,9 +1,11 @@
+#include <fstream>
+#include <iostream>
+
 #include "nastaviteve_scena.h"
 #include "risalnik.h"
-#include <iostream>
-#include <fstream>
 #include "dnevnik.h"
 #include "streznik.h"
+
 Nastavitve_scena::Nastavitve_scena()
     : m_pisava("../sredstva/Cascadia.ttf", 55),
       m_vrata_odjemalca(m_pisava, 0x000000ff, mat::vec2(0), 45, "", R_P_LEVO | R_P_Y_SREDINA),

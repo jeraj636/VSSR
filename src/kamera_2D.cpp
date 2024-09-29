@@ -1,11 +1,13 @@
 #include "kamera_2D.h"
 #include "risalnik.h"
+
 Kamera_2D::Kamera_2D()
     : m_mat_pogled(1)
 {
     pozicija.x = 0;
     pozicija.y = 0;
 }
+
 void Kamera_2D::posodobi_kamero()
 {
     //* Premikanje kamere glede na pritisnjeno tipko

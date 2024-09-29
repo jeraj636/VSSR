@@ -2,12 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "dnevnik.h"
-#include "define.h"
-
 #ifdef WINDOWS
 #include <windows.h>
 #endif
+
+#include "dnevnik.h"
+#include "define.h"
 
 void napaka(const char *sporocilo, ...) //* Sporocilo o napaki
 {
@@ -35,6 +35,7 @@ void napaka(const char *sporocilo, ...) //* Sporocilo o napaki
         }
 #endif
 }
+
 void opozorilo(const char *sporocilo, ...)
 {
 #ifdef DEBUG
@@ -61,6 +62,7 @@ void opozorilo(const char *sporocilo, ...)
         }
 #endif
 }
+
 void sporocilo(const char *sporocilo, ...)
 {
 #ifdef DEBUG
@@ -87,6 +89,7 @@ void sporocilo(const char *sporocilo, ...)
         }
 #endif
 }
+
 void izpis(const char *sporocilo, ...)
 {
 #ifdef DEBUG

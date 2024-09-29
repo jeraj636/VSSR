@@ -1,9 +1,12 @@
-#include "tekstura.h"
+#include <iostream>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+
 #include "risalnik.h"
 #include "dnevnik.h"
-#include <iostream>
+#include "tekstura.h"
+
 uint32_t nalozi_teksturo(const std::string &pot_do_teksture)
 {
 

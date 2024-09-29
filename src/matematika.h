@@ -3,7 +3,9 @@
 
 #define degToRad(angleInDegrees) ((angleInDegrees) * 3.14 / 180.0)
 #define radToDeg(angleInRadians) ((angleInRadians) * 180.0 / 3.14)
+
 #include <ostream>
+
 namespace mat
 {
 

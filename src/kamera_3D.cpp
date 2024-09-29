@@ -1,8 +1,10 @@
+#include <cmath>
+#include <iostream>
+
 #include "kamera_3D.h"
 #include "risalnik.h"
-#include <iostream>
-#include <cmath>
 #include "matematika.h"
+
 Kamera_3D::Kamera_3D()
     : m_mat_pogled(1)
 {

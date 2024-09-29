@@ -1,5 +1,6 @@
 #ifndef SHADERJI_H
 #define SHADERJI_H
+
 // ! Polepšja kodo
 const char *fragment_shader_2D_s = R"(
 

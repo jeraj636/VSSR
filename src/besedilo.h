@@ -1,8 +1,10 @@
 #ifndef BESEDILO_H
 #define BESEDILO_H
+
 #include "pisava.h"
 #include "barva.h"
 #include "risalnik.h"
+
 class Splosne_nastavitve_besedil
 {
 public:
@@ -12,6 +14,7 @@ public:
     float velikost;
     Splosne_nastavitve_besedil(Pisava t_pisava, uint32_t t_barva_besedil, uint8_t t_poravnava, float t_velikost);
 };
+
 class Besedilo
 {
 
@@ -37,4 +40,5 @@ private:
     mat::vec2 m_dejanska_velikost;
     mat::vec2 m_leva_pozicija;
 };
+
 #endif

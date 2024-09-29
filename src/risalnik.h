@@ -38,6 +38,7 @@ public:
     bool levi_gumb;
     bool desni_gumb;
 };
+
 class Cas
 {
 public:
@@ -103,4 +104,5 @@ private:
     static void ustvari_shaderje_3D();
     static void ustvari_shaderje_2D_p();
 };
+
 #endif

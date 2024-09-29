@@ -1,7 +1,9 @@
 #ifndef BARVA_H
 #define BARVA_H
+
 #include <cstdint>
 #include <ostream>
+
 class Barva
 {
 public:
@@ -12,4 +14,5 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, const Barva &t);
 };
+
 #endif

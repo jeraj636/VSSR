@@ -1,8 +1,11 @@
 #ifndef OBJEKT_2D_H
 #define OBJEKT_2D_H
+
+#include <string>
+
 #include "matematika.h"
 #include "barva.h"
-#include <string>
+
 class Objekt_2D
 {
 public:

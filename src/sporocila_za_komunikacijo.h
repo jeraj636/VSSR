@@ -6,4 +6,5 @@
 #define P_NOV_IGRLEC 2
 #define P_IGRALEC_ZAPUSTIL 3
 #define P_PODATKI_O_IGRALCIH 4
+
 #endif

@@ -1,6 +1,8 @@
 #include <cmath>
-#include "matematika.h"
 #include <iostream>
+
+#include "matematika.h"
+
 using namespace mat;
 
 vec3::vec3()

@@ -1,6 +1,8 @@
+#include <iostream>
 #include <cmath>
+
 #include "matematika.h"
-#include <iostream> //!le te zest
+
 namespace mat
 {
 

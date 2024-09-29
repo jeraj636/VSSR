@@ -1,12 +1,14 @@
 #ifndef NASTAVITVE_SCENA_H
 #define NASTAVITVE_SCENA_H
 
+#include <thread>
+
 #include "scena.h"
 #include "pisava.h"
 #include "besedilo.h"
 #include "objekt_2D.h"
 #include "objekt_3D.h"
-#include <thread>
+
 class Nastavitve_scena : public Scena
 {
 public:

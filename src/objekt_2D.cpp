@@ -1,12 +1,14 @@
 #include "objekt_2D.h"
 #include "tekstura.h"
 #include "risalnik.h"
+
 Objekt_2D::Objekt_2D()
 {
     m_tekstura_id = -1;
     m_pot_do_teksture = "";
     poravnava = R_P_X_SREDINA | R_P_Y_SREDINA;
 }
+
 Objekt_2D::Objekt_2D(mat::vec2 t_pozicija, mat::vec2 t_velikost, float t_rotacija, uint32_t t_barva, const std::string pot_do_teksture, bool t_aktiven, uint8_t t_poravnava)
 {
     pozicija = t_pozicija;
@@ -18,6 +20,7 @@ Objekt_2D::Objekt_2D(mat::vec2 t_pozicija, mat::vec2 t_velikost, float t_rotacij
     aktiven = t_aktiven;
     poravnava = t_poravnava;
 }
+
 Objekt_2D::Objekt_2D(const Objekt_2D &t)
 {
     pozicija = t.pozicija;
@@ -29,6 +32,7 @@ Objekt_2D::Objekt_2D(const Objekt_2D &t)
     poravnava = t.poravnava;
     aktiven = t.aktiven;
 }
+
 Objekt_2D &Objekt_2D::operator=(const Objekt_2D &t)
 {
     pozicija = t.pozicija;

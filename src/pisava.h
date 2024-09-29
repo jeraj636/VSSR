@@ -2,9 +2,10 @@
 #define PISAVA_H
 
 #include <cstdint>
-#include "matematika.h"
 #include <string>
 #include <stb_true_type.h>
+
+#include "matematika.h"
 
 class Pisava
 {

@@ -1,6 +1,7 @@
 #include "zacetna_scena.h"
 #include "risalnik.h"
 #include "streznik.h"
+
 Zacetna_scena::Zacetna_scena()
     : m_pisava("../sredstva/Cascadia.ttf", 80),
       m_b_igraj(m_pisava, 0xffffffff, mat::vec2(100, 0), 55, "Igraj", R_P_LEVO),
