@@ -3,10 +3,10 @@
 
 #include <cstdint>
 #include <string>
-#include <stb_true_type.h>
 
 #include "matematika.h"
 
+#include <stb_true_type.h>
 class Pisava
 {
 public:

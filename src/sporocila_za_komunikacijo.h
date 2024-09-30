@@ -1,10 +1,11 @@
 #ifndef SPOROCILA_ZA_KOMUNIKACIJO_H
 #define SPOROCILA_ZA_KOMUNIKACIJO_H
 
+//* P pomeni pošiljam
 #define P_KONEC_POVEZAVE 0
 #define P_POZDRAV 1
 #define P_NOV_IGRLEC 2
 #define P_IGRALEC_ZAPUSTIL 3
 #define P_PODATKI_O_IGRALCIH 4
-
+#define P_PODATEK_O_IGRALCU 5
 #endif

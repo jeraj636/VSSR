@@ -3,12 +3,12 @@
 #include <fstream>
 #include <iostream>
 
-#define STB_TRUETYPE_IMPLEMENTATION
-#include <stb_true_type.h>
-
 #include "dnevnik.h"
 #include "pisava.h"
 #include "risalnik.h"
+
+#define STB_TRUETYPE_IMPLEMENTATION
+#include <stb_true_type.h>
 
 Pisava::Pisava(const std::string &pot, uint32_t velikost)
 {

@@ -20,8 +20,8 @@ Nastavitve_scena::Nastavitve_scena()
     std::ifstream i_dat("../sredstva/nastavitve.txt");
     if (!i_dat.is_open())
     {
-        napaka("nastavitve_scena.cpp :: Ni datoteke: ../sredstva/nastavitve.txt\n")
-            exit(1);
+        napaka("nastavitve_scena.cpp :: Ni datoteke: ../sredstva/nastavitve.txt\n");
+        exit(1);
     }
     std::getline(i_dat, m_streznik.niz);
     std::getline(i_dat, m_vrata_odjemalca.niz);

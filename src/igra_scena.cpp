@@ -17,6 +17,7 @@ Igra_scena::Igra_scena()
 void Igra_scena::zacetek()
 {
     m_pavza = false;
+    m_cas_naslednjega_posiljanja = 0;
     // morda malo nenavadno! zdaj sem ze pozabil kaj je nenavadno? nic ni nenavadno.
     // m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);//! to je bilo nenavadno
     m_zvezdno_nebo.nastavi(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA); // naredi sicer podobno (isto)
@@ -62,6 +63,7 @@ void Igra_scena::zacetek()
 
 void Igra_scena::zanka()
 {
+    //* Risanje in posodabljanje elementov
     Risalnik::nastavi_testiranje_globine(false);
     Risalnik::narisi_2D_objekt(m_zvezdno_nebo);
 
@@ -77,6 +79,8 @@ void Igra_scena::zanka()
         Nasprotnik::raketa.pozicija = nasprotniki[i].pozicija;
         Risalnik::narisi_3D_objekt(Nasprotnik::raketa);
     }
+
+    //* Preverjanje stanj gumbov
     if (Risalnik::dobi_tipko(256 /*Tipka ESC*/))
     {
         m_pavza = true;
@@ -84,6 +88,7 @@ void Igra_scena::zanka()
         Risalnik::nastavi_aktivnost_kazalca_miske(true);
     }
 
+    //* Premor
     if (m_pavza)
     {
         Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(Risalnik::dobi_velikost_okna().x / 2, 100), 55, "Premor", R_P_X_SREDINA | R_P_Y_SREDINA);
@@ -120,6 +125,24 @@ void Igra_scena::zanka()
 
         m_gumb_za_nadaljevanje.narisi_me();
         m_gumb_za_na_meni.narisi_me();
+    }
+
+    //* Komunikacija s streznikom
+    if (m_cas_naslednjega_posiljanja <= Cas::get_cas())
+    {
+        m_cas_naslednjega_posiljanja = Cas::get_cas() + 1;
+
+        //* Pošiljanje pozicije
+        char buffer[256];
+        int poz = 1;
+        buffer[0] = P_PODATEK_O_IGRALCU;
+        memcpy(&buffer[poz], &Risalnik::kamera_3D.pozicija.x, sizeof(float));
+        poz += 4;
+        memcpy(&buffer[poz], &Risalnik::kamera_3D.pozicija.y, sizeof(float));
+        poz += 4;
+        memcpy(&buffer[poz], &Risalnik::kamera_3D.pozicija.z, sizeof(float));
+        poz += 4;
+        m_odjmalec.poslji(buffer, poz);
     }
     if (!m_sem_povezan && !m_pavza /*Ko je pavza == true se kliče konec preko gumba ne pa če se povezava prekine*/) //* Če se povezava s strežnikom prekine se vrne na glavni meni
     {
@@ -168,9 +191,7 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
             int vel;
             memcpy((char *)&vel, &buffer[1], sizeof(vel));
             int poz = 5;
-            while (is->nasprotniki.size() < vel)
-                is->nasprotniki.push_back(Nasprotnik());
-
+            is->nasprotniki.resize(vel);
             for (int i = 0; i < is->nasprotniki.size(); i++)
             {
                 memcpy((char *)&is->nasprotniki[i].id, &buffer[poz], sizeof(is->nasprotniki[i].id));
@@ -180,6 +201,7 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
                 memcpy((char *)&is->nasprotniki[i].pozicija.y, &buffer[poz], sizeof(is->nasprotniki[i].pozicija.y));
                 poz += 4;
                 memcpy((char *)&is->nasprotniki[i].pozicija.z, &buffer[poz], sizeof(is->nasprotniki[i].pozicija.z));
+                poz += 4;
             }
             sporocilo("S :: Podatki o igralcih\n");
         }

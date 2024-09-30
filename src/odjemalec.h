@@ -1,5 +1,6 @@
 #ifndef ODJEMALEC_H
 #define ODJEMALEC_H
+#include "define.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -20,7 +21,6 @@
 #endif
 
 #include "sporocila_za_komunikacijo.h"
-#include "define.h"
 
 class Odjemalec
 {

@@ -1,7 +1,7 @@
+
 #include "streznik.h"
 #include "sporocila_za_komunikacijo.h"
 #include "dnevnik.h"
-
 void Odjemalec_zs::obdelaj_sporocilo(char buff[])
 {
 
@@ -46,6 +46,18 @@ void Odjemalec_zs::obdelaj_sporocilo(char buff[])
         }
         Streznik::poslji(buff, poz, m_nov_vticnik_fd);
     }
+    if (buff[0] == P_PODATEK_O_IGRALCU)
+    {
+        sporocilo("C %i :: Posiljam svoje podatke!\n", odjemalec_id);
+        int poz = 1;
+        memcpy((char *)&pozicija.x, &buff[poz], sizeof(float));
+        poz += 4;
+        memcpy((char *)&pozicija.y, &buff[poz], sizeof(float));
+        poz += 4;
+        memcpy((char *)&pozicija.z, &buff[poz], sizeof(float));
+        pozicija.z *= -1;
+        std::cout << pozicija << "\n";
+    }
 }
 
 bool Streznik::zazeni(int port)
@@ -54,6 +66,7 @@ bool Streznik::zazeni(int port)
     sporocilo("streznik.cpp :: Odpiranje streznika na vratih %i\n", port);
 #endif
 #ifdef LINUX
+    m_naslednji_cas_za_podatke_o_igralcih = 0;
 
     sockaddr_in naslov_streznika;
     m_st_vseh_odjemalcev = 0;
@@ -128,6 +141,7 @@ void Streznik::poslusaj()
 
     while (m_streznik_tece)
     {
+        posodobi();
         Odjemalec_zs *odjemalec = new Odjemalec_zs;
 
         odjemalec->m_odjemalec_vel = sizeof(odjemalec->m_naslov_odjemalca);
@@ -323,3 +337,35 @@ void Streznik::poslji(char buffer[], int vel, int vticnik)
 }
 
 #endif
+
+void Streznik::posodobi()
+{
+    if (m_naslednji_cas_za_podatke_o_igralcih <= clock() / CLOCKS_PER_SEC)
+    {
+        m_naslednji_cas_za_podatke_o_igralcih += 0.3;
+
+        for (int i = 0; i < odjemalci.size(); i++)
+        {
+            char buffer[256];
+            buffer[0] = P_PODATKI_O_IGRALCIH;
+            int vel = odjemalci.size() - 1;
+            memcpy(&buffer[1], (char *)&vel, sizeof(int));
+            int poz = 5;
+            for (int j = 0; j < odjemalci.size(); j++)
+            {
+                if (i != j)
+                {
+                    memcpy(&buffer[poz], (char *)&odjemalci[j]->odjemalec_id, sizeof(int));
+                    poz += sizeof(int);
+                    memcpy(&buffer[poz], (char *)&odjemalci[j]->pozicija.x, sizeof(float));
+                    poz += sizeof(float);
+                    memcpy(&buffer[poz], (char *)&odjemalci[j]->pozicija.y, sizeof(float));
+                    poz += sizeof(float);
+                    memcpy(&buffer[poz], (char *)&odjemalci[j]->pozicija.z, sizeof(float));
+                    poz += sizeof(float);
+                }
+            }
+            poslji(buffer, poz, odjemalci[i]->m_nov_vticnik_fd);
+        }
+    }
+}

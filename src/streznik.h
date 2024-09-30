@@ -1,6 +1,8 @@
 #ifndef STREZNIK_H
 #define STREZNIK_H
+#include "define.h"
 
+#include <ctime>
 #include <thread>
 #include <fcntl.h>
 #include <stdio.h>
@@ -22,7 +24,6 @@
 #endif
 
 #include "matematika.h"
-#include "define.h"
 
 class Streznik;
 class Odjemalec_zs
@@ -54,10 +55,12 @@ public:
     friend class Odjemalec_zs;
 
 private:
+    static void posodobi();
     static inline std::thread m_nit_za_poslusanje;
     static inline std::vector<Odjemalec_zs *> odjemalci;
     static inline int m_st_vseh_odjemalcev;
     static inline bool m_streznik_tece;
+    static inline double m_naslednji_cas_za_podatke_o_igralcih;
 #ifdef LINUX
     static inline int m_vticnik_fd;
 #endif

@@ -37,7 +37,7 @@ private:
     static void vzdrzuj_povezavo(Igra_scena *is);
     bool m_pavza;
     bool m_sem_povezan;
-
+    uint32_t m_cas_naslednjega_posiljanja;
     Odjemalec m_odjmalec;
 
     Besedilo m_gumb_za_na_meni;
