@@ -16,6 +16,7 @@ public:
     mat::vec3 smer;
     mat::vec3 tarca;
     mat::vec3 spredaj;
+    mat::vec3 rotacija;
     mat::vec3 gor;
     float yaw, pitch; //! Prevedi
     float vidno_polje;

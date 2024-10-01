@@ -8,4 +8,6 @@
 #define P_IGRALEC_ZAPUSTIL 3
 #define P_PODATKI_O_IGRALCIH 4
 #define P_PODATEK_O_IGRALCU 5
+
+#define HITROST_POSILJANJA 0.3
 #endif

@@ -11,7 +11,7 @@ Igra_scena::Igra_scena()
       m_gumb_za_na_meni(m_pisava, 0xffffffff, mat::vec2(0), 45, "Meni", R_P_X_SREDINA | R_P_Y_SREDINA),
       m_gumb_za_nadaljevanje(m_pisava, 0xffffffff, mat::vec2(0), 45, "Nadaljuj", R_P_X_SREDINA | R_P_Y_SREDINA)
 {
-    Nasprotnik::raketa.nastavi(mat::vec3(0), mat::vec3(1), mat::vec3(0), 0xffffffff, true, "../sredstva/raketa.obj");
+    Nasprotnik::raketa.nastavi(mat::vec3(0), mat::vec3(1), mat::vec3(1, 1, 1), 0xffffffff, true, "../sredstva/raketa.obj");
 }
 
 void Igra_scena::zacetek()
@@ -44,7 +44,7 @@ void Igra_scena::zacetek()
         float vel;
         std::stringstream ss(s);
         ss >> poz.x >> poz.y >> poz.z >> vel >> rot.x >> rot.x >> rot.z;
-        m_kamni1[i].nastavi(poz, mat::vec3(vel), rot, 0xffffffff, true, "../sredstva/kamni/K1.obj");
+        m_kamni1[i].nastavi(poz, mat::vec3(vel / 0.5), rot, 0xffffffff, true, "../sredstva/kamni/K1.obj");
     }
     i_dat.close();
 
@@ -77,6 +77,7 @@ void Igra_scena::zanka()
     for (int i = 0; i < nasprotniki.size(); i++)
     {
         Nasprotnik::raketa.pozicija = nasprotniki[i].pozicija;
+        Nasprotnik::raketa.rotacija = nasprotniki[i].rotacija;
         Risalnik::narisi_3D_objekt(Nasprotnik::raketa);
     }
 
@@ -130,18 +131,18 @@ void Igra_scena::zanka()
     //* Komunikacija s streznikom
     if (m_cas_naslednjega_posiljanja <= Cas::get_cas())
     {
-        m_cas_naslednjega_posiljanja = Cas::get_cas() + 1;
+        m_cas_naslednjega_posiljanja = Cas::get_cas() + HITROST_POSILJANJA;
 
         //* Pošiljanje pozicije
         char buffer[256];
-        int poz = 1;
         buffer[0] = P_PODATEK_O_IGRALCU;
-        memcpy(&buffer[poz], &Risalnik::kamera_3D.pozicija.x, sizeof(float));
-        poz += 4;
-        memcpy(&buffer[poz], &Risalnik::kamera_3D.pozicija.y, sizeof(float));
-        poz += 4;
-        memcpy(&buffer[poz], &Risalnik::kamera_3D.pozicija.z, sizeof(float));
-        poz += 4;
+        int poz = 1;
+        memcpy(&buffer[poz], &Risalnik::kamera_3D.pozicija, sizeof(mat::vec3));
+        poz += sizeof(mat::vec3);
+        memcpy(&buffer[poz], &Risalnik::kamera_3D.rotacija, sizeof(mat::vec3));
+        poz += sizeof(mat::vec3);
+        memcpy(&buffer[poz], &Risalnik::kamera_3D.smer, sizeof(mat::vec3));
+        poz += sizeof(mat::vec3);
         m_odjmalec.poslji(buffer, poz);
     }
     if (!m_sem_povezan && !m_pavza /*Ko je pavza == true se kliče konec preko gumba ne pa če se povezava prekine*/) //* Če se povezava s strežnikom prekine se vrne na glavni meni
@@ -196,12 +197,11 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
             {
                 memcpy((char *)&is->nasprotniki[i].id, &buffer[poz], sizeof(is->nasprotniki[i].id));
                 poz += 4;
-                memcpy((char *)&is->nasprotniki[i].pozicija.x, &buffer[poz], sizeof(is->nasprotniki[i].pozicija.x));
-                poz += 4;
-                memcpy((char *)&is->nasprotniki[i].pozicija.y, &buffer[poz], sizeof(is->nasprotniki[i].pozicija.y));
-                poz += 4;
-                memcpy((char *)&is->nasprotniki[i].pozicija.z, &buffer[poz], sizeof(is->nasprotniki[i].pozicija.z));
-                poz += 4;
+                memcpy((char *)&is->nasprotniki[i].pozicija, &buffer[poz], sizeof(mat::vec3));
+                poz += sizeof(mat::vec3);
+                memcpy((char *)&is->nasprotniki[i].rotacija, &buffer[poz], sizeof(mat::vec3));
+                poz += sizeof(mat::vec3);
+                memcpy((char *)&is->nasprotniki[i].smer, &buffer[poz], sizeof(mat::vec3));
             }
             sporocilo("S :: Podatki o igralcih\n");
         }

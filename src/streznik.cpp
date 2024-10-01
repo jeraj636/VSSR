@@ -34,14 +34,14 @@ void Odjemalec_zs::obdelaj_sporocilo(char buff[])
         {
             if (Streznik::odjemalci[i]->odjemalec_id != odjemalec_id)
             {
-                memcpy(&buff[poz], (char *)&Streznik::odjemalci[i]->odjemalec_id, sizeof(Streznik::odjemalci[i]->odjemalec_id));
-                poz += 4;
-                memcpy(&buff[poz], (char *)&Streznik::odjemalci[i]->pozicija.x, sizeof(Streznik::odjemalci[i]->pozicija.x));
-                poz += 4;
-                memcpy(&buff[poz], (char *)&Streznik::odjemalci[i]->pozicija.y, sizeof(Streznik::odjemalci[i]->pozicija.y));
-                poz += 4;
-                memcpy(&buff[poz], (char *)&Streznik::odjemalci[i]->pozicija.z, sizeof(Streznik::odjemalci[i]->pozicija.z));
-                poz += 4;
+                memcpy(&buff[poz], (char *)&Streznik::odjemalci[i]->odjemalec_id, sizeof(int));
+                poz += sizeof(int);
+                memcpy(&buff[poz], &Streznik::odjemalci[i]->pozicija, sizeof(mat::vec3));
+                poz += sizeof(mat::vec3);
+                memcpy(&buff[poz], &Streznik::odjemalci[i]->rotacija, sizeof(mat::vec3));
+                poz += sizeof(mat::vec3);
+                memcpy(&buff[poz], &Streznik::odjemalci[i]->smer, sizeof(mat::vec3));
+                poz += sizeof(mat::vec3);
             }
         }
         Streznik::poslji(buff, poz, m_nov_vticnik_fd);
@@ -50,12 +50,14 @@ void Odjemalec_zs::obdelaj_sporocilo(char buff[])
     {
         sporocilo("C %i :: Posiljam svoje podatke!\n", odjemalec_id);
         int poz = 1;
-        memcpy((char *)&pozicija.x, &buff[poz], sizeof(float));
-        poz += 4;
-        memcpy((char *)&pozicija.y, &buff[poz], sizeof(float));
-        poz += 4;
-        memcpy((char *)&pozicija.z, &buff[poz], sizeof(float));
+        memcpy((char *)&pozicija, &buff[poz], sizeof(mat::vec3));
+        poz += sizeof(mat::vec3);
+        memcpy((char *)&rotacija, &buff[poz], sizeof(mat::vec3));
+        poz += sizeof(mat::vec3);
+        memcpy((char *)&smer, &buff[poz], sizeof(mat::vec3));
+        poz += sizeof(mat::vec3);
         pozicija.z *= -1;
+        pozicija.x *= -1;
         std::cout << pozicija << "\n";
     }
 }
@@ -343,7 +345,7 @@ void Streznik::posodobi()
 {
     if (m_naslednji_cas_za_podatke_o_igralcih <= clock() / CLOCKS_PER_SEC)
     {
-        m_naslednji_cas_za_podatke_o_igralcih += 0.3;
+        m_naslednji_cas_za_podatke_o_igralcih += HITROST_POSILJANJA;
 
         for (int i = 0; i < odjemalci.size(); i++)
         {
@@ -358,12 +360,12 @@ void Streznik::posodobi()
                 {
                     memcpy(&buffer[poz], (char *)&odjemalci[j]->odjemalec_id, sizeof(int));
                     poz += sizeof(int);
-                    memcpy(&buffer[poz], (char *)&odjemalci[j]->pozicija.x, sizeof(float));
-                    poz += sizeof(float);
-                    memcpy(&buffer[poz], (char *)&odjemalci[j]->pozicija.y, sizeof(float));
-                    poz += sizeof(float);
-                    memcpy(&buffer[poz], (char *)&odjemalci[j]->pozicija.z, sizeof(float));
-                    poz += sizeof(float);
+                    memcpy(&buffer[poz], &odjemalci[j]->pozicija, sizeof(mat::vec3));
+                    poz += sizeof(mat::vec3);
+                    memcpy(&buffer[poz], &odjemalci[j]->rotacija, sizeof(mat::vec3));
+                    poz += sizeof(mat::vec3);
+                    memcpy(&buffer[poz], &odjemalci[j]->smer, sizeof(mat::vec3));
+                    poz += sizeof(mat::vec3);
                 }
             }
             poslji(buffer, poz, odjemalci[i]->m_nov_vticnik_fd);

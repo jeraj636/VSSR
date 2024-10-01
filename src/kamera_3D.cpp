@@ -20,6 +20,7 @@ void Kamera_3D::nastavi()
     gor = mat::vec3(0, 1, 0);
     yaw = -90;
     pitch = 0;
+    rotacija = mat::vec3(degToRad(yaw), 0, 0);
     vidno_polje = 60;
     hitrost_premikanja = 50;
     hitrost_miske = 100;
@@ -51,8 +52,9 @@ void Kamera_3D::posodobi()
     smer.x = cos(degToRad(yaw)) * cos(degToRad(pitch));
     smer.y = sin(degToRad(pitch));
     smer.z = sin(degToRad(yaw)) * cos(degToRad(pitch));
-    spredaj = mat::normaliziraj(smer);
 
+    rotacija = mat::vec3(degToRad(pitch + 90), -degToRad(yaw + 90), 0);
+    spredaj = mat::normaliziraj(smer);
     mat::vec3 kamera_desno = mat::normaliziraj(mat::vektorski_produkt(gor, smer));
     mat::vec3 m_kamera_gor = mat::vektorski_produkt(smer, kamera_desno);
 

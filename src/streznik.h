@@ -32,6 +32,8 @@ public:
     friend class Streznik;
     void obdelaj_sporocilo(char buffer[]);
     mat::vec3 pozicija;
+    mat::vec3 rotacija;
+    mat::vec3 smer;
 
 protected:
 #ifdef LINUX
