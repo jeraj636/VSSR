@@ -165,6 +165,7 @@ void Streznik::poslusaj()
     listen(m_vticnik, 20);
     while (m_streznik_tece)
     {
+        posodobi();
         Odjemalec_zs *odjemalec = new Odjemalec_zs;
 
         odjemalec->m_odjemalec_vel = sizeof(odjemalec->m_naslov_odjemalca);
