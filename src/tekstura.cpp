@@ -16,7 +16,7 @@ uint32_t nalozi_teksturo(const std::string &pot_do_teksture)
 
     if (podatki == NULL)
     {
-        napaka("tekstura.cpp :: Napaka pri nalaganju slike: %s", pot_do_teksture.c_str());
+        napaka("tekstura.cpp :: Napaka pri nalaganju slike: %s\n", pot_do_teksture.c_str());
         glfwTerminate();
         exit(1);
     }
@@ -48,7 +48,7 @@ uint32_t nalozi_teksturo(const std::string &pot_do_teksture)
         break;
     };
 
-    stbi_image_free(podatki);
+        stbi_image_free(podatki);
     return tekstura;
 }
 

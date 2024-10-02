@@ -12,6 +12,7 @@ Igra_scena::Igra_scena()
       m_gumb_za_nadaljevanje(m_pisava, 0xffffffff, mat::vec2(0), 45, "Nadaljuj", R_P_X_SREDINA | R_P_Y_SREDINA)
 {
     Nasprotnik::raketa.nastavi(mat::vec3(0), mat::vec3(1), mat::vec3(1, 1, 1), 0xffffffff, true, "../sredstva/raketa.obj");
+    m_zvezdno_nebo.nastavi(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA); // naredi sicer podobno (isto)
 }
 
 void Igra_scena::zacetek()
@@ -20,7 +21,6 @@ void Igra_scena::zacetek()
     m_cas_naslednjega_posiljanja = 0;
     // morda malo nenavadno! zdaj sem ze pozabil kaj je nenavadno? nic ni nenavadno.
     // m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);//! to je bilo nenavadno
-    m_zvezdno_nebo.nastavi(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA); // naredi sicer podobno (isto)
 
     //* Nastavljanje kamere in kazalca
     Risalnik::kamera_3D.premikanje_kamere = true;
@@ -159,6 +159,7 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
         char buffer[256];
         if (!is->m_odjmalec.beri_iz_povezave(buffer)) //* Napaka pri branju
         {
+            continue;
             is->m_sem_povezan = false;
             break;
         }

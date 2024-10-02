@@ -2,6 +2,7 @@
 #include "streznik.h"
 #include "sporocila_za_komunikacijo.h"
 #include "dnevnik.h"
+#include "chrono"
 void Odjemalec_zs::obdelaj_sporocilo(char buff[])
 {
 
@@ -58,6 +59,7 @@ void Odjemalec_zs::obdelaj_sporocilo(char buff[])
         poz += sizeof(mat::vec3);
         pozicija.z *= -1;
         pozicija.x *= -1;
+        pozicija.y *= -1;
         std::cout << pozicija << "\n";
     }
 }
@@ -343,9 +345,12 @@ void Streznik::poslji(char buffer[], int vel, int vticnik)
 
 void Streznik::posodobi()
 {
-    if (m_naslednji_cas_za_podatke_o_igralcih <= clock() / CLOCKS_PER_SEC)
+    double zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
+
+    if (m_naslednji_cas_za_podatke_o_igralcih <= zdaj)
     {
         m_naslednji_cas_za_podatke_o_igralcih += HITROST_POSILJANJA;
+        std::cout << m_naslednji_cas_za_podatke_o_igralcih << "\n";
 
         for (int i = 0; i < odjemalci.size(); i++)
         {

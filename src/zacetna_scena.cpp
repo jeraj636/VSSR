@@ -12,13 +12,13 @@ Zacetna_scena::Zacetna_scena()
       m_naslov(m_pisava, 0xffffffff, mat::vec2(100, 0), 80, "VSSR", R_P_X_SREDINA),
       m_podnaslov(m_pisava, 0xffffffff, mat::vec2(100, 0), 55, "Vesoljski spopad super raket", R_P_X_SREDINA)
 {
+    m_raketa = Objekt_3D(mat::vec3(10, -3, 20), mat::vec3(2.5), mat::vec3(0, 0, 45), 0x00ffffff, true, "../sredstva/raketa.obj");
+    m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);
 }
 
 void Zacetna_scena::zacetek()
 {
     // morda malo nenavadno zdaj sem ze pozabil kaj je nenavadno
-    m_raketa = Objekt_3D(mat::vec3(10, -3, 20), mat::vec3(2.5), mat::vec3(0, 0, 45), 0x00ffffff, true, "../sredstva/raketa.obj");
-    m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);
 
     Risalnik::kamera_3D.premikanje_kamere = false;
     Risalnik::nastavi_aktivnost_kazalca_miske(true);
