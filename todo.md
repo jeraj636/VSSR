@@ -16,3 +16,4 @@
 - [X] Scena
 - [X] Polepsaj shaderje
 - [X] Testiraj sockete
+- [ ] X invertacija miske ni OK

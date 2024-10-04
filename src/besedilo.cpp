@@ -55,10 +55,10 @@ bool Besedilo::ali_je_miska_gor()
     posodobi();
 
     //* ali je kazalec miske znotraj besedila
-    if (Risalnik::kazalec_miske.pozicija_kazalca.x >= m_leva_pozicija.x &&
-        Risalnik::kazalec_miske.pozicija_kazalca.x <= m_leva_pozicija.x + m_dejanska_velikost.x &&
-        Risalnik::kazalec_miske.pozicija_kazalca.y >= m_leva_pozicija.y - m_dejanska_velikost.y &&
-        Risalnik::kazalec_miske.pozicija_kazalca.y <= m_leva_pozicija.y)
+    if (Risalnik::kazalec_miske.pozicija_kazalca_na_platnu.x >= m_leva_pozicija.x &&
+        Risalnik::kazalec_miske.pozicija_kazalca_na_platnu.x <= m_leva_pozicija.x + m_dejanska_velikost.x &&
+        Risalnik::kazalec_miske.pozicija_kazalca_na_platnu.y >= m_leva_pozicija.y - m_dejanska_velikost.y &&
+        Risalnik::kazalec_miske.pozicija_kazalca_na_platnu.y <= m_leva_pozicija.y)
         return true;
     else
         return false;
@@ -92,17 +92,17 @@ void Besedilo::posodobi()
         if (min_y > quad.y0)
             min_y = quad.y0;
     }
-
+    x *= mnozitelj_velikosti;
     //* Izračun zamika po osi x glede na poravnavo besedila
     m_leva_pozicija = pozicija;
     if ((poravnava & R_P_X_SREDINA) == R_P_X_SREDINA)
-        m_leva_pozicija.x -= (x) / 2;
+        m_leva_pozicija.x -= (x / 2);
     if ((poravnava & R_P_DESNO) == R_P_DESNO)
         m_leva_pozicija.x -= x;
     if ((poravnava & R_P_Y_SREDINA) == R_P_Y_SREDINA)
         m_leva_pozicija.y += (std::abs(min_y) + std::abs(max_y)) / 2;
     if ((poravnava & R_P_ZGORAJ) == R_P_Y_SREDINA)
         m_leva_pozicija.y += std::abs(min_y) + std::abs(max_y);
-    m_dejanska_velikost = mat::vec2(x * mnozitelj_velikosti /* velikost po x je treba povečati ali pomanjšati*/,
+    m_dejanska_velikost = mat::vec2(x,
                                     std::abs(min_y) + std::abs(max_y) /*Velikost na y se izračuna s seštevkom absolutnih vrednosti min_y in max_y*/);
 }

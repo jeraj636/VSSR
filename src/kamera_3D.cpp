@@ -39,8 +39,7 @@ void Kamera_3D::posodobi()
     //* Izračun za koliko se je premaknil karalec gleda na prejsni frame
     mat::vec2 premik_kazalca;
     premik_kazalca = Risalnik::kazalec_miske.pozicija_kazalca - Risalnik::kazalec_miske.pr_pozicija_kazalca;
-    premik_kazalca.y *= -1;
-
+    premik_kazalca.x *= -1;
     if (premikanje_kamere)
     {
         yaw += premik_kazalca.x * Cas::get_delta_cas() * hitrost_miske;

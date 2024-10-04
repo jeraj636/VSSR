@@ -60,7 +60,6 @@ void Odjemalec_zs::obdelaj_sporocilo(char buff[])
         pozicija.z *= -1;
         pozicija.x *= -1;
         pozicija.y *= -1;
-        std::cout << pozicija << "\n";
     }
 }
 
@@ -350,7 +349,6 @@ void Streznik::posodobi()
     if (m_naslednji_cas_za_podatke_o_igralcih <= zdaj)
     {
         m_naslednji_cas_za_podatke_o_igralcih += HITROST_POSILJANJA;
-        std::cout << m_naslednji_cas_za_podatke_o_igralcih << "\n";
 
         for (int i = 0; i < odjemalci.size(); i++)
         {

@@ -84,16 +84,9 @@ void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
 void Risalnik::posodobi_velikost_okna(GLFWwindow *okno, int dolzina, int visina)
 {
     //* Nastavljanje velikosti okna
-    if (m_razsiljivo_okno)
-    {
 
-        glViewport(0, 0, dolzina, visina);
-    }
-    else
-    {
-        glViewport(0, 0, m_resolucija.x, m_resolucija.y);
-        glfwSetWindowSize(m_glfw_okno, m_resolucija.x, m_resolucija.y);
-    }
+    glViewport(0, 0, dolzina, visina);
+
     kamera_3D.nastavi();
 }
 void Risalnik::posodobi_tipke(GLFWwindow *okno, int tipka, int koda_skeniranja, int akcija, int modi)
@@ -132,8 +125,16 @@ void Risalnik::zacetek_okvir()
 
     //* Nastavljanje matrik:
     // Ortho 2D matrika
+    /*
+    !staro
     m_ortho_mat_2D = mat::mat3(1);
     m_ortho_mat_2D = mat::ortho(m_ortho_mat_2D, 0, m_velikost_okna.x, 0, m_velikost_okna.y);
+    */
+    // nova ortho 2d matrika
+    vel_platna.x = 2;
+    vel_platna.y = 2 * m_velikost_okna.y / m_velikost_okna.x;
+    m_ortho_mat_2D = mat::mat3(1);
+    m_ortho_mat_2D = mat::ortho(m_ortho_mat_2D, vel_platna.x / -2, vel_platna.x / 2, vel_platna.y / -2, vel_platna.y / 2);
 
     // Proj 3D maatrika
     m_proj_mat_3D = mat::mat4(1);
@@ -145,6 +146,8 @@ void Risalnik::zacetek_okvir()
     kazalec_miske.prebran_v_tem_okvirju = false;
     kazalec_miske.pr_pozicija_kazalca = kazalec_miske.pozicija_kazalca;
     kazalec_miske.pozicija_kazalca = mat::vec2(kaz_poz_x, kaz_poz_y);
+    kazalec_miske.pozicija_kazalca_na_platnu.x = (kazalec_miske.pozicija_kazalca.x * 2 / m_velikost_okna.x) - 1;
+    kazalec_miske.pozicija_kazalca_na_platnu.y = (kazalec_miske.pozicija_kazalca.y * vel_platna.y / m_velikost_okna.y) - (vel_platna.y / 2);
 
     // *Cas zacetka okvirja
     Cas::m_zacetek_frame_cas = glfwGetTime();

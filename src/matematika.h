@@ -8,7 +8,7 @@
 
 namespace mat
 {
-
+    class mat3;
     class vec2
     {
     public:
@@ -49,6 +49,7 @@ namespace mat
         vec3 operator-(const vec3 &t) const;
         vec3 operator-(float t) const;
         vec3 operator*(float t);
+        vec3 operator*(const mat3 &t) const;
 
         vec3 &operator+=(const vec3 &t);
         vec3 &operator+=(float t);

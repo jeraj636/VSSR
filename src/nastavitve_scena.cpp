@@ -7,13 +7,13 @@
 #include "streznik.h"
 
 Nastavitve_scena::Nastavitve_scena()
-    : m_pisava("../sredstva/Cascadia.ttf", 55),
-      m_vrata_odjemalca(m_pisava, 0x000000ff, mat::vec2(0), 45, "", R_P_LEVO | R_P_Y_SREDINA),
-      m_streznik(m_pisava, 0x000000ff, mat::vec2(0), 45, "", R_P_LEVO | R_P_Y_SREDINA),
-      m_hitrost_miske(m_pisava, 0x000000ff, mat::vec2(0), 45, "", R_P_LEVO | R_P_Y_SREDINA),
-      m_gumb_za_na_meni(m_pisava, 0xffffffff, mat::vec2(0), 45, "Meni", R_P_X_SREDINA | R_P_Y_SREDINA),
-      m_vrata_streznika(m_pisava, 0x000000ff, mat::vec2(0), 45, "", R_P_LEVO | R_P_Y_SREDINA),
-      m_gumb_za_vklop_izkop_streznika(m_pisava, 0xffffffff, mat::vec2(0), 45, "", R_P_LEVO | R_P_Y_SREDINA)
+    : m_pisava("../sredstva/Cascadia.ttf", 80),
+      m_vrata_odjemalca(m_pisava, 0x000000ff, mat::vec2(0), .06, "", R_P_LEVO | R_P_Y_SREDINA),
+      m_streznik(m_pisava, 0x000000ff, mat::vec2(0), 0.06, "", R_P_LEVO | R_P_Y_SREDINA),
+      m_hitrost_miske(m_pisava, 0x000000ff, mat::vec2(0), .06, "", R_P_LEVO | R_P_Y_SREDINA),
+      m_gumb_za_na_meni(m_pisava, 0xffffffff, mat::vec2(0, .3), .06, "Meni", R_P_X_SREDINA | R_P_Y_SREDINA),
+      m_vrata_streznika(m_pisava, 0x000000ff, mat::vec2(0), .06, "", R_P_LEVO | R_P_Y_SREDINA),
+      m_gumb_za_vklop_izkop_streznika(m_pisava, 0xffffffff, mat::vec2(0), .06, "", R_P_LEVO | R_P_Y_SREDINA)
 {
 
     //* Branje nastavitev iz datoteke
@@ -30,20 +30,21 @@ Nastavitve_scena::Nastavitve_scena()
     i_dat.close();
 
     m_ali_streznik_tece = false;
+
+    m_zvezdno_nebo.nastavi(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA); // naredi sicer podobno (isto)
+
+    m_polje_za_vpis_streznika.nastavi(mat::vec2(-.57, -.20), mat::vec2(.4, .04), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
+    m_polje_za_vpis_vrat_odjemalca.nastavi(mat::vec2(-.65, -.15), mat::vec2(.15, .04), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
+    m_polje_za_vpis_hitrosti_miske.nastavi(mat::vec2(-.43, -.05), mat::vec2(.1, .04), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
+    m_polje_za_vpis_vrat_streznika.nastavi(mat::vec2(-.65, .05), mat::vec2(.15, .04), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
 }
 
 void Nastavitve_scena::zacetek()
 {
     // morda malo nenavadno! zdaj sem ze pozabil kaj je nenavadno? nic ni nenavadno.
     // m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);//! to je bilo nenavadno
-    m_zvezdno_nebo.nastavi(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA); // naredi sicer podobno (isto)
 
-    m_polje_za_vpis_streznika.nastavi(mat::vec2(400, 250), mat::vec2(300, 46), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
-    m_polje_za_vpis_vrat_odjemalca.nastavi(mat::vec2(400, 300), mat::vec2(150, 46), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
-    m_polje_za_vpis_hitrosti_miske.nastavi(mat::vec2(500, 400), mat::vec2(150, 46), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
-    m_polje_za_vpis_vrat_streznika.nastavi(mat::vec2(325, 500), mat::vec2(150, 46), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
-
-    m_gumb_za_vklop_izkop_streznika.pozicija = mat::vec2(500, 500);
+    m_gumb_za_vklop_izkop_streznika.pozicija = mat::vec2(-.48, .046);
 
     //* Nastavljanje miske
     Risalnik::kamera_3D.premikanje_kamere = false;
@@ -56,18 +57,17 @@ void Nastavitve_scena::zanka()
     Risalnik::nastavi_testiranje_globine(false);
     Risalnik::narisi_2D_objekt(m_zvezdno_nebo);
 
-    m_zvezdno_nebo.velikost = Risalnik::dobi_velikost_okna();
-    m_zvezdno_nebo.pozicija = Risalnik::dobi_velikost_okna() / 2;
+    m_zvezdno_nebo.velikost = Risalnik::vel_platna;
+    m_zvezdno_nebo.pozicija = mat::vec2(0);
 
-    Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(Risalnik::dobi_velikost_okna().x / 2, 100), 55, "Nastavitve", R_P_X_SREDINA);
-    Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(100, 200), 45, "Omrezje", R_P_LEVO | R_P_Y_SREDINA);
-    Risalnik::narisi_besedilo(m_pisava, 0xffffffcc, mat::vec2(150, 250), 45, "Streznik:", R_P_LEVO | R_P_Y_SREDINA);
-    Risalnik::narisi_besedilo(m_pisava, 0xffffffcc, mat::vec2(150, 300), 45, "Vrata:", R_P_LEVO | R_P_Y_SREDINA);
-    Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(100, 350), 45, "Igra:", R_P_LEVO | R_P_Y_SREDINA);
-    Risalnik::narisi_besedilo(m_pisava, 0xffffffcc, mat::vec2(150, 400), 45, "Hirtost miske:", R_P_LEVO | R_P_Y_SREDINA);
-    Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(100, 450), 45, "Streznik:", R_P_LEVO | R_P_Y_SREDINA);
-    Risalnik::narisi_besedilo(m_pisava, 0xffffffcc, mat::vec2(150, 500), 45, "Vrata:", R_P_LEVO | R_P_Y_SREDINA);
-
+    Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(0, -.3), .09, "Nastavitve", R_P_X_SREDINA);
+    Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(-.9, -.26), .06, "Omrezje", R_P_LEVO | R_P_Y_SREDINA);
+    Risalnik::narisi_besedilo(m_pisava, 0xffffffcc, mat::vec2(-.85, -.20), .06, "Streznik:", R_P_LEVO | R_P_Y_SREDINA);
+    Risalnik::narisi_besedilo(m_pisava, 0xffffffcc, mat::vec2(-.85, -.15), .06, "Vrata:", R_P_LEVO | R_P_Y_SREDINA);
+    Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(-.9, -.1), .06, "Igra:", R_P_LEVO | R_P_Y_SREDINA);
+    Risalnik::narisi_besedilo(m_pisava, 0xffffffcc, mat::vec2(-.85, -.05), .06, "Hirtost miske:", R_P_LEVO | R_P_Y_SREDINA);
+    Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(-.9, 0), .06, "Streznik:", R_P_LEVO | R_P_Y_SREDINA);
+    Risalnik::narisi_besedilo(m_pisava, 0xffffffcc, mat::vec2(-.85, .05), .06, "Vrata:", R_P_LEVO | R_P_Y_SREDINA);
     posodobi_gumbe();
     posodobi_besedila();
 
@@ -82,7 +82,8 @@ void Nastavitve_scena::zanka()
     m_vrata_streznika.narisi_me();
 
     //* gumb za na meni
-    m_gumb_za_na_meni.pozicija = mat::vec2(Risalnik::dobi_velikost_okna().x / 2, Risalnik::dobi_velikost_okna().y - 100);
+    m_gumb_za_na_meni.pozicija = mat::vec2(0, .3);
+    m_gumb_za_na_meni.aktiven = true;
     if (m_gumb_za_na_meni.ali_je_miska_gor())
     {
         m_gumb_za_na_meni.barva_besedila.a = 0.5;

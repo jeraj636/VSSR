@@ -27,6 +27,7 @@ class Kazalec
 {
 public:
     mat::vec2 pozicija_kazalca, pr_pozicija_kazalca;
+    mat::vec2 pozicija_kazalca_na_platnu;
     friend class Risalnik;
 
 protected:
@@ -62,6 +63,7 @@ public:
     static mat::vec2 dobi_velikost_okna();
     static inline Scena *aktivna_scena_ptr;
     static inline std::string *buffer_za_vpis_podatkov;
+    static inline mat::vec2 vel_platna;
 
 private:
     static inline GLFWwindow *m_glfw_okno;
@@ -76,7 +78,6 @@ private:
     static inline mat::vec2 m_velikost_okna;
     static inline bool m_tipke[512];
     static inline mat::vec2 m_resolucija;
-    static inline bool m_razsiljivo_okno = true;
 
 public:
     static void odpri_okno(const std::string &naslov_okna, Barva t_barva_okna);

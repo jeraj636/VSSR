@@ -4,13 +4,13 @@
 
 Zacetna_scena::Zacetna_scena()
     : m_pisava("../sredstva/Cascadia.ttf", 80),
-      m_b_igraj(m_pisava, 0xffffffff, mat::vec2(100, 0), 55, "Igraj", R_P_LEVO),
-      m_b_nastavitve(m_pisava, 0xffffffff, mat::vec2(100, 0), 55, "Nastavitve", R_P_LEVO),
-      m_b_navodila(m_pisava, 0xffffffff, mat::vec2(100, 0), 55, "Navodila", R_P_LEVO),
-      m_b_zasluge(m_pisava, 0xffffffff, mat::vec2(100, 0), 55, "Zasluge", R_P_LEVO),
-      m_b_izhod(m_pisava, 0xffffffff, mat::vec2(100, 0), 55, "Izhod", R_P_LEVO),
-      m_naslov(m_pisava, 0xffffffff, mat::vec2(100, 0), 80, "VSSR", R_P_X_SREDINA),
-      m_podnaslov(m_pisava, 0xffffffff, mat::vec2(100, 0), 55, "Vesoljski spopad super raket", R_P_X_SREDINA)
+      m_b_igraj(m_pisava, 0xffffffff, mat::vec2(-.8, 0), 0.1, "Igraj", R_P_LEVO),
+      m_b_nastavitve(m_pisava, 0xffffffff, mat::vec2(-.8, 0), 0.1, "Nastavitve", R_P_LEVO),
+      m_b_navodila(m_pisava, 0xffffffff, mat::vec2(-.8, 0), 0.1, "Navodila", R_P_LEVO),
+      m_b_zasluge(m_pisava, 0xffffffff, mat::vec2(-.8, 0), 0.1, "Zasluge", R_P_LEVO),
+      m_b_izhod(m_pisava, 0xffffffff, mat::vec2(-.8, 0), 0.1, "Izhod", R_P_LEVO),
+      m_naslov(m_pisava, 0xffffffff, mat::vec2(0, 0), 0.13, "VSSR", R_P_X_SREDINA),
+      m_podnaslov(m_pisava, 0xffffffff, mat::vec2(0, 0), 0.12, "Vesoljski spopad super raket", R_P_X_SREDINA)
 {
     m_raketa = Objekt_3D(mat::vec3(10, -3, 20), mat::vec3(2.5), mat::vec3(0, 0, 45), 0x00ffffff, true, "../sredstva/raketa.obj");
     m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);
@@ -34,16 +34,16 @@ void Zacetna_scena::zanka()
     Risalnik::nastavi_testiranje_globine(true);
 
     posodobi_meni();
-    m_naslov.pozicija = Risalnik::dobi_velikost_okna() / 2;
-    m_naslov.pozicija.y -= 300;
+    m_naslov.pozicija = 0;
+    m_naslov.pozicija.y -= .4f;
     m_naslov.narisi_me();
 
-    m_podnaslov.pozicija = Risalnik::dobi_velikost_okna() / 2;
-    m_podnaslov.pozicija.y -= 225;
+    m_podnaslov.pozicija = 0;
+    m_podnaslov.pozicija.y = -.24f;
     m_podnaslov.narisi_me();
 
-    m_zvezdno_nebo.velikost = Risalnik::dobi_velikost_okna();
-    m_zvezdno_nebo.pozicija = Risalnik::dobi_velikost_okna() / 2;
+    m_zvezdno_nebo.velikost = Risalnik::vel_platna;
+    m_zvezdno_nebo.pozicija = 0;
 
     Risalnik::narisi_3D_objekt(m_raketa);
 }
@@ -54,11 +54,11 @@ void Zacetna_scena::konec()
 
 void Zacetna_scena::posodobi_meni()
 {
-    m_b_igraj.pozicija.y = Risalnik::dobi_velikost_okna().y / 2;
-    m_b_nastavitve.pozicija.y = Risalnik::dobi_velikost_okna().y / 2 + 75;
-    m_b_navodila.pozicija.y = Risalnik::dobi_velikost_okna().y / 2 + 150;
-    m_b_zasluge.pozicija.y = Risalnik::dobi_velikost_okna().y / 2 + 225;
-    m_b_izhod.pozicija.y = Risalnik::dobi_velikost_okna().y / 2 + 300;
+    m_b_igraj.pozicija.y = -0.1;
+    m_b_nastavitve.pozicija.y = 0;
+    m_b_navodila.pozicija.y = 0.1;
+    m_b_zasluge.pozicija.y = 0.2;
+    m_b_izhod.pozicija.y = 0.3;
 
     if (m_b_igraj.ali_je_miska_gor())
     {

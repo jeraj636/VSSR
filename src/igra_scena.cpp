@@ -7,9 +7,9 @@
 #include "dnevnik.h"
 
 Igra_scena::Igra_scena()
-    : m_pisava("../sredstva/Cascadia.ttf", 55),
-      m_gumb_za_na_meni(m_pisava, 0xffffffff, mat::vec2(0), 45, "Meni", R_P_X_SREDINA | R_P_Y_SREDINA),
-      m_gumb_za_nadaljevanje(m_pisava, 0xffffffff, mat::vec2(0), 45, "Nadaljuj", R_P_X_SREDINA | R_P_Y_SREDINA)
+    : m_pisava("../sredstva/Cascadia.ttf", 80),
+      m_gumb_za_na_meni(m_pisava, 0xffffffff, mat::vec2(0, 0.09), 0.06, "Meni", R_P_X_SREDINA | R_P_Y_SREDINA),
+      m_gumb_za_nadaljevanje(m_pisava, 0xffffffff, mat::vec2(0, 0), 0.06, "Nadaljuj", R_P_X_SREDINA | R_P_Y_SREDINA)
 {
     Nasprotnik::raketa.nastavi(mat::vec3(0), mat::vec3(1), mat::vec3(1, 1, 1), 0xffffffff, true, "../sredstva/raketa.obj");
     m_zvezdno_nebo.nastavi(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA); // naredi sicer podobno (isto)
@@ -69,8 +69,8 @@ void Igra_scena::zanka()
 
     Risalnik::nastavi_testiranje_globine(true);
 
-    m_zvezdno_nebo.velikost = Risalnik::dobi_velikost_okna();
-    m_zvezdno_nebo.pozicija = Risalnik::dobi_velikost_okna() / 2;
+    m_zvezdno_nebo.velikost = Risalnik::vel_platna;
+    m_zvezdno_nebo.pozicija = mat::vec2(0);
 
     for (int i = 0; i < 10; i++) //* Risanje zemljevida
         Risalnik::narisi_3D_objekt(m_kamni1[i]);
@@ -92,9 +92,7 @@ void Igra_scena::zanka()
     //* Premor
     if (m_pavza)
     {
-        Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(Risalnik::dobi_velikost_okna().x / 2, 100), 55, "Premor", R_P_X_SREDINA | R_P_Y_SREDINA);
-
-        m_gumb_za_na_meni.pozicija = Risalnik::dobi_velikost_okna() / 2;
+        Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(0, -.1), 0.09, "Premor", R_P_X_SREDINA | R_P_Y_SREDINA);
 
         if (m_gumb_za_na_meni.ali_je_miska_gor())
         {
@@ -107,9 +105,6 @@ void Igra_scena::zanka()
         }
         else
             m_gumb_za_na_meni.barva_besedila.a = 1;
-
-        m_gumb_za_nadaljevanje.pozicija = Risalnik::dobi_velikost_okna() / 2;
-        m_gumb_za_nadaljevanje.pozicija.y -= 150;
 
         if (m_gumb_za_nadaljevanje.ali_je_miska_gor())
         {
