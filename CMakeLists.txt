@@ -38,7 +38,12 @@ src/streznik.cpp
 src/odjemalec.cpp
 src/dnevnik.cpp
 )
-
+add_executable(streznik
+src/streznik_main.cpp
+src/dnevnik.cpp
+src/streznik.cpp
+src/vec3.cpp
+)
 target_include_directories(${PROJECT_NAME} PUBLIC
 lib/glad/include/
 lib/glfw/include/
