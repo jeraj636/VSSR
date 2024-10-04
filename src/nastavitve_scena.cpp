@@ -41,9 +41,6 @@ Nastavitve_scena::Nastavitve_scena()
 
 void Nastavitve_scena::zacetek()
 {
-    // morda malo nenavadno! zdaj sem ze pozabil kaj je nenavadno? nic ni nenavadno.
-    // m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);//! to je bilo nenavadno
-
     m_gumb_za_vklop_izkop_streznika.pozicija = mat::vec2(-.48, .046);
 
     //* Nastavljanje miske
@@ -131,10 +128,11 @@ void Nastavitve_scena::zanka()
 void Nastavitve_scena::konec()
 {
     std::ofstream o_dat("../sredstva/nastavitve.txt");
-    o_dat << m_streznik.niz << "\n";
-    o_dat << m_vrata_odjemalca.niz << "\n";
-    o_dat << m_hitrost_miske.niz << "\n";
-    o_dat << m_vrata_streznika.niz << "\n";
+    o_dat << m_streznik.niz << std::endl;
+    o_dat << m_vrata_odjemalca.niz << std::endl;
+    o_dat << m_hitrost_miske.niz << std::endl;
+    o_dat << m_vrata_streznika.niz << std::endl;
+    o_dat.close();
 }
 
 void Nastavitve_scena::posodobi_gumbe()

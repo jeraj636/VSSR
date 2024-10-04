@@ -72,10 +72,14 @@ bool Odjemalec::zazeni(std::string naslov, int port)
     m_streznik = socket(AF_INET, SOCK_STREAM, 0);
 
     //* Nastavljanje podatkov o strezniku
-    m_streznik_nalov.sin_addr.s_addr = inet_addr(naslov.c_str());
-    m_streznik_nalov.sin_family = AF_INET;
-    m_streznik_nalov.sin_port = htons(m_port);
+    hostent *naslov_str = gethostbyname(naslov.c_str());
 
+    // m_streznik_nalov.sin_addr.s_addr = inet_addr(naslov_str->h_addr_list[0]);
+    memset(&m_streznik_nalov, 0, sizeof(m_streznik_nalov));
+    m_streznik_nalov.sin_family = AF_INET;
+
+    memcpy(&m_streznik_nalov.sin_addr.s_addr, naslov_str->h_addr, naslov_str->h_length);
+    m_streznik_nalov.sin_port = htons(m_port);
     //* Vzpostalvjanje povezava
     if (connect(m_streznik, (SOCKADDR *)&m_streznik_nalov, sizeof(m_streznik_nalov)))
     {
