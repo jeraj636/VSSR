@@ -174,13 +174,9 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
             // is->nasprotniki.back().pozicija.x;
             int poz = 1;
             memcpy((char *)&is->nasprotniki.back().id, &buffer[poz], sizeof(is->nasprotniki.back().id));
-            poz += sizeof(mat::vec3);
-            memcpy((char *)&is->nasprotniki.back().tr_pozicija, &buffer[poz], sizeof(mat::vec3));
-            poz += sizeof(mat::vec3);
-            memcpy((char *)&is->nasprotniki.back().tr_rotacija, &buffer[poz], sizeof(mat::vec3));
 
-            is->nasprotniki.back().pr_pozicija = is->nasprotniki.back().tr_pozicija;
-            is->nasprotniki.back().pr_rotacija = is->nasprotniki.back().tr_rotacija;
+            is->nasprotniki.back().pr_pozicija = is->nasprotniki.back().tr_pozicija = is->nasprotniki.back().pozicija = mat::vec3(0);
+            is->nasprotniki.back().pr_rotacija = is->nasprotniki.back().tr_rotacija = is->nasprotniki.back().rotacija = mat::vec3(0);
 
             sporocilo("S :: Nov igralec %i", is->nasprotniki.back().id);
         }
@@ -202,6 +198,7 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
                 memcpy((char *)&is->nasprotniki[i].tr_pozicija, &buffer[poz], sizeof(mat::vec3));
                 poz += sizeof(mat::vec3);
                 memcpy((char *)&is->nasprotniki[i].tr_rotacija, &buffer[poz], sizeof(mat::vec3));
+                poz += sizeof(mat::vec3);
             }
             sporocilo("S :: Podatki o igralcih\n");
         }

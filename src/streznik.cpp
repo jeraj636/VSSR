@@ -13,10 +13,6 @@ void Odjemalec_zs::obdelaj_sporocilo(char buff[])
         buff[0] = P_NOV_IGRLEC;
         memcpy(&buff[1], (char *)&odjemalec_id, sizeof(int));
         int poz = 5;
-        memcpy(&buff[poz], (char *)&pozicija, sizeof(mat::vec3));
-        poz += sizeof(mat::vec3);
-        memcpy(&buff[poz], (char *)&rotacija, sizeof(mat::vec3));
-
         for (int i = 0; i < Streznik::odjemalci.size(); i++)
         {
             if (Streznik::odjemalci[i]->odjemalec_id != odjemalec_id)
@@ -267,6 +263,17 @@ void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
     {
         if (odjemalec->odjemalec_id == odjemalci[i]->odjemalec_id)
         {
+            char buffer[256];
+            buffer[0] = P_IGRALEC_ZAPUSTIL;
+            memcpy(&buffer[1], (char *)&odjemalec->odjemalec_id, sizeof(odjemalec->odjemalec_id));
+            for (int i = 0; i < Streznik::odjemalci.size(); i++)
+            {
+                if (Streznik::odjemalci[i]->odjemalec_id != odjemalec->odjemalec_id)
+                {
+                    Streznik::poslji(buffer, 5, Streznik::odjemalci[i]->m_nov_vticnik_fd);
+                }
+            }
+
             std::swap(odjemalci[i], odjemalci.back());
             delete odjemalci.back();
             odjemalci.pop_back();
