@@ -63,6 +63,7 @@ bool Odjemalec::zazeni(std::string naslov, int port)
         close(m_vticnik_fd);
         return false;
     }
+    sporocilo("Povezava je uspela!\n");
 #endif
 #ifdef WINDOWS
     m_port = port;

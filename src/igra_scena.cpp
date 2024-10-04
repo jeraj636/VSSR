@@ -91,7 +91,6 @@ void Igra_scena::zanka()
 
         Risalnik::narisi_3D_objekt(Nasprotnik::raketa);
     }
-    std::cout << nasprotniki.size() << "\n";
     //* Preverjanje stanj gumbov
     if (Risalnik::dobi_tipko(256 /*Tipka ESC*/))
     {
@@ -164,8 +163,6 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
         if (!is->m_odjmalec.beri_iz_povezave(buffer)) //* Napaka pri branju
         {
             continue;
-            is->m_sem_povezan = false;
-            break;
         }
         if (buffer[0] == P_KONEC_POVEZAVE)
         {
