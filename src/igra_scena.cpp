@@ -77,12 +77,21 @@ void Igra_scena::zanka()
     for (int i = 0; i < nasprotniki.size(); i++)
     {
         mat::vec3 smer = nasprotniki[i].tr_pozicija - nasprotniki[i].pr_pozicija;
-        nasprotniki[i].pozicija += mat::normaliziraj(smer) * Risalnik::kamera_3D.hitrost_premikanja * Cas::get_cas();
+        if (smer != mat::vec3(0))
+            nasprotniki[i].pozicija = nasprotniki[i].pr_pozicija + (mat::normaliziraj(smer) * Risalnik::kamera_3D.hitrost_premikanja * Cas::get_delta_cas());
+
+        smer = nasprotniki[i].tr_rotacija - nasprotniki[i].pr_pozicija;
+        if (smer != mat::vec3(0))
+            nasprotniki[i].rotacija = nasprotniki[i].pr_rotacija + (mat::normaliziraj(smer) * Risalnik::kamera_3D.hitrost_miske * Cas::get_delta_cas());
+
         Nasprotnik::raketa.pozicija = nasprotniki[i].pozicija;
-        Nasprotnik::raketa.rotacija = nasprotniki[i].pozicija;
+        Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
+        nasprotniki[i].pr_pozicija = nasprotniki[i].pozicija;
+        nasprotniki[i].pr_rotacija = nasprotniki[i].rotacija;
+
         Risalnik::narisi_3D_objekt(Nasprotnik::raketa);
     }
-
+    std::cout << nasprotniki.size() << "\n";
     //* Preverjanje stanj gumbov
     if (Risalnik::dobi_tipko(256 /*Tipka ESC*/))
     {
@@ -193,7 +202,8 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
                 is->nasprotniki[i].pr_pozicija = is->nasprotniki[i].tr_pozicija;
                 is->nasprotniki[i].pr_rotacija = is->nasprotniki[i].tr_rotacija;
                 is->nasprotniki[i].pozicija = is->nasprotniki[i].pr_pozicija;
-                is->nasprotniki[i].rotacija = is->nasprotniki[i].rotacija;
+                is->nasprotniki[i].rotacija = is->nasprotniki[i].pr_rotacija;
+
                 memcpy((char *)&is->nasprotniki[i].id, &buffer[poz], sizeof(is->nasprotniki[i].id));
                 poz += 4;
                 memcpy((char *)&is->nasprotniki[i].tr_pozicija, &buffer[poz], sizeof(mat::vec3));

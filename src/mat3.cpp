@@ -159,5 +159,13 @@ namespace mat
         tmp.mat[1][2] = -((gor + dol) / (gor - dol));
         return t * tmp;
     }
+    bool vec3::operator==(const vec3 &t)
+    {
+        return x == t.x && y == t.y && z == t.z;
+    }
+    bool vec3::operator!=(const vec3 &t)
+    {
+        return !(*this == t);
+    }
 
 };

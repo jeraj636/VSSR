@@ -41,7 +41,7 @@ void Odjemalec_zs::obdelaj_sporocilo(char buff[])
     }
     if (buff[0] == P_PODATEK_O_IGRALCU)
     {
-        sporocilo("C %i :: Posiljam svoje podatke!\n", odjemalec_id);
+        izpis("C %i :: Posiljam svoje podatke!\n", odjemalec_id);
         int poz = 1;
         memcpy((char *)&pozicija, &buff[poz], sizeof(mat::vec3));
         poz += sizeof(mat::vec3);
