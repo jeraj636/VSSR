@@ -15,7 +15,9 @@ class Nasprotnik
 {
 public:
     static inline Objekt_3D raketa;
-    mat::vec3 pozicija, rotacija, smer;
+    mat::vec3 pozicija, rotacija;
+    mat::vec3 pr_pozicija, pr_rotacija;
+    mat::vec3 tr_pozicija, tr_rotacija;
     int id;
 };
 

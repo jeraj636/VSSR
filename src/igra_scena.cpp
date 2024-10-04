@@ -76,6 +76,8 @@ void Igra_scena::zanka()
         Risalnik::narisi_3D_objekt(m_kamni1[i]);
     for (int i = 0; i < nasprotniki.size(); i++)
     {
+        mat::vec3 smer = nasprotniki[i].tr_pozicija - nasprotniki[i].pr_pozicija;
+        nasprotniki[i].pozicija += smer * Risalnik::kamera_3D.hitrost_premikanja * Cas::get_cas();
         Nasprotnik::raketa.pozicija = nasprotniki[i].pozicija;
         Nasprotnik::raketa.rotacija = nasprotniki[i].rotacija;
         Risalnik::narisi_3D_objekt(Nasprotnik::raketa);
@@ -136,8 +138,6 @@ void Igra_scena::zanka()
         poz += sizeof(mat::vec3);
         memcpy(&buffer[poz], &Risalnik::kamera_3D.rotacija, sizeof(mat::vec3));
         poz += sizeof(mat::vec3);
-        memcpy(&buffer[poz], &Risalnik::kamera_3D.smer, sizeof(mat::vec3));
-        poz += sizeof(mat::vec3);
         m_odjmalec.poslji(buffer, poz);
     }
     if (!m_sem_povezan && !m_pavza /*Ko je pavza == true se kliče konec preko gumba ne pa če se povezava prekine*/) //* Če se povezava s strežnikom prekine se vrne na glavni meni
@@ -171,15 +171,17 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
         if (buffer[0] == P_NOV_IGRLEC)
         {
             is->nasprotniki.push_back(Nasprotnik());
-            is->nasprotniki.back().pozicija.x;
+            // is->nasprotniki.back().pozicija.x;
             int poz = 1;
             memcpy((char *)&is->nasprotniki.back().id, &buffer[poz], sizeof(is->nasprotniki.back().id));
-            poz += 4;
-            memcpy((char *)&is->nasprotniki.back().pozicija.x, &buffer[poz], sizeof(float));
-            poz += 4;
-            memcpy((char *)&is->nasprotniki.back().pozicija.y, &buffer[poz], sizeof(float));
-            poz += 4;
-            memcpy((char *)&is->nasprotniki.back().pozicija.z, &buffer[poz], sizeof(float));
+            poz += sizeof(mat::vec3);
+            memcpy((char *)&is->nasprotniki.back().tr_pozicija, &buffer[poz], sizeof(mat::vec3));
+            poz += sizeof(mat::vec3);
+            memcpy((char *)&is->nasprotniki.back().tr_rotacija, &buffer[poz], sizeof(mat::vec3));
+
+            is->nasprotniki.back().pr_pozicija = is->nasprotniki.back().tr_pozicija;
+            is->nasprotniki.back().pr_rotacija = is->nasprotniki.back().tr_rotacija;
+
             sporocilo("S :: Nov igralec %i", is->nasprotniki.back().id);
         }
 
@@ -188,16 +190,18 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
             int vel;
             memcpy((char *)&vel, &buffer[1], sizeof(vel));
             int poz = 5;
-            is->nasprotniki.resize(vel);
+            //! Ne vem kako bi izpeljal
+            // is->nasprotniki.resize(vel);
             for (int i = 0; i < is->nasprotniki.size(); i++)
             {
+                is->nasprotniki[i].pr_pozicija = is->nasprotniki[i].tr_pozicija;
+                is->nasprotniki[i].pr_rotacija = is->nasprotniki[i].tr_rotacija;
+
                 memcpy((char *)&is->nasprotniki[i].id, &buffer[poz], sizeof(is->nasprotniki[i].id));
                 poz += 4;
-                memcpy((char *)&is->nasprotniki[i].pozicija, &buffer[poz], sizeof(mat::vec3));
+                memcpy((char *)&is->nasprotniki[i].tr_pozicija, &buffer[poz], sizeof(mat::vec3));
                 poz += sizeof(mat::vec3);
-                memcpy((char *)&is->nasprotniki[i].rotacija, &buffer[poz], sizeof(mat::vec3));
-                poz += sizeof(mat::vec3);
-                memcpy((char *)&is->nasprotniki[i].smer, &buffer[poz], sizeof(mat::vec3));
+                memcpy((char *)&is->nasprotniki[i].tr_rotacija, &buffer[poz], sizeof(mat::vec3));
             }
             sporocilo("S :: Podatki o igralcih\n");
         }

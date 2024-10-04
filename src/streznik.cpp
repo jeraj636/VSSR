@@ -13,12 +13,10 @@ void Odjemalec_zs::obdelaj_sporocilo(char buff[])
         buff[0] = P_NOV_IGRLEC;
         memcpy(&buff[1], (char *)&odjemalec_id, sizeof(int));
         int poz = 5;
-        memcpy(&buff[poz], (char *)&pozicija.x, sizeof(float));
-        poz += 4;
-        memcpy(&buff[poz], (char *)&pozicija.y, sizeof(float));
-        poz += 4;
-        memcpy(&buff[poz], (char *)&pozicija.z, sizeof(float));
-        poz += 4;
+        memcpy(&buff[poz], (char *)&pozicija, sizeof(mat::vec3));
+        poz += sizeof(mat::vec3);
+        memcpy(&buff[poz], (char *)&rotacija, sizeof(mat::vec3));
+
         for (int i = 0; i < Streznik::odjemalci.size(); i++)
         {
             if (Streznik::odjemalci[i]->odjemalec_id != odjemalec_id)
@@ -41,8 +39,6 @@ void Odjemalec_zs::obdelaj_sporocilo(char buff[])
                 poz += sizeof(mat::vec3);
                 memcpy(&buff[poz], &Streznik::odjemalci[i]->rotacija, sizeof(mat::vec3));
                 poz += sizeof(mat::vec3);
-                memcpy(&buff[poz], &Streznik::odjemalci[i]->smer, sizeof(mat::vec3));
-                poz += sizeof(mat::vec3);
             }
         }
         Streznik::poslji(buff, poz, m_nov_vticnik_fd);
@@ -54,8 +50,6 @@ void Odjemalec_zs::obdelaj_sporocilo(char buff[])
         memcpy((char *)&pozicija, &buff[poz], sizeof(mat::vec3));
         poz += sizeof(mat::vec3);
         memcpy((char *)&rotacija, &buff[poz], sizeof(mat::vec3));
-        poz += sizeof(mat::vec3);
-        memcpy((char *)&smer, &buff[poz], sizeof(mat::vec3));
         poz += sizeof(mat::vec3);
         pozicija.z *= -1;
         pozicija.x *= -1;
@@ -366,8 +360,6 @@ void Streznik::posodobi()
                     memcpy(&buffer[poz], &odjemalci[j]->pozicija, sizeof(mat::vec3));
                     poz += sizeof(mat::vec3);
                     memcpy(&buffer[poz], &odjemalci[j]->rotacija, sizeof(mat::vec3));
-                    poz += sizeof(mat::vec3);
-                    memcpy(&buffer[poz], &odjemalci[j]->smer, sizeof(mat::vec3));
                     poz += sizeof(mat::vec3);
                 }
             }
