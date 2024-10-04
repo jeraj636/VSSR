@@ -78,8 +78,8 @@ void Igra_scena::zanka()
     {
         mat::vec3 smer = nasprotniki[i].tr_pozicija - nasprotniki[i].pr_pozicija;
         nasprotniki[i].pozicija += smer * Risalnik::kamera_3D.hitrost_premikanja * Cas::get_cas();
-        Nasprotnik::raketa.pozicija = nasprotniki[i].pozicija;
-        Nasprotnik::raketa.rotacija = nasprotniki[i].rotacija;
+        Nasprotnik::raketa.pozicija = nasprotniki[i].tr_pozicija;
+        Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
         Risalnik::narisi_3D_objekt(Nasprotnik::raketa);
     }
 
