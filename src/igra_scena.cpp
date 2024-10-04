@@ -13,19 +13,6 @@ Igra_scena::Igra_scena()
 {
     Nasprotnik::raketa.nastavi(mat::vec3(0), mat::vec3(1), mat::vec3(1, 1, 1), 0xffffffff, true, "../sredstva/raketa.obj");
     m_zvezdno_nebo.nastavi(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA); // naredi sicer podobno (isto)
-}
-
-void Igra_scena::zacetek()
-{
-    m_pavza = false;
-    m_cas_naslednjega_posiljanja = 0;
-    // morda malo nenavadno! zdaj sem ze pozabil kaj je nenavadno? nic ni nenavadno.
-    // m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);//! to je bilo nenavadno
-
-    //* Nastavljanje kamere in kazalca
-    Risalnik::kamera_3D.premikanje_kamere = true;
-    Risalnik::nastavi_aktivnost_kazalca_miske(false);
-    Risalnik::aktivna_scena_ptr = this;
 
     //* Nastavljanje okolja
     //* Prebere se zemljevid (mapa) igre
@@ -47,6 +34,19 @@ void Igra_scena::zacetek()
         m_kamni1[i].nastavi(poz, mat::vec3(vel / 0.5), rot, 0xffffffff, true, "../sredstva/kamni/K1.obj");
     }
     i_dat.close();
+}
+
+void Igra_scena::zacetek()
+{
+    m_pavza = false;
+    m_cas_naslednjega_posiljanja = 0;
+    // morda malo nenavadno! zdaj sem ze pozabil kaj je nenavadno? nic ni nenavadno.
+    // m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);//! to je bilo nenavadno
+
+    //* Nastavljanje kamere in kazalca
+    Risalnik::kamera_3D.premikanje_kamere = true;
+    Risalnik::nastavi_aktivnost_kazalca_miske(false);
+    Risalnik::aktivna_scena_ptr = this;
 
     //* Povezava na streznik
     if (!m_odjmalec.zazeni(p_nastavitve_scena->m_streznik.niz, atoi(p_nastavitve_scena->m_vrata_odjemalca.niz.c_str())))
