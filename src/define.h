@@ -1,3 +1,3 @@
 #define WINDOWS
 #define DEBUG
-#define STOPNJA_SPOROCANJA 4
+#define STOPNJA_SPOROCANJA 3

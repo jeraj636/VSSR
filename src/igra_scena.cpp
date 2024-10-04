@@ -187,7 +187,7 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
             memcpy((char *)&vel, &buffer[1], sizeof(vel));
             int poz = 5;
             //! Ne vem kako bi izpeljal
-            // is->nasprotniki.resize(vel);
+            is->nasprotniki.resize(vel);
             for (int i = 0; i < is->nasprotniki.size(); i++)
             {
                 is->nasprotniki[i].pr_pozicija = is->nasprotniki[i].tr_pozicija;
@@ -200,7 +200,7 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
                 memcpy((char *)&is->nasprotniki[i].tr_rotacija, &buffer[poz], sizeof(mat::vec3));
                 poz += sizeof(mat::vec3);
             }
-            sporocilo("S :: Podatki o igralcih\n");
+            izpis("S :: Podatki o igralcih\n");
         }
 
         if (buffer[0] == P_IGRALEC_ZAPUSTIL)
