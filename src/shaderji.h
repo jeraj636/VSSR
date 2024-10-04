@@ -135,9 +135,9 @@ void main()
     barva = a_barva;
     mat3 normalMatrix = transpose(inverse(mat3(u_transformacija)));
     vec3 t_normale = a_normale * normalMatrix;
-    normale =  vec3(t_normale.x,t_normale.y,t_normale.z);
+    normale = t_normale;
     gl_Position =u_projekcija * u_kamera * u_transformacija * vec4(a_pos,1.0);
-    frag_pos = vec3(gl_Position.x,gl_Position.y,gl_Position.z);
+    frag_pos = vec3(u_transformacija * vec4(a_pos,1.0));
 }
 )";
 
