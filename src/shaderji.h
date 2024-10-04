@@ -133,6 +133,7 @@ uniform mat4 u_kamera;
 void main()
 {
     barva = a_barva;
+    vec4 t_normale = vec4(a_normale,1.0) * u_transformacija;
     normale =  a_normale;
     gl_Position =u_projekcija * u_kamera * u_transformacija * vec4(a_pos,1.0);
     frag_pos = vec3(gl_Position.x,gl_Position.y,gl_Position.z);
