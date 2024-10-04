@@ -506,12 +506,10 @@ void Risalnik::narisi_3D_objekt(const Objekt_3D &obj)
     transformacija = mat::velikostna(transformacija, obj.veliksot);
     transformacija = mat::rotacijska(transformacija, obj.rotacija);
 
-    //* Množenje transformacije z kamero in projekcijo
-    transformacija = kamera_3D.m_mat_pogled * transformacija;
-    transformacija = m_proj_mat_3D * transformacija;
-
     //* Pošiljanje matrike
     glUniformMatrix4fv(glGetUniformLocation(m_shader_program_3D, "u_transformacija"), 1, GL_TRUE, &transformacija.mat[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(m_shader_program_3D, "u_projekcija"), 1, GL_TRUE, &m_proj_mat_3D.mat[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(m_shader_program_3D, "u_kamera"), 1, GL_TRUE, &kamera_3D.m_mat_pogled.mat[0][0]);
 
     //* Risanje objekta
     glDrawArrays(GL_TRIANGLES, 0, obj.m_velikost_tock);
