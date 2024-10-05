@@ -39,7 +39,10 @@ Igra_scena::Igra_scena()
 void Igra_scena::zacetek()
 {
     m_pavza = false;
-    m_cas_naslednjega_posiljanja = 0;
+    m_cas_naslednjega_posiljanja_podatkov = 0;
+    m_cas_za_se_sem_tu = 0;
+    m_streznik_nazadnje_se_sem_tu = Cas::get_cas() + T_SE_SEM_TU_INTERVAL * 2;
+    m_sem_povezan = false;
     // morda malo nenavadno! zdaj sem ze pozabil kaj je nenavadno? nic ni nenavadno.
     // m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);//! to je bilo nenavadno
 
@@ -49,16 +52,18 @@ void Igra_scena::zacetek()
     Risalnik::aktivna_scena_ptr = this;
 
     //* Povezava na streznik
-    if (!m_odjmalec.zazeni(p_nastavitve_scena->m_streznik.niz, atoi(p_nastavitve_scena->m_vrata_odjemalca.niz.c_str())))
+    if (m_odjmalec.zazeni(p_nastavitve_scena->m_streznik.niz, atoi(p_nastavitve_scena->m_vrata_odjemalca.niz.c_str())) < 0)
+    {
+        napaka("igra_scena.cpp :: Povezava ni uspela!\n");
+        konec();
         p_zacena_scena->zacetek();
-
-    char buff[10]; //* Koda za pozz
-    buff[0] = P_POZDRAV;
-    m_odjmalec.poslji(buff, 1);
-    m_sem_povezan = true;
-
-    std::thread nit(vzdrzuj_povezavo, this); //* Nit za branje iz vticnika
-    nit.detach();
+    }
+    if (m_odjmalec.id != -1)
+    {
+        m_sem_povezan = true;
+        std::thread nit(vzdrzuj_povezavo, this); //* Nit za branje iz vticnika
+        nit.detach();
+    }
 }
 
 void Igra_scena::zanka()
@@ -132,109 +137,53 @@ void Igra_scena::zanka()
         m_gumb_za_nadaljevanje.narisi_me();
         m_gumb_za_na_meni.narisi_me();
     }
-
-    //* Komunikacija s streznikom
-    if (m_cas_naslednjega_posiljanja <= Cas::get_cas())
+    //* Komunikacija s sstreznikom
+    if (m_cas_za_se_sem_tu <= Cas::get_cas())
     {
-        m_cas_naslednjega_posiljanja = Cas::get_cas() + HITROST_POSILJANJA;
-
-        //* Pošiljanje pozicije
-        char buffer[256];
-        buffer[0] = P_PODATEK_O_IGRALCU;
-        int poz = 1;
-        memcpy(&buffer[poz], &Risalnik::kamera_3D.pozicija, sizeof(mat::vec3));
-        poz += sizeof(mat::vec3);
-        memcpy(&buffer[poz], &Risalnik::kamera_3D.rotacija, sizeof(mat::vec3));
-        poz += sizeof(mat::vec3);
-        m_odjmalec.poslji(buffer, poz);
+        m_cas_za_se_sem_tu += T_SE_SEM_TU_INTERVAL;
+        char buff[10];
+        buff[0] = T_O_SE_SEM_TU;
+        memcpy(buff + 1, (char *)&m_odjmalec.id, 4);
+        m_odjmalec.poslji(buff, 5);
+    }
+    if (m_streznik_nazadnje_se_sem_tu + T_SE_SEM_TU_INTERVAL * 4 < Cas::get_cas())
+    {
+        napaka("igra_scena.cpp :: Streznik se ne odziva!\n");
+        konec();
+        p_zacena_scena->zacetek();
     }
     if (!m_sem_povezan && !m_pavza /*Ko je pavza == true se kliče konec preko gumba ne pa če se povezava prekine*/) //* Če se povezava s strežnikom prekine se vrne na glavni meni
     {
         konec();
         p_zacena_scena->zacetek();
+        sporocilo("igra_scena.cpp :: Konec!\n");
     }
 }
-
 void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
 {
+    char buff[256] = {};
     while (is->m_sem_povezan)
     {
-        char buffer[256];
-        if (!is->m_odjmalec.beri_iz_povezave(buffer)) //* Napaka pri branju
-        {
+
+        int n = is->m_odjmalec.prejmi(buff);
+        if (n == -1)
             continue;
-        }
-        if (buffer[0] == P_KONEC_POVEZAVE)
+        if (buff[0] == T_S_SE_SEM_TU)
         {
-            is->m_odjmalec.poslji(buffer, 1); //* Odjemalec odgovori s istim sporočilom
-            is->m_sem_povezan = false;
-            sporocilo("S :: Konec povezave!\n");
-        }
-        if (buffer[0] == P_POZDRAV)
-        {
-            sporocilo("S :: Pozdravljen odjemalec\n");
-        }
-        if (buffer[0] == P_NOV_IGRLEC)
-        {
-            is->nasprotniki.push_back(Nasprotnik());
-            // is->nasprotniki.back().pozicija.x;
-            int poz = 1;
-            memcpy((char *)&is->nasprotniki.back().id, &buffer[poz], sizeof(is->nasprotniki.back().id));
-
-            is->nasprotniki.back().pr_pozicija = is->nasprotniki.back().tr_pozicija = is->nasprotniki.back().pozicija = mat::vec3(0);
-            is->nasprotniki.back().pr_rotacija = is->nasprotniki.back().tr_rotacija = is->nasprotniki.back().rotacija = mat::vec3(0);
-
-            sporocilo("S :: Nov igralec %i", is->nasprotniki.back().id);
-        }
-
-        if (buffer[0] == P_PODATKI_O_IGRALCIH)
-        {
-            int vel;
-            memcpy((char *)&vel, &buffer[1], sizeof(vel));
-            int poz = 5;
-            //! Ne vem kako bi izpeljal
-            is->nasprotniki.resize(vel);
-            for (int i = 0; i < is->nasprotniki.size(); i++)
-            {
-                is->nasprotniki[i].pr_pozicija = is->nasprotniki[i].tr_pozicija;
-                is->nasprotniki[i].pr_rotacija = is->nasprotniki[i].tr_rotacija;
-                is->nasprotniki[i].pozicija = is->nasprotniki[i].pr_pozicija;
-                is->nasprotniki[i].rotacija = is->nasprotniki[i].pr_rotacija;
-
-                memcpy((char *)&is->nasprotniki[i].id, &buffer[poz], sizeof(is->nasprotniki[i].id));
-                poz += 4;
-                memcpy((char *)&is->nasprotniki[i].tr_pozicija, &buffer[poz], sizeof(mat::vec3));
-                poz += sizeof(mat::vec3);
-                memcpy((char *)&is->nasprotniki[i].tr_rotacija, &buffer[poz], sizeof(mat::vec3));
-                poz += sizeof(mat::vec3);
-            }
-            izpis("S :: Podatki o igralcih\n");
-        }
-
-        if (buffer[0] == P_IGRALEC_ZAPUSTIL)
-        {
-            int id_igralca;
-            memcpy((char *)&id_igralca, &buffer[1], sizeof(id_igralca));
-
-            for (int i = 0; i < is->nasprotniki.size(); i++)
-            {
-                if (id_igralca == is->nasprotniki[i].id)
-                {
-                    std::swap(is->nasprotniki[i], is->nasprotniki.back());
-                    is->nasprotniki.pop_back();
-                }
-            }
-            sporocilo("S :: Igralec: %i je zapustil igro\n", id_igralca);
+            is->m_streznik_nazadnje_se_sem_tu = Cas::get_cas();
         }
     }
 }
 
 void Igra_scena::konec()
 {
+    m_sem_povezan = false;
     while (nasprotniki.size() != 0)
         nasprotniki.pop_back();
     char buff[10];
-    buff[0] = 0;
-    m_odjmalec.poslji(buff, 1);
+    buff[0] = T_ZAPUSCAM;
+    memcpy(buff + 1, (char *)&m_odjmalec.id, sizeof(m_odjmalec.id));
+    m_odjmalec.poslji(buff, 5);
+
     m_odjmalec.ustavi(); //* Konec povezave
 }

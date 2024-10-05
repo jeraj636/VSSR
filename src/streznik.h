@@ -25,28 +25,18 @@
 
 #include "matematika.h"
 
-class Streznik;
 class Odjemalec_zs
 {
 public:
-    friend class Streznik;
-    void obdelaj_sporocilo(char buffer[]);
     mat::vec3 pozicija;
     mat::vec3 rotacija;
-    mat::vec3 smer;
-
-protected:
+    int id;
+    double se_tu_nazadnje_cas;
 #ifdef LINUX
-    socklen_t m_odjemalec_vel;
-    sockaddr_in m_naslov_odjemalca;
-    int m_nov_vticnik_fd;
+    sockaddr naslov_odjemalca;
+    socklen_t velikost_naslova_odjemalca;
 #endif
-#ifdef WINDOWS
-    SOCKET m_nov_vticnik_fd;
-    SOCKADDR_IN m_naslov_odjemalca;
-    int m_odjemalec_vel;
-#endif
-    int odjemalec_id;
+    void poslji(char buff[], int n);
 };
 
 class Streznik
@@ -57,28 +47,24 @@ public:
     friend class Odjemalec_zs;
 
 private:
-    static void posodobi();
+    static void obdelaj_sporocila();
+    static void poslji_sporocila();
     static inline std::thread m_nit_za_poslusanje;
-    static inline std::vector<Odjemalec_zs *> odjemalci;
-    static inline int m_st_vseh_odjemalcev;
+    static inline std::vector<Odjemalec_zs> odjemalci;
+    static inline int m_id_stevec;
     static inline bool m_streznik_tece;
     static inline double m_naslednji_cas_za_podatke_o_igralcih;
+    static inline double m_naslednji_cas_za_se_sem_tu;
+    static void poslusaj();
+
+protected:
 #ifdef LINUX
-    static inline int m_vticnik_fd;
+    static inline int m_vticnik;
 #endif
 #ifdef WINDOWS
     static inline WSADATA m_WSA_data;
     static inline SOCKET m_vticnik;
 
-#endif
-private:
-    static void vzdrzuj_povezavo(Odjemalec_zs *odjemalec);
-    static void poslusaj();
-#ifdef WINDOWS
-    static void poslji(char buffer[], int vel, SOCKET vticnik);
-#endif
-#ifdef LINUX
-    static void poslji(char buffer[], int vel, int vticnik);
 #endif
 };
 #endif

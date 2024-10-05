@@ -3,374 +3,168 @@
 #include "sporocila_za_komunikacijo.h"
 #include "dnevnik.h"
 #include "chrono"
-void Odjemalec_zs::obdelaj_sporocilo(char buff[])
+void Odjemalec_zs::poslji(char buff[], int n)
 {
-
-    if (buff[0] == P_POZDRAV)
-    {
-        sporocilo("C %i :: Pozdravljen streznik\n", odjemalec_id);
-
-        buff[0] = P_NOV_IGRLEC;
-        memcpy(&buff[1], (char *)&odjemalec_id, sizeof(int));
-        int poz = 5;
-        for (int i = 0; i < Streznik::odjemalci.size(); i++)
-        {
-            if (Streznik::odjemalci[i]->odjemalec_id != odjemalec_id)
-            {
-                Streznik::poslji(buff, poz, Streznik::odjemalci[i]->m_nov_vticnik_fd);
-            }
-        }
-
-        buff[0] = P_PODATKI_O_IGRALCIH;
-        int vel = Streznik::odjemalci.size() - 1;
-        memcpy(&buff[1], (char *)&vel, sizeof(vel));
-        poz = 5;
-        for (int i = 0; i < Streznik::odjemalci.size(); i++)
-        {
-            if (Streznik::odjemalci[i]->odjemalec_id != odjemalec_id)
-            {
-                memcpy(&buff[poz], (char *)&Streznik::odjemalci[i]->odjemalec_id, sizeof(int));
-                poz += sizeof(int);
-                memcpy(&buff[poz], &Streznik::odjemalci[i]->pozicija, sizeof(mat::vec3));
-                poz += sizeof(mat::vec3);
-                memcpy(&buff[poz], &Streznik::odjemalci[i]->rotacija, sizeof(mat::vec3));
-                poz += sizeof(mat::vec3);
-            }
-        }
-        Streznik::poslji(buff, poz, m_nov_vticnik_fd);
-    }
-    if (buff[0] == P_PODATEK_O_IGRALCU)
-    {
-        izpis("C %i :: Posiljam svoje podatke!\n", odjemalec_id);
-        int poz = 1;
-        memcpy((char *)&pozicija, &buff[poz], sizeof(mat::vec3));
-        poz += sizeof(mat::vec3);
-        memcpy((char *)&rotacija, &buff[poz], sizeof(mat::vec3));
-        poz += sizeof(mat::vec3);
-        pozicija.z *= -1;
-        pozicija.x *= -1;
-        pozicija.y *= -1;
-    }
+    int nn = sendto(Streznik::m_vticnik, buff, n, 0, (sockaddr *)&naslov_odjemalca, velikost_naslova_odjemalca);
+    if (nn == -1)
+        napaka("streznik.cpp :: Napaka pri posiljanju!\n");
 }
 
 bool Streznik::zazeni(int port)
 {
-#ifdef DEBUG
-    sporocilo("streznik.cpp :: Odpiranje streznika na vratih %i\n", port);
-#endif
+    sporocilo("streznik.cpp :: Odpiranje streznika na vrtih %i\n", port);
 #ifdef LINUX
+    //* Nastavljanje spremenjivk
     m_naslednji_cas_za_podatke_o_igralcih = 0;
+    m_naslednji_cas_za_se_sem_tu = 0;
+    m_id_stevec = 1;
 
-    sockaddr_in naslov_streznika;
-    m_st_vseh_odjemalcev = 0;
+    //* Odpiranje vticnika
+    m_vticnik = socket(AF_INET, SOCK_DGRAM, 0);
 
-    //* Odpiranje socketa
-    m_vticnik_fd = socket(AF_INET, SOCK_STREAM, 0);
-
-    //* Da se lahko večkrat odpre povezava na item vticniku
+    //* Za večkratno odpiranje streznika na istih vratih
     int opcija = 1;
-    if (setsockopt(m_vticnik_fd, SOL_SOCKET, SO_REUSEADDR, &opcija, sizeof(opcija)) < 0)
-    {
-        napaka("streznik.cpp :: Napaka pri nastavljanju SO_REUSEADDR!\n");
-        return false;
-    }
+    setsockopt(m_vticnik, SOL_SOCKET, SO_REUSEADDR, &opcija, sizeof(opcija));
 
-    //* Nastavljanje neblokiranega načina
-    int zastavice = fcntl(m_vticnik_fd, F_GETFL, 0);
-    fcntl(m_vticnik_fd, F_SETFL, zastavice | O_NONBLOCK);
+    //* Neblokiran način
+    int zastavice = fcntl(m_vticnik, F_GETFL, 0);
+    fcntl(m_vticnik, F_SETFL, zastavice | O_NONBLOCK);
 
     //* Nastavljanje podatkov o strezniku
-    bzero((char *)&naslov_streznika, sizeof(naslov_streznika));
+    sockaddr_in naslov_streznika;
+    memset((char *)&naslov_streznika, 0, sizeof(sockaddr_in));
     naslov_streznika.sin_family = AF_INET;
     naslov_streznika.sin_addr.s_addr = INADDR_ANY;
     naslov_streznika.sin_port = htons(port);
 
-    if (bind(m_vticnik_fd, (sockaddr *)&naslov_streznika, sizeof(naslov_streznika)) < 0)
+    if (bind(m_vticnik, (sockaddr *)&naslov_streznika, sizeof(naslov_streznika)) < 0)
     {
         napaka("streznik.cpp :: Napaka pri bindanju streznika!\n");
         return false;
     }
-
 #endif
-
 #ifdef WINDOWS
-    //* Odpiranje socketa
-    SOCKADDR_IN naslov_streznika;
-    WSAStartup(MAKEWORD(2, 0), &m_WSA_data);
-    m_vticnik = socket(AF_INET, SOCK_STREAM, 0);
 
-    //* Nastavljanje podatkov o strezniku
-    naslov_streznika.sin_addr.s_addr = INADDR_ANY;
-    naslov_streznika.sin_family = AF_INET;
-    naslov_streznika.sin_port = htons(port);
-
-    u_long neblokiran = 1;
-    ioctlsocket(m_vticnik, FIONBIO, &neblokiran);
-
-    if (bind(m_vticnik, (SOCKADDR *)&naslov_streznika, sizeof(naslov_streznika)) == SOCKET_ERROR)
-    {
-        napaka("streznik.cpp :: Napaka pri bindanju streznika!\n");
-        return false;
-    }
 #endif
-
     m_streznik_tece = true;
     m_nit_za_poslusanje = std::thread(poslusaj);
-
-#ifdef DEBUG
     sporocilo("streznik.cpp :: Streznik zagnan!\n");
-#endif
-
     return true;
 }
 
 void Streznik::poslusaj()
 {
     sporocilo("streznik.cpp :: Poslusam za nove povezave!\n");
-
-#ifdef LINUX
-    //* vticnik damo v način poslušanja
-    listen(m_vticnik_fd, 20);
-
     while (m_streznik_tece)
     {
-        posodobi();
-        Odjemalec_zs *odjemalec = new Odjemalec_zs;
+        obdelaj_sporocila();
+        poslji_sporocila();
 
-        odjemalec->m_odjemalec_vel = sizeof(odjemalec->m_naslov_odjemalca);
-        odjemalec->m_nov_vticnik_fd = accept(m_vticnik_fd, (sockaddr *)&odjemalec->m_naslov_odjemalca, &odjemalec->m_odjemalec_vel); //* Sprejemanje nove povezave
-
-        if (odjemalec->m_nov_vticnik_fd < 0)
+        //* preverjanje odjemalcev
+        for (int i = 0; i < odjemalci.size(); i++)
         {
-            delete odjemalec;
-            continue;
+            double zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
+            if (odjemalci[i].se_tu_nazadnje_cas + T_SE_SEM_TU_INTERVAL * 5 < zdaj)
+            {
+                napaka("streznik.cpp :: Odjemalec %i je neodziven\n", odjemalci[i].id);
+                std::swap(odjemalci[i], odjemalci.back());
+                odjemalci.pop_back();
+                i--;
+            }
         }
-        sporocilo("streznik.cpp :: Nova povezava: %i\n", m_st_vseh_odjemalcev);
-
-        odjemalec->odjemalec_id = m_st_vseh_odjemalcev++; //* Dodajanje nove povezave v tabelo
-        odjemalci.push_back(odjemalec);
-        std::thread nit(vzdrzuj_povezavo, odjemalec); //* Nova nit, ki bo brala iz povezave
-        nit.detach();
     }
-#endif
-
-#ifdef WINDOWS
-    listen(m_vticnik, 20);
-    while (m_streznik_tece)
-    {
-        posodobi();
-        Odjemalec_zs *odjemalec = new Odjemalec_zs;
-
-        odjemalec->m_odjemalec_vel = sizeof(odjemalec->m_naslov_odjemalca);
-        odjemalec->m_nov_vticnik_fd = accept(m_vticnik, (sockaddr *)&odjemalec->m_naslov_odjemalca, &odjemalec->m_odjemalec_vel); //* Sprejemanje nove povezave
-        if (odjemalec->m_nov_vticnik_fd == INVALID_SOCKET || WSAGetLastError() == WSAEWOULDBLOCK)
-        {
-            delete odjemalec;
-            continue;
-        }
-
-        sporocilo("streznik.cpp :: Nova povezava: %i\n", m_st_vseh_odjemalcev); //* Dodajanje nove povezave v tabelo
-
-        odjemalec->odjemalec_id = m_st_vseh_odjemalcev++;
-        odjemalci.push_back(odjemalec);
-        std::thread nit(vzdrzuj_povezavo, odjemalec); //* Nova nit, ki bo brala iz povezave
-        nit.detach();
-    }
-
-#endif
-    sporocilo("streznik.cpp :: Konec poslusanja!\n");
 }
-
-void Streznik::vzdrzuj_povezavo(Odjemalec_zs *odjemalec)
+void Streznik::poslji_sporocila()
 {
+    char buff[255] = {0};
+    double zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
+
+    if (m_naslednji_cas_za_se_sem_tu <= zdaj)
+    {
+        m_naslednji_cas_za_se_sem_tu += T_SE_SEM_TU_INTERVAL;
+        buff[0] = T_S_SE_SEM_TU;
+        for (int i = 0; i < odjemalci.size(); i++)
+        {
+            memcpy(buff + 1, (char *)&odjemalci[i].id, sizeof(odjemalci[i].id));
+            odjemalci[i].poslji(buff, 5);
+        }
+    }
+}
+void Streznik::obdelaj_sporocila()
+{
+
+    char buff[255] = {0};
+    double zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
+
 #ifdef LINUX
-
-    while (m_streznik_tece)
+    sockaddr naslov_odjemalca;
+    socklen_t velikost_naslova_odjemalca;
+    int n = recvfrom(m_vticnik, buff, 255, 0, (sockaddr *)&naslov_odjemalca, &velikost_naslova_odjemalca);
+    if (n == -1)
     {
-        char buffer[256];
-        int n = read(odjemalec->m_nov_vticnik_fd, buffer, 255); //* Nekaj je prebral iz vticnika
-
-        if (n <= 0) //* "napake" pri katerih se povezava prekine
-            break;
-
-        if (buffer[0] == P_KONEC_POVEZAVE)
-            break;
-        odjemalec->obdelaj_sporocilo(buffer);
+        // napaka("streznik.cpp :: Napaka pri prejemu sporocila!\n");
+        return;
     }
-
-    /*
-    *To naj ne bi vplivalo na kodo
-
-        if (!m_streznik_tece)
-        {
-        }
-    */
-    sporocilo("C %i :: Konec povezave!\n", odjemalec->odjemalec_id);
-
-    for (int i = 0; i < odjemalci.size(); i++) //* poišče objekt s porekinjeno povezevo in sprosti ponilnik
+    if (buff[0] == T_PROSNJA_ZA_POVEZAVO) //* Odjemalec se zeli povezati
     {
-        if (odjemalec->odjemalec_id == odjemalci[i]->odjemalec_id)
+        //* Posijlanje id-ja odjemalcu
+        int poz = 0;
+        buff[0] = T_ODOBRITEV_POVEZAVE;
+        poz = 1;
+        memcpy(&buff[poz], (char *)&m_id_stevec, sizeof(m_id_stevec));
+        poz += sizeof(m_id_stevec);
+        sendto(m_vticnik, buff, poz, 0, (sockaddr *)&naslov_odjemalca, velikost_naslova_odjemalca);
+        m_id_stevec++;
+        sporocilo("C? :: Prosnja za povezavo!\n");
+    }
+    if (buff[0] == T_POZZ_STREZNIK)
+    {
+        int poz = 1;
+        odjemalci.push_back(Odjemalec_zs());
+        odjemalci.back().naslov_odjemalca = naslov_odjemalca;
+        odjemalci.back().velikost_naslova_odjemalca = velikost_naslova_odjemalca;
+        odjemalci.back().se_tu_nazadnje_cas = zdaj * T_SE_SEM_TU_INTERVAL * 2;
+        odjemalci.back().pozicija = mat::vec3(0);
+        odjemalci.back().rotacija = mat::vec3(0);
+        memcpy((char *)&odjemalci.back().id, buff + 1, sizeof(odjemalci.back().id));
+        buff[0] = T_POZZ_ODJEMALEC;
+        odjemalci.back().poslji(buff, 1);
+    }
+    if (buff[0] == T_ZAPUSCAM)
+    {
+        int id;
+        memcpy((char *)&id, buff + 1, sizeof(id));
+        for (int i = 0; i < odjemalci.size(); i++)
         {
-            char buffer[256];
-            buffer[0] = P_IGRALEC_ZAPUSTIL;
-            memcpy(&buffer[1], (char *)&odjemalec->odjemalec_id, sizeof(odjemalec->odjemalec_id));
-            for (int i = 0; i < Streznik::odjemalci.size(); i++)
+            if (odjemalci[i].id == id)
             {
-                if (Streznik::odjemalci[i]->odjemalec_id != odjemalec->odjemalec_id)
-                {
-                    Streznik::poslji(buffer, 5, Streznik::odjemalci[i]->m_nov_vticnik_fd);
-                }
+                std::swap(odjemalci[i], odjemalci.back());
+                odjemalci.pop_back();
+                sporocilo("C %i Zapuscam!\n", id);
             }
-
-            close(odjemalci[i]->m_nov_vticnik_fd);
-            std::swap(odjemalci[i], odjemalci.back());
-            delete odjemalci.back();
-            odjemalci.pop_back();
-            break;
         }
     }
-
-#endif
-
-#ifdef WINDOWS
-    while (m_streznik_tece)
+    if (buff[0] == T_O_SE_SEM_TU)
     {
-        char buffer[256];
-        int n = recv(odjemalec->m_nov_vticnik_fd, buffer, 255, 0);
-        /*
-        *Naj bi delovalo brez tega
-        !Raje pusti zakomentirano
-        if (n <= 0 || buffer[0] == '\n' || buffer[0] == '\r')
-            continue;
-        */
-
-        if (buffer[0] == P_KONEC_POVEZAVE) //* situacije v katerih je bolje povezavo prekiniti
-            break;
-
-        if (n > 0)
-            odjemalec->obdelaj_sporocilo(buffer);
-    }
-
-    /*
-    * Naj bi delovalo brez pogoja
-        if (!m_streznik_tece)
+        int id;
+        memcpy((char *)&id, buff + 1, sizeof(id));
+        for (int i = 0; i < odjemalci.size(); i++)
         {
-        }
-    */
-    sporocilo("C %i :: Konec povezave!\n", odjemalec->odjemalec_id);
-    closesocket(odjemalec->m_nov_vticnik_fd);  //* zapiranje vticnika
-    for (int i = 0; i < odjemalci.size(); i++) //* Iskanje odjemalca v tabeli odjemalcev in sprostitev pomnilnika
-    {
-        if (odjemalec->odjemalec_id == odjemalci[i]->odjemalec_id)
-        {
-            char buffer[256];
-            buffer[0] = P_IGRALEC_ZAPUSTIL;
-            memcpy(&buffer[1], (char *)&odjemalec->odjemalec_id, sizeof(odjemalec->odjemalec_id));
-            for (int i = 0; i < Streznik::odjemalci.size(); i++)
+            if (odjemalci[i].id == id)
             {
-                if (Streznik::odjemalci[i]->odjemalec_id != odjemalec->odjemalec_id)
-                {
-                    Streznik::poslji(buffer, 5, Streznik::odjemalci[i]->m_nov_vticnik_fd);
-                }
+                odjemalci[i].se_tu_nazadnje_cas = zdaj;
+                sporocilo("C %i Se sem tu!\n", id);
             }
-
-            std::swap(odjemalci[i], odjemalci.back());
-            delete odjemalci.back();
-            odjemalci.pop_back();
-            break;
         }
     }
-
 #endif
 }
-
 void Streznik::ugasni()
 {
 #ifdef LINUX
-    // if (odjemalci.size() == 0)
     m_streznik_tece = false;
-    m_nit_za_poslusanje.join();
-
-    for (int i = 0; i < odjemalci.size(); i++)
-    {
-
-        char buff[5];
-        buff[0] = P_KONEC_POVEZAVE;
-        poslji(buff, 1, odjemalci[i]->m_nov_vticnik_fd);
-    }
-    close(m_vticnik_fd);
-
-#endif
-#ifdef WINDOWS
-    // if (odjemalci.size() == 0)
-    m_streznik_tece = false;
-
-    m_nit_za_poslusanje.join();
-    for (int i = 0; i < odjemalci.size(); i++)
-    {
-        char buff[5];
-        buff[0] = P_KONEC_POVEZAVE;
-        poslji(buff, 1, odjemalci[i]->m_nov_vticnik_fd);
-        /*
-           closesocket(odjemalci.back()->m_nov_vticnik);
-           delete odjemalci.back();
-           odjemalci.pop_back();
-           */
-    }
-
-    closesocket(m_vticnik);
-    WSACleanup();
-
-#endif
+    close(m_vticnik);
     sporocilo("streznik.cpp :: Konec streznika!\n");
-}
-
-#ifdef WINDOWS
-void Streznik::poslji(char buffer[], int vel, SOCKET vticnik)
-{
-    if (send(vticnik, buffer, vel, 0) < 0)
-        napaka("streznik.cpp :: Napaka pri posiljanju!\n");
-}
+    m_nit_za_poslusanje.join();
 #endif
-
-#ifdef LINUX
-void Streznik::poslji(char buffer[], int vel, int vticnik)
-{
-    int n = write(vticnik, buffer, vel);
-    if (n < 0)
-        napaka("streznik.cpp :: Napaka pri posiljanju!\n");
-}
-
-#endif
-
-void Streznik::posodobi()
-{
-    double zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
-
-    if (m_naslednji_cas_za_podatke_o_igralcih <= zdaj)
-    {
-        m_naslednji_cas_za_podatke_o_igralcih += HITROST_POSILJANJA;
-
-        for (int i = 0; i < odjemalci.size(); i++)
-        {
-            char buffer[256];
-            buffer[0] = P_PODATKI_O_IGRALCIH;
-            int vel = odjemalci.size() - 1;
-            memcpy(&buffer[1], (char *)&vel, sizeof(int));
-            int poz = 5;
-            for (int j = 0; j < odjemalci.size(); j++)
-            {
-                if (i != j)
-                {
-                    memcpy(&buffer[poz], (char *)&odjemalci[j]->odjemalec_id, sizeof(int));
-                    poz += sizeof(int);
-                    memcpy(&buffer[poz], &odjemalci[j]->pozicija, sizeof(mat::vec3));
-                    poz += sizeof(mat::vec3);
-                    memcpy(&buffer[poz], &odjemalci[j]->rotacija, sizeof(mat::vec3));
-                    poz += sizeof(mat::vec3);
-                }
-            }
-            poslji(buffer, poz, odjemalci[i]->m_nov_vticnik_fd);
-        }
-    }
 }

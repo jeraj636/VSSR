@@ -39,7 +39,11 @@ private:
     static void vzdrzuj_povezavo(Igra_scena *is);
     bool m_pavza;
     bool m_sem_povezan;
-    double m_cas_naslednjega_posiljanja;
+
+    //* Casovniki
+    double m_cas_naslednjega_posiljanja_podatkov;
+    double m_cas_za_se_sem_tu;
+    double m_streznik_nazadnje_se_sem_tu;
     Odjemalec m_odjmalec;
 
     Besedilo m_gumb_za_na_meni;

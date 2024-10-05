@@ -1,161 +1,95 @@
+#include "define.h"
 #include "odjemalec.h"
 #include "dnevnik.h"
 
-bool Odjemalec::beri_iz_povezave(char buffer[])
-{
-#ifdef LINUX
-
-    int n = read(m_vticnik_fd, buffer, 255);
-    if (n <= 0) // Napaka pri branju
-    {
-        return false;
-    }
-    return true;
-#endif
-#ifdef WINDOWS
-    int n = recv(m_streznik, buffer, 255, 0);
-    if (n <= 0) // Napaka pri branju
-    {
-        return false;
-    }
-    return true;
-#endif
-}
-
-bool Odjemalec::zazeni(std::string naslov, int port)
+int Odjemalec::zazeni(std::string naslov, int port)
 {
     sporocilo("odjemalec.cpp :: Povezovanje na %s : %i\n", naslov.c_str(), port);
 #ifdef LINUX
-    m_port = port;
+    id = -1;
+    m_vticnik = socket(AF_INET, SOCK_DGRAM, 0);
 
-    //* Odpiranje vticnika
-    m_vticnik_fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (m_vticnik_fd < 0)
+    //* Neblokiran način
+    int zastavice = fcntl(m_vticnik, F_GETFL, 0);
+    fcntl(m_vticnik, F_SETFL, zastavice | O_NONBLOCK);
+
+    if (m_vticnik < 0)
     {
         napaka("odjemalec.cpp :: Napaka pri odpiranju vticnika!\n");
         return false;
-        // exit(1);
     }
 
-    //* Iskanje streznika
-    m_streznik = gethostbyname(naslov.c_str());
-    if (m_streznik == nullptr)
+    hostent *naslov_streznika = gethostbyname(naslov.c_str());
+    if (naslov_streznika == nullptr)
     {
-        napaka("odjemalec.cpp :: Napaka pri iskanju streznika: %s : %i\n", naslov.c_str(), port);
-        close(m_vticnik_fd);
+        napaka("odjemalec.cpp :: Napaka pri iskanju streznika!\n");
+        close(m_vticnik);
         return false;
     }
 
-    //* Nastavljanje drugih parametrov streznika
-    bzero((char *)&m_naslov_streznika, sizeof(m_naslov_streznika));
+    memset((char *)&m_naslov_streznika, 0, sizeof(m_naslov_streznika));
     m_naslov_streznika.sin_family = AF_INET;
+    memcpy((char *)naslov_streznika->h_addr, (char *)&m_naslov_streznika.sin_addr.s_addr, naslov_streznika->h_length);
+    m_naslov_streznika.sin_port = htons(port);
 
-    bcopy((char *)m_streznik->h_addr,
-          (char *)&m_naslov_streznika.sin_addr.s_addr,
-          m_streznik->h_length);
+    char buff[10];
+    buff[0] = T_PROSNJA_ZA_POVEZAVO;
+    sendto(m_vticnik, buff, 1, 0, (sockaddr *)&m_naslov_streznika, sizeof(m_naslov_streznika));
 
-    m_naslov_streznika.sin_port = htons(m_port);
-
-    //* Povezovanje s streznikom
-    if (connect(m_vticnik_fd, (sockaddr *)&m_naslov_streznika, sizeof(m_naslov_streznika)) < 0)
+    double zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
+    double zac_cas = zdaj + T_CAS_ZA_POVEZOVANJE;
+    int n;
+    do
     {
-        napaka("odjemalec.cpp :: Napaka pri povezovanju na: %s : %i\n", naslov.c_str(), port);
-        close(m_vticnik_fd);
-        return false;
-    }
-    sporocilo("Povezava je uspela!\n");
-#endif
-#ifdef WINDOWS
-    m_port = port;
-
-    //* Nstvarjanje vticnika
-    WSAStartup(MAKEWORD(2, 0), &m_WSAData);
-    m_streznik = socket(AF_INET, SOCK_STREAM, 0);
-
-    //* Nastavljanje podatkov o strezniku
-    hostent *naslov_str = gethostbyname(naslov.c_str());
-
-    // m_streznik_nalov.sin_addr.s_addr = inet_addr(naslov_str->h_addr_list[0]);
-    memset(&m_streznik_nalov, 0, sizeof(m_streznik_nalov));
-    m_streznik_nalov.sin_family = AF_INET;
-
-    memcpy(&m_streznik_nalov.sin_addr.s_addr, naslov_str->h_addr, naslov_str->h_length);
-    m_streznik_nalov.sin_port = htons(m_port);
-    //* Vzpostalvjanje povezava
-    if (connect(m_streznik, (SOCKADDR *)&m_streznik_nalov, sizeof(m_streznik_nalov)))
+        zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
+        n = recvfrom(m_vticnik, buff, 10, 0, (sockaddr *)&m_naslov_streznika, (socklen_t *)&m_velikost_naslova_streznika);
+    } while (n == -1 && zac_cas >= zdaj);
+    if (zac_cas <= zdaj)
+        return -1;
+    if (buff[0] == T_ODOBRITEV_POVEZAVE)
     {
-        napaka("odjemalec.cpp :: Napaka pri povezovanju na: %s : %i\n", naslov.c_str(), port);
-        closesocket(m_streznik);
-        return false;
+        memcpy((char *)&id, buff + 1, sizeof(id));
+        buff[0] == T_POZZ_STREZNIK;
+        sporocilo("S :: Odobritev povezave id: %i\n", id);
+        buff[0] = T_POZZ_STREZNIK;
+        sendto(m_vticnik, buff, 5, 0, (sockaddr *)&m_naslov_streznika, sizeof(m_naslov_streznika));
     }
-#endif
-    return true;
-}
 
-void Odjemalec::poslji(char buff[], int vel)
-{
-#ifdef LINUX
-    int n = write(m_vticnik_fd, buff, vel);
-    if (n < 0)
-        napaka("odjemalec.cpp :: Napaka pri posiljanju!\n");
-#endif
-#ifdef WINDOWS
-    if (send(m_streznik, buff, vel, 0) < 0)
-        napaka("odjemalec.cpp :: Napaka pri posiljanju!\n");
-#endif
-}
+    zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
+    zac_cas = zdaj + T_CAS_ZA_POVEZOVANJE;
+    do
+    {
+        zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
+        n = recvfrom(m_vticnik, buff, 10, 0, (sockaddr *)&m_naslov_streznika, (socklen_t *)&m_velikost_naslova_streznika);
+    } while (n == -1 && zac_cas >= zdaj);
+    if (zac_cas <= zdaj)
+        return -1;
+    if (buff[0] == T_POZZ_ODJEMALEC)
+    {
 
-std::string Odjemalec::prejmi()
-{
-#ifdef LINUX
-    char buff[256];
-    int n = read(m_vticnik_fd, buff, 255);
-    return buff;
-#endif
-#ifdef WINDOWS
-    char buff[256];
-    int n = recv(m_streznik, buff, 255, 0);
-    return buff;
-#endif
-}
+        return id;
+        sporocilo("S :: Pozz objemalec\n");
+    }
+    else
+        return -1;
 
-void Odjemalec::ustavi()
-{
-    sporocilo("odjemalec.cpp :: Ugasanje povezave!\n");
-#ifdef LINUX
-    close(m_vticnik_fd);
-#endif
-#ifdef WINDOWS
-    closesocket(m_streznik);
-    WSACleanup();
 #endif
 }
 Odjemalec::~Odjemalec()
 {
-#ifdef LINUX
-    close(m_vticnik_fd);
-#endif
-#ifdef WINDOWS
-    closesocket(m_streznik);
-    WSACleanup();
-#endif
 }
-
-/*
-int main(int argc, char *argv[])
+void Odjemalec::poslji(char buff[], int vel)
 {
-    Odjemalec odjemalec;
-    odjemalec.zazeni(argv[1], atoi(argv[2]));
-    std::thread nova_nit(Odjemalec::beri_iz_povezave, &odjemalec);
-    nova_nit.detach();
-    while (1)
-    {
-        char buffer[256];
-        memset(buffer, 0, 256);
-        fgets(buffer, 255, stdin);
-        odjemalec.poslji(buffer);
-        if (buffer[0] == 'k')
-            break;
-    }
+    int n = sendto(m_vticnik, buff, vel, 0, (sockaddr *)&m_naslov_streznika, m_velikost_naslova_streznika);
+    if (n == -1)
+        napaka("odjemalec.cpp :: Napaka pri posiljanju!\n");
 }
-*/
+void Odjemalec::ustavi()
+{
+    id = -1;
+    close(m_vticnik);
+}
+int Odjemalec::prejmi(char buff[])
+{
+    return recvfrom(m_vticnik, buff, 256, 0, (sockaddr *)&m_naslov_streznika, (socklen_t *)&m_velikost_naslova_streznika);
+}
