@@ -52,17 +52,26 @@ void Igra_scena::zacetek()
     Risalnik::aktivna_scena_ptr = this;
 
     //* Povezava na streznik
-    if (m_odjmalec.zazeni(p_nastavitve_scena->m_streznik.niz, atoi(p_nastavitve_scena->m_vrata_odjemalca.niz.c_str())) < 0)
+    for (int i = 0; i < 10; i++)
     {
-        napaka("igra_scena.cpp :: Povezava ni uspela!\n");
-        konec();
-        p_zacena_scena->zacetek();
+        if (m_odjmalec.zazeni(p_nastavitve_scena->m_streznik.niz, atoi(p_nastavitve_scena->m_vrata_odjemalca.niz.c_str())) < 0)
+        {
+            opozorilo("igra_scena.cpp :: Poskus povezave %i od %i ni uspel!\n", i + 1, 10);
+        }
+        else
+            break;
     }
     if (m_odjmalec.id != -1)
     {
         m_sem_povezan = true;
         std::thread nit(vzdrzuj_povezavo, this); //* Nit za branje iz vticnika
         nit.detach();
+    }
+    else
+    {
+        napaka("igra_scena.cpp :: Povezava ni uspela!\n");
+        konec();
+        p_zacena_scena->zacetek();
     }
 }
 
