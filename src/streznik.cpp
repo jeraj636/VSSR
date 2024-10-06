@@ -201,7 +201,6 @@ void Streznik::obdelaj_sporocila()
             }
         }
     }
-#endif
 }
 void Streznik::ugasni()
 {
