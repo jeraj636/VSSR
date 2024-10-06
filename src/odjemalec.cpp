@@ -29,8 +29,8 @@ int Odjemalec::zazeni(std::string naslov, int port)
 
     memset((char *)&m_naslov_streznika, 0, sizeof(m_naslov_streznika));
     m_naslov_streznika.sin_family = AF_INET;
-    // memcpy((char *)&m_naslov_streznika.sin_addr.s_addr, (char *)&naslov_streznika->h_addr, naslov_streznika->h_length);
-    m_naslov_streznika.sin_addr.s_addr = inet_addr(naslov.c_str());
+    // m_naslov_streznika.sin_addr.s_addr = inet_addr(naslov.c_str());
+    memcpy((char *)&m_naslov_streznika.sin_addr.s_addr, (char *)naslov_streznika->h_addr, naslov_streznika->h_length);
     m_naslov_streznika.sin_port = htons(port);
 
     char buff[10];
