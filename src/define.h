@@ -1,3 +1,3 @@
-#define LINUX
+#define WINDOWS
 #define DEBUG
 #define STOPNJA_SPOROCANJA 5

@@ -47,7 +47,8 @@ private:
 #ifdef WINDOWS
     WSADATA m_WSAData;
     SOCKET m_vticnik;
-    SOCKADDR_IN m_streznik_nalov;
+    SOCKADDR_IN m_naslov_streznika;
+    socklen_t m_velikost_naslova_streznika;
 #endif
 };
 #endif

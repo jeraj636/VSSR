@@ -21,6 +21,8 @@
 #ifdef WINDOWS
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <iostream>
+
 #endif
 
 #include "matematika.h"
@@ -32,10 +34,9 @@ public:
     mat::vec3 rotacija;
     int id;
     double se_tu_nazadnje_cas;
-#ifdef LINUX
     sockaddr naslov_odjemalca;
     socklen_t velikost_naslova_odjemalca;
-#endif
+
     void poslji(char buff[], int n);
 };
 
@@ -49,13 +50,13 @@ public:
 private:
     static void obdelaj_sporocila();
     static void poslji_sporocila();
+    static void poslusaj();
     static inline std::thread m_nit_za_poslusanje;
     static inline std::vector<Odjemalec_zs> odjemalci;
     static inline int m_id_stevec;
     static inline bool m_streznik_tece;
     static inline double m_naslednji_cas_za_podatke_o_igralcih;
     static inline double m_naslednji_cas_za_se_sem_tu;
-    static void poslusaj();
 
 protected:
 #ifdef LINUX
@@ -64,7 +65,7 @@ protected:
 #ifdef WINDOWS
     static inline WSADATA m_WSA_data;
     static inline SOCKET m_vticnik;
-
+    WSADATA m_WSAData;
 #endif
 };
 #endif
