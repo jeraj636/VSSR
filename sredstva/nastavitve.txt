@@ -1,4 +1,4 @@
-kokosek.si
-6589
-
+localhost
+5000
+20
 5000

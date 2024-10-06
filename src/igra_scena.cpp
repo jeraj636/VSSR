@@ -90,6 +90,7 @@ void Igra_scena::zanka()
         Risalnik::narisi_3D_objekt(m_kamni1[i]);
     for (int i = 0; i < nasprotniki.size(); i++)
     {
+        /*
         mat::vec3 smer = nasprotniki[i].tr_pozicija - nasprotniki[i].pr_pozicija;
         if (smer != mat::vec3(0))
             nasprotniki[i].pozicija = nasprotniki[i].pr_pozicija + (mat::normaliziraj(smer) * Risalnik::kamera_3D.hitrost_premikanja * Cas::get_delta_cas());
@@ -103,6 +104,9 @@ void Igra_scena::zanka()
         nasprotniki[i].pr_pozicija = nasprotniki[i].pozicija;
         nasprotniki[i].pr_rotacija = nasprotniki[i].rotacija;
 
+        */
+        Nasprotnik::raketa.pozicija = nasprotniki[i].tr_pozicija;
+        Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
         Risalnik::narisi_3D_objekt(Nasprotnik::raketa);
     }
     //* Preverjanje stanj gumbov
@@ -146,7 +150,7 @@ void Igra_scena::zanka()
         m_gumb_za_nadaljevanje.narisi_me();
         m_gumb_za_na_meni.narisi_me();
     }
-    //* Komunikacija s sstreznikom
+    //* Komunikacija s streznikom
     if (m_cas_za_se_sem_tu <= Cas::get_cas())
     {
         m_cas_za_se_sem_tu += T_SE_SEM_TU_INTERVAL;
@@ -155,6 +159,21 @@ void Igra_scena::zanka()
         memcpy(buff + 1, (char *)&m_odjmalec.id, 4);
         m_odjmalec.poslji(buff, 5);
     }
+    if (m_cas_naslednjega_posiljanja_podatkov <= Cas::get_cas())
+    {
+        m_cas_naslednjega_posiljanja_podatkov += T_HITROST_POSILJANJA_PODATKOV;
+        char buff[256];
+        buff[0] = T_PODATKI_IGRALCA;
+        int poz = 1;
+        memcpy(buff + poz, (char *)&m_odjmalec.id, sizeof(m_odjmalec.id));
+        poz += sizeof(m_odjmalec.id);
+        memcpy(buff + poz, (char *)&Risalnik::kamera_3D.pozicija, sizeof(Risalnik::kamera_3D.pozicija));
+        poz += sizeof(Risalnik::kamera_3D.pozicija);
+        memcpy(buff + poz, (char *)&Risalnik::kamera_3D.rotacija, sizeof(Risalnik::kamera_3D.rotacija));
+        poz += sizeof(Risalnik::kamera_3D.rotacija);
+        m_odjmalec.poslji(buff, poz);
+    }
+
     if (m_streznik_nazadnje_se_sem_tu + T_SE_SEM_TU_INTERVAL * 4 < Cas::get_cas())
     {
         napaka("igra_scena.cpp :: Streznik se ne odziva!\n");
@@ -170,16 +189,70 @@ void Igra_scena::zanka()
 }
 void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
 {
-    char buff[256] = {};
+    char buff[256] = {0};
     while (is->m_sem_povezan)
     {
-
         int n = is->m_odjmalec.prejmi(buff);
         if (n == -1)
             continue;
         if (buff[0] == T_S_SE_SEM_TU)
         {
             is->m_streznik_nazadnje_se_sem_tu = Cas::get_cas();
+        }
+        if (buff[0] == T_PODATKI_O_IGRALCIH)
+        {
+            for (int i = 0; i < is->nasprotniki.size(); i++)
+                is->nasprotniki[i].prebran = false;
+            int vel;
+            int poz = 1;
+            memcpy((char *)&vel, buff + poz, sizeof(vel));
+            poz += sizeof(vel);
+            for (int i = 0; i < vel; i++)
+            {
+                int id;
+                mat::vec3 pozicija;
+                mat::vec3 rotacija;
+                memcpy((char *)&id, buff + poz, sizeof(id));
+                poz += sizeof(id);
+                memcpy((char *)&pozicija, buff + poz, sizeof(pozicija));
+                poz += sizeof(pozicija);
+                memcpy((char *)&rotacija, buff + poz, sizeof(rotacija));
+                poz += sizeof(rotacija);
+
+                bool ali_je_v_tabeli = false;
+                for (int j = 0; j < is->nasprotniki.size(); j++)
+                {
+                    if (id == is->nasprotniki[j].id)
+                    {
+                        is->nasprotniki[j].pr_pozicija = is->nasprotniki[j].tr_pozicija;
+                        is->nasprotniki[j].pr_rotacija = is->nasprotniki[j].tr_rotacija;
+                        is->nasprotniki[j].tr_pozicija = pozicija;
+                        is->nasprotniki[j].tr_rotacija = rotacija;
+                        is->nasprotniki[j].prebran = true;
+                        ali_je_v_tabeli = true;
+                    }
+                }
+                if (!ali_je_v_tabeli)
+                {
+
+                    Nasprotnik nov_nasprotnik;
+                    is->nasprotniki.push_back(nov_nasprotnik);
+                    is->nasprotniki.back().id = id;
+                    is->nasprotniki.back().tr_pozicija = pozicija;
+                    is->nasprotniki.back().pr_pozicija = pozicija;
+                    is->nasprotniki.back().tr_rotacija = rotacija;
+                    is->nasprotniki.back().pr_rotacija = rotacija;
+                    is->nasprotniki.back().prebran = true;
+                }
+            }
+            for (int i = 0; i < is->nasprotniki.size(); i++)
+            {
+                if (!is->nasprotniki[i].prebran)
+                {
+                    std::swap(is->nasprotniki[i], is->nasprotniki.back());
+                    is->nasprotniki.pop_back();
+                }
+            }
         }
     }
 }

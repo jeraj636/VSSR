@@ -89,6 +89,31 @@ void Streznik::poslji_sporocila()
             odjemalci[i].poslji(buff, 5);
         }
     }
+    if (m_naslednji_cas_za_podatke_o_igralcih <= zdaj)
+    {
+        m_naslednji_cas_za_podatke_o_igralcih += T_SE_SEM_TU_INTERVAL;
+        for (int i = 0; i < odjemalci.size(); i++)
+        {
+            buff[0] = T_PODATKI_O_IGRALCIH;
+            int poz = 1;
+            int vel = odjemalci.size() - 1;
+            memcpy(buff + poz, (char *)&vel, sizeof(vel));
+            poz += sizeof(vel);
+            for (int j = 0; j < odjemalci.size(); j++)
+            {
+                if (i != j)
+                {
+                    memcpy(buff + poz, (char *)&odjemalci[j].id, sizeof(odjemalci[j].id));
+                    poz += sizeof(odjemalci[j].id);
+                    memcpy(buff + poz, (char *)&odjemalci[j].pozicija, sizeof(odjemalci[j].pozicija));
+                    poz += sizeof(odjemalci[j].pozicija);
+                    memcpy(buff + poz, (char *)&odjemalci[j].rotacija, sizeof(odjemalci[j].rotacija));
+                    poz += sizeof(odjemalci[j].rotacija);
+                }
+            }
+            odjemalci[i].poslji(buff, poz);
+        }
+    }
 }
 void Streznik::obdelaj_sporocila()
 {
@@ -156,6 +181,27 @@ void Streznik::obdelaj_sporocila()
                 sporocilo("C %i Se sem tu!\n", id);
             }
         }
+    }
+    if (buff[0] == T_PODATKI_IGRALCA)
+    {
+        int id;
+        int poz = 1;
+        memcpy((char *)&id, buff + poz, sizeof(id));
+        poz += sizeof(id);
+        for (int i = 0; i < odjemalci.size(); i++)
+        {
+            if (odjemalci[i].id == id)
+            {
+                memcpy((char *)&odjemalci[i].pozicija, buff + poz, sizeof(odjemalci[i].pozicija));
+                poz += sizeof(odjemalci[i].pozicija);
+                memcpy((char *)&odjemalci[i].rotacija, buff + poz, sizeof(odjemalci[i].rotacija));
+                poz += sizeof(odjemalci[i].rotacija);
+                odjemalci[i].pozicija.x *= -1;
+                odjemalci[i].pozicija.y *= -1;
+                odjemalci[i].pozicija.z *= -1;
+            }
+        }
+        sporocilo("C %i :: Posiljam svoje podatke!\n", id);
     }
 #endif
 }
