@@ -201,15 +201,19 @@ void Streznik::obdelaj_sporocila()
             }
         }
     }
-    if (buff[0] == T_O_SE_SEM_TU)
+    if (buff[0] == T_PODATKI_IGRALCA)
     {
+        int poz = 5;
         int id;
         memcpy((char *)&id, buff + 1, sizeof(id));
         for (int i = 0; i < odjemalci.size(); i++)
         {
             if (odjemalci[i].id == id)
             {
-                odjemalci[i].se_tu_nazadnje_cas = zdaj;
+                memcpy((char *)&odjemalci[i].pozicija, buff + poz, sizeof(odjemalci[i].pozicija));
+                poz += sizeof(odjemalci[i].pozicija);
+                memcpy((char *)&odjemalci[i].rotacija, buff + poz, sizeof(odjemalci[i].rotacija));
+                poz += sizeof(odjemalci[i].rotacija);
                 sporocilo("C %i Se sem tu!\n", id);
             }
         }
