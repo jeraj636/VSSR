@@ -90,7 +90,22 @@ void Igra_scena::zanka()
         Risalnik::narisi_3D_objekt(m_kamni1[i]);
     for (int i = 0; i < nasprotniki.size(); i++)
     {
-        Nasprotnik::raketa.pozicija = nasprotniki[i].tr_pozicija;
+        mat::vec3 smer = nasprotniki[i].tr_pozicija - nasprotniki[i].pr_pozicija;
+        if (smer == 0)
+            Nasprotnik::raketa.pozicija = nasprotniki[i].tr_pozicija;
+        else
+        {
+            nasprotniki[i].pr_pozicija += smer * Risalnik::kamera_3D.hitrost_premikanja * Cas::get_delta_cas();
+            Nasprotnik::raketa.pozicija = nasprotniki[i].pr_pozicija;
+        }
+        smer = nasprotniki[i].tr_rotacija - nasprotniki[i].pr_pozicija;
+        if (smer == 0)
+            Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
+        else
+        {
+            nasprotniki[i].pr_rotacija += smer * Risalnik::kamera_3D.hitrost_miske * Cas::get_delta_cas() * .001;
+            Nasprotnik::raketa.rotacija = nasprotniki[i].pr_rotacija;
+        }
         Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
         Risalnik::narisi_3D_objekt(Nasprotnik::raketa);
     }
@@ -203,7 +218,6 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
                 poz += sizeof(pozicija);
                 memcpy((char *)&rotacija, buff + poz, sizeof(rotacija));
                 poz += sizeof(rotacija);
-                std::cout << id << "   " << pozicija << "   " << rotacija << "\n";
                 bool ali_je_v_tabeli = false;
                 for (int j = 0; j < is->nasprotniki.size(); j++)
                 {
