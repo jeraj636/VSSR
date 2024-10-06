@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-localhost
-5000
+kokosek.si
+6589
+50
 20
-=======
-192.168.1.19
-5000
-
->>>>>>> 81bb0b2a2eea33a1fac7ae83e2edd4f76f5fba2c
-5000

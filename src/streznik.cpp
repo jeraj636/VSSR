@@ -201,6 +201,19 @@ void Streznik::obdelaj_sporocila()
             }
         }
     }
+    if (buff[0] == T_O_SE_SEM_TU)
+    {
+        int id;
+        memcpy((char *)&id, buff + 1, sizeof(id));
+        for (int i = 0; i < odjemalci.size(); i++)
+        {
+            if (odjemalci[i].id == id)
+            {
+                odjemalci[i].se_tu_nazadnje_cas = zdaj;
+                sporocilo("C %i Se sem tu!\n", id);
+            }
+        }
+    }
 }
 void Streznik::ugasni()
 {
