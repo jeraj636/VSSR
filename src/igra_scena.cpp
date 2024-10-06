@@ -90,8 +90,9 @@ void Igra_scena::zanka()
         Risalnik::narisi_3D_objekt(m_kamni1[i]);
     for (int i = 0; i < nasprotniki.size(); i++)
     {
+        //! Interpolacija
         mat::vec3 smer = nasprotniki[i].tr_pozicija - nasprotniki[i].pr_pozicija;
-        if (smer == 0)
+        if (smer.dolzina() == 0)
             Nasprotnik::raketa.pozicija = nasprotniki[i].tr_pozicija;
         else
         {
@@ -99,7 +100,7 @@ void Igra_scena::zanka()
             Nasprotnik::raketa.pozicija = nasprotniki[i].pr_pozicija;
         }
         smer = nasprotniki[i].tr_rotacija - nasprotniki[i].pr_pozicija;
-        if (smer == 0)
+        if (smer.dolzina() == 0)
             Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
         else
         {
