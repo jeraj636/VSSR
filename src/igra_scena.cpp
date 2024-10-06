@@ -103,7 +103,7 @@ void Igra_scena::zanka()
             Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
         else
         {
-            nasprotniki[i].pr_rotacija += smer * Risalnik::kamera_3D.hitrost_miske * Cas::get_delta_cas() * .001;
+            nasprotniki[i].pr_rotacija += smer * Risalnik::kamera_3D.hitrost_miske * Cas::get_delta_cas();
             Nasprotnik::raketa.rotacija = nasprotniki[i].pr_rotacija;
         }
         Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
