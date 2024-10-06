@@ -12,12 +12,13 @@ void Odjemalec_zs::poslji(char buff[], int n)
 
 bool Streznik::zazeni(int port)
 {
-    sporocilo("streznik.cpp :: Odpiranje streznika na vrtih %i\n", port);
-#ifdef LINUX
     //* Nastavljanje spremenjivk
     m_naslednji_cas_za_podatke_o_igralcih = 0;
     m_naslednji_cas_za_se_sem_tu = 0;
     m_id_stevec = 1;
+
+    sporocilo("streznik.cpp :: Odpiranje streznika na vrtih %i\n", port);
+#ifdef LINUX
 
     //* Odpiranje vticnika
     m_vticnik = socket(AF_INET, SOCK_DGRAM, 0);
@@ -45,6 +46,26 @@ bool Streznik::zazeni(int port)
 #endif
 #ifdef WINDOWS
 
+    //* Odpiranje vticnika
+    WSAStartup(MAKEWORD(2, 0), &m_WSA_data);
+    m_vticnik = socket(AF_INET, SOCK_DGRAM, 0);
+
+    //* Neblokiran način
+    u_long neblokiran = 1;
+    ioctlsocket(m_vticnik, FIONBIO, &neblokiran);
+
+    //* Nastavljanje podatkov o strezniku
+    sockaddr_in naslov_streznika;
+    memset((char *)&naslov_streznika, 0, sizeof(sockaddr_in));
+    naslov_streznika.sin_family = AF_INET;
+    naslov_streznika.sin_addr.s_addr = INADDR_ANY;
+    naslov_streznika.sin_port = htons(port);
+
+    if (bind(m_vticnik, (SOCKADDR *)&naslov_streznika, sizeof(naslov_streznika)) == SOCKET_ERROR)
+    {
+        napaka("streznik.cpp :: Napaka pri bindanju streznika!\n");
+        return false;
+    }
 #endif
     m_streznik_tece = true;
     m_nit_za_poslusanje = std::thread(poslusaj);
@@ -59,7 +80,6 @@ void Streznik::poslusaj()
     {
         obdelaj_sporocila();
         poslji_sporocila();
-
         //* preverjanje odjemalcev
         for (int i = 0; i < odjemalci.size(); i++)
         {
@@ -76,6 +96,7 @@ void Streznik::poslusaj()
 }
 void Streznik::poslji_sporocila()
 {
+
     char buff[255] = {0};
     double zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
 
@@ -92,11 +113,9 @@ void Streznik::poslji_sporocila()
 }
 void Streznik::obdelaj_sporocila()
 {
-
     char buff[255] = {0};
     double zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
 
-#ifdef LINUX
     sockaddr naslov_odjemalca;
     socklen_t velikost_naslova_odjemalca = sizeof(naslov_odjemalca);
     int n = recvfrom(m_vticnik, buff, 255, 0, (sockaddr *)&naslov_odjemalca, &velikost_naslova_odjemalca);
@@ -157,14 +176,16 @@ void Streznik::obdelaj_sporocila()
             }
         }
     }
-#endif
 }
 void Streznik::ugasni()
 {
-#ifdef LINUX
     m_streznik_tece = false;
+#ifdef LINUX
     close(m_vticnik);
-    sporocilo("streznik.cpp :: Konec streznika!\n");
-    m_nit_za_poslusanje.join();
 #endif
+#ifdef WINDOWS
+    closesocket(m_vticnik);
+#endif
+    m_nit_za_poslusanje.join();
+    sporocilo("streznik.cpp :: Konec streznika!\n");
 }
