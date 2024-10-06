@@ -98,7 +98,7 @@ void Streznik::obdelaj_sporocila()
 
 #ifdef LINUX
     sockaddr naslov_odjemalca;
-    socklen_t velikost_naslova_odjemalca;
+    socklen_t velikost_naslova_odjemalca = sizeof(naslov_odjemalca);
     int n = recvfrom(m_vticnik, buff, 255, 0, (sockaddr *)&naslov_odjemalca, &velikost_naslova_odjemalca);
     if (n == -1)
     {

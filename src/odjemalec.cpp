@@ -29,7 +29,8 @@ int Odjemalec::zazeni(std::string naslov, int port)
 
     memset((char *)&m_naslov_streznika, 0, sizeof(m_naslov_streznika));
     m_naslov_streznika.sin_family = AF_INET;
-    memcpy((char *)naslov_streznika->h_addr, (char *)&m_naslov_streznika.sin_addr.s_addr, naslov_streznika->h_length);
+    // memcpy((char *)&m_naslov_streznika.sin_addr.s_addr, (char *)&naslov_streznika->h_addr, naslov_streznika->h_length);
+    m_naslov_streznika.sin_addr.s_addr = inet_addr(naslov.c_str());
     m_naslov_streznika.sin_port = htons(port);
 
     char buff[10];
@@ -42,6 +43,7 @@ int Odjemalec::zazeni(std::string naslov, int port)
     do
     {
         zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
+        m_velikost_naslova_streznika = sizeof(m_naslov_streznika);
         n = recvfrom(m_vticnik, buff, 10, 0, (sockaddr *)&m_naslov_streznika, (socklen_t *)&m_velikost_naslova_streznika);
     } while (n == -1 && zac_cas >= zdaj);
     if (zac_cas <= zdaj)
@@ -60,6 +62,7 @@ int Odjemalec::zazeni(std::string naslov, int port)
     do
     {
         zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
+        m_velikost_naslova_streznika = sizeof(m_naslov_streznika);
         n = recvfrom(m_vticnik, buff, 10, 0, (sockaddr *)&m_naslov_streznika, (socklen_t *)&m_velikost_naslova_streznika);
     } while (n == -1 && zac_cas >= zdaj);
     if (zac_cas <= zdaj)
@@ -91,5 +94,6 @@ void Odjemalec::ustavi()
 }
 int Odjemalec::prejmi(char buff[])
 {
+    m_velikost_naslova_streznika = sizeof(m_naslov_streznika);
     return recvfrom(m_vticnik, buff, 256, 0, (sockaddr *)&m_naslov_streznika, (socklen_t *)&m_velikost_naslova_streznika);
 }
