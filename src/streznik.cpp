@@ -214,6 +214,9 @@ void Streznik::obdelaj_sporocila()
                 poz += sizeof(odjemalci[i].pozicija);
                 memcpy((char *)&odjemalci[i].rotacija, buff + poz, sizeof(odjemalci[i].rotacija));
                 poz += sizeof(odjemalci[i].rotacija);
+                odjemalci[i].pozicija.x *= -1;
+                odjemalci[i].pozicija.y *= -1;
+                odjemalci[i].pozicija.z *= -1;
                 sporocilo("C %i Se sem tu!\n", id);
             }
         }
