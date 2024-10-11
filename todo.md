@@ -16,4 +16,12 @@
 - [X] Scena
 - [X] Polepsaj shaderje
 - [X] Testiraj sockete
-- [ ] X invertacija miske ni OK
+- [X] X invertacija miske ni OK
+- [X] Opazovalec
+- [ ] max st igralcev omejitec v steznik.cpp
+- [ ] WSAcelenUP na WIN
+- [ ] Collizion
+  - [ ] hitbox
+- [ ] Streljanje
+  - [ ] Chroshair
+  - [ ] Dejanska logika
