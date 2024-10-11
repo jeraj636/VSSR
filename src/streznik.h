@@ -39,13 +39,22 @@ public:
 
     void poslji(char buff[], int n);
 };
-
+class Opazovalec_zs
+{
+public:
+    int id;
+    sockaddr naslov_odjemalca;
+    socklen_t velikost_naslova_odjemalca;
+    double se_tu_nazadnje_cas;
+    void poslji(char buff[], int n);
+};
 class Streznik
 {
 public:
-    static bool zazeni(int port);
+    static bool zazeni(int port, int odjemalci, int opazovalci);
     static void ugasni();
     friend class Odjemalec_zs;
+    friend class Opazovalec_zs;
     static inline bool streznik_tece;
 
 private:
@@ -54,9 +63,13 @@ private:
     static void poslusaj();
     static inline std::thread m_nit_za_poslusanje;
     static inline std::vector<Odjemalec_zs> odjemalci;
-    static inline int m_id_stevec;
+    static inline std::vector<Opazovalec_zs> opazovalci;
+    static inline int m_id_stevec_odjemalci;
+    static inline int m_id_stevec_opazovalci;
     static inline double m_naslednji_cas_za_podatke_o_igralcih;
     static inline double m_naslednji_cas_za_se_sem_tu;
+    static inline int max_st_odjemalcev;
+    static inline int max_st_opazovalcev;
 
 protected:
 #ifdef LINUX

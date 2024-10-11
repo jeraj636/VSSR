@@ -52,7 +52,18 @@ void Igra_scena::zacetek()
     //* Povezava na streznik
     for (int i = 0; i < 10; i++)
     {
-        if (m_odjmalec.zazeni(p_nastavitve_scena->m_streznik.niz, atoi(p_nastavitve_scena->m_vrata_odjemalca.niz.c_str())) < 0)
+        int tip;
+        if (p_nastavitve_scena->ali_sem_opazovalec)
+        {
+            tip = T_OPAZOVALEC;
+            m_opazujem = true;
+        }
+        else
+        {
+            tip = T_ODJEMALEC;
+            m_opazujem = false;
+        }
+        if (m_odjmalec.zazeni(p_nastavitve_scena->m_streznik.niz, atoi(p_nastavitve_scena->m_vrata_odjemalca.niz.c_str()), tip) < 0)
         {
             opozorilo("igra_scena.cpp :: Poskus povezave %i od %i ni uspel!\n", i + 1, 10);
         }
@@ -165,12 +176,15 @@ void Igra_scena::zanka()
         char buff[10];
         buff[0] = T_O_SE_SEM_TU;
         memcpy(buff + 1, (char *)&m_odjmalec.id, 4);
-        m_odjmalec.poslji(buff, 5);
-        izpis("%f\n", m_cas_za_se_sem_tu);
+        if (m_opazujem)
+            buff[5] = T_OPAZOVALEC;
+        else
+            buff[5] = T_ODJEMALEC;
+        m_odjmalec.poslji(buff, 6);
     }
 
     // Posiljanje svojih podatkov
-    if (m_cas_naslednjega_posiljanja_podatkov <= Cas::get_cas())
+    if (m_cas_naslednjega_posiljanja_podatkov <= Cas::get_cas() && !m_opazujem)
     {
         m_cas_naslednjega_posiljanja_podatkov += T_HITROST_POSILJANJA_PODATKOV;
         char buff[256];
@@ -184,7 +198,6 @@ void Igra_scena::zanka()
         poz += sizeof(Risalnik::kamera_3D.rotacija);
         m_odjmalec.poslji(buff, poz);
     }
-
     // Strežnik že 4-krat ni poslal še sem tu
     if (m_streznik_nazadnje_se_sem_tu + T_SE_SEM_TU_INTERVAL * 4 < Cas::get_cas())
     {

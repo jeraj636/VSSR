@@ -51,6 +51,8 @@ private:
     Besedilo m_gumb_za_nadaljevanje;
     std::vector<Nasprotnik> nasprotniki;
 
+    bool m_opazujem;
+
 private:
 };
 

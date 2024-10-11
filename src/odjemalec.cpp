@@ -7,7 +7,7 @@ Funkcija ustavri vticnik in se poskusa povezati na streznik
 Podatki o strezniku so podani, kot parametri funkcije
 Ob neuspreli povezavi funkcija vrne -1, ob uspeli pa id odjemalca
 */
-int Odjemalec::zazeni(std::string naslov, int port)
+int Odjemalec::zazeni(std::string naslov, int port, int tip)
 {
     sporocilo("odjemalec.cpp :: Povezovanje na %s : %i\n", naslov.c_str(), port);
     id = -1;
@@ -44,7 +44,8 @@ int Odjemalec::zazeni(std::string naslov, int port)
     //* Začetek povezovanja
     char buff[10];
     buff[0] = T_PROSNJA_ZA_POVEZAVO;
-    sendto(m_vticnik, buff, 1, 0, (sockaddr *)&m_naslov_streznika, sizeof(m_naslov_streznika));
+    buff[1] = tip;
+    sendto(m_vticnik, buff, 2, 0, (sockaddr *)&m_naslov_streznika, sizeof(m_naslov_streznika));
 
     double zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
     double zac_cas = zdaj + T_CAS_ZA_POVEZOVANJE;
@@ -65,12 +66,14 @@ int Odjemalec::zazeni(std::string naslov, int port)
     // Obdelava prejetega sporocila
     if (buff[0] == T_ODOBRITEV_POVEZAVE)
     {
-        sporocilo("S :: Odobritev povezave id: %i\n", id);
 
         // Posiljanje pozdrava strezniku
         memcpy((char *)&id, buff + 1, sizeof(id)); //* Streznik ob odobritvi povezave poslje odjemalčev id
+        sporocilo("S :: Odobritev povezave id: %i   %i\n", id, sizeof(id));
+
         buff[0] = T_POZZ_STREZNIK;
-        sendto(m_vticnik, buff, 5, 0, (sockaddr *)&m_naslov_streznika, sizeof(m_naslov_streznika));
+        buff[5] = tip;
+        sendto(m_vticnik, buff, 6, 0, (sockaddr *)&m_naslov_streznika, sizeof(m_naslov_streznika));
     }
 
     zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();

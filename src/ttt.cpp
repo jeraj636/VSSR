@@ -15,7 +15,7 @@ bool Streznik::zazeni(int port)
     //* Nastavljanje spremenjivk
     m_naslednji_cas_za_podatke_o_igralcih = 0;
     m_naslednji_cas_za_se_sem_tu = 0;
-    m_id_stevec = 1;
+    m_id_stevec_odjemalci = 1;
 
     sporocilo("streznik.cpp :: Odpiranje streznika na vrtih %i\n", port);
 #ifdef LINUX
@@ -155,10 +155,10 @@ void Streznik::obdelaj_sporocila()
         int poz = 0;
         buff[0] = T_ODOBRITEV_POVEZAVE;
         poz = 1;
-        memcpy(&buff[poz], (char *)&m_id_stevec, sizeof(m_id_stevec));
-        poz += sizeof(m_id_stevec);
+        memcpy(&buff[poz], (char *)&m_id_stevec_odjemalci, sizeof(m_id_stevec_odjemalci));
+        poz += sizeof(m_id_stevec_odjemalci);
         sendto(m_vticnik, buff, poz, 0, (sockaddr *)&naslov_odjemalca, velikost_naslova_odjemalca);
-        m_id_stevec++;
+        m_id_stevec_odjemalci++;
         sporocilo("C? :: Prosnja za povezavo!\n");
     }
     if (buff[0] == T_POZZ_STREZNIK)

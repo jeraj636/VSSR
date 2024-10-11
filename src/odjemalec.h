@@ -31,7 +31,7 @@
 class Odjemalec
 {
 public:
-    int zazeni(std::string naslov, int port);
+    int zazeni(std::string naslov, int port, int tip);
     void ustavi();
     void poslji(char buff[], int vel);
     int prejmi(char buff[]);

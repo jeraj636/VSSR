@@ -103,7 +103,7 @@ void Zacetna_scena::posodobi_meni()
         m_b_izhod.barva_besedila.a = 0.5;
         if (Risalnik::miskin_gumb.levi_gumb)
         {
-            if (p_nastavitve_scena->m_ali_streznik_tece)
+            if (p_nastavitve_scena->ali_streznik_tece)
                 Streznik::ugasni();
             Risalnik::zapri_okno();
         }

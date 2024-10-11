@@ -3,7 +3,7 @@
 #include "sporocila_za_komunikacijo.h"
 #include "dnevnik.h"
 #include "chrono"
-
+#include <iostream>
 void Odjemalec_zs::poslji(char buff[], int n)
 {
     int nn = sendto(Streznik::m_vticnik, buff, n, 0, (sockaddr *)&naslov_odjemalca, velikost_naslova_odjemalca);
@@ -11,13 +11,20 @@ void Odjemalec_zs::poslji(char buff[], int n)
         napaka("streznik.cpp :: Napaka pri posiljanju!\n");
 }
 
-bool Streznik::zazeni(int port)
+void Opazovalec_zs::poslji(char buff[], int n)
+{
+    int nn = sendto(Streznik::m_vticnik, buff, n, 0, (sockaddr *)&naslov_odjemalca, velikost_naslova_odjemalca);
+    if (nn == -1)
+        napaka("streznik.cpp :: Napaka pri posiljanju!\n");
+}
+
+bool Streznik::zazeni(int port, int odjemalci, int opazovalci)
 {
     //* Nastavljanje spremenjivk
     m_naslednji_cas_za_podatke_o_igralcih = 0;
     m_naslednji_cas_za_se_sem_tu = 0;
-    m_id_stevec = 1;
-
+    m_id_stevec_odjemalci = 1;
+    m_id_stevec_opazovalci = 1;
     sporocilo("streznik.cpp :: Odpiranje streznika na vrtih %i\n", port);
 #ifdef LINUX
 
@@ -107,10 +114,17 @@ void Streznik::poslji_sporocila()
     {
         m_naslednji_cas_za_se_sem_tu += T_SE_SEM_TU_INTERVAL;
         buff[0] = T_S_SE_SEM_TU;
+
         for (int i = 0; i < odjemalci.size(); i++)
         {
             memcpy(buff + 1, (char *)&odjemalci[i].id, sizeof(odjemalci[i].id));
             odjemalci[i].poslji(buff, 5);
+        }
+
+        for (int i = 0; i < opazovalci.size(); i++)
+        {
+            memcpy(buff + 1, (char *)&opazovalci[i].id, sizeof(opazovalci[i].id));
+            opazovalci[i].poslji(buff, 5);
         }
     }
 
@@ -119,6 +133,7 @@ void Streznik::poslji_sporocila()
     {
         m_naslednji_cas_za_podatke_o_igralcih += T_HITROST_POSILJANJA_PODATKOV;
 
+        // Posiljanje odjemalcem
         for (int i = 0; i < odjemalci.size(); i++)
         {
             // Ustvarjanje sporočila
@@ -146,6 +161,33 @@ void Streznik::poslji_sporocila()
             }
             odjemalci[i].poslji(buff, poz);
         }
+
+        // Posiljanje opazovalcem
+        buff[0] = T_PODATKI_O_IGRALCIH;
+        int poz = 1;
+        int vel = odjemalci.size();
+        memcpy(buff + poz, (char *)&vel, sizeof(vel));
+        poz += sizeof(vel);
+
+        for (int i = 0; i < odjemalci.size(); i++)
+        {
+            // ID
+            memcpy(buff + poz, (char *)&odjemalci[i].id, sizeof(odjemalci[i].id));
+            poz += sizeof(odjemalci[i].id);
+
+            // Pozicija
+            memcpy(buff + poz, (char *)&odjemalci[i].pozicija, sizeof(odjemalci[i].pozicija));
+            poz += sizeof(odjemalci[i].pozicija);
+
+            // Rotacija
+            memcpy(buff + poz, (char *)&odjemalci[i].rotacija, sizeof(odjemalci[i].rotacija));
+            poz += sizeof(odjemalci[i].rotacija);
+        }
+
+        for (int i = 0; i < opazovalci.size(); i++)
+        {
+            opazovalci[i].poslji(buff, poz + 1);
+        }
     }
 }
 
@@ -168,19 +210,33 @@ void Streznik::obdelaj_sporocila()
     {
         int poz = 1;
 
-        // Nastavljanje začetnih vrednosti novemu igralcu
-        odjemalci.push_back(Odjemalec_zs());
-        odjemalci.back().naslov_odjemalca = naslov_odjemalca;
-        odjemalci.back().velikost_naslova_odjemalca = velikost_naslova_odjemalca;
-        odjemalci.back().se_tu_nazadnje_cas = zdaj * T_SE_SEM_TU_INTERVAL * 2;
-        odjemalci.back().pozicija = mat::vec3(0);
-        odjemalci.back().rotacija = mat::vec3(0);
-
-        memcpy((char *)&odjemalci.back().id, buff + 1, sizeof(odjemalci.back().id));
-
+        int id;
+        memcpy((char *)&id, buff + 1, sizeof(id));
         buff[0] = T_POZZ_ODJEMALEC; // Posiljanje pozdrava igralcu
-        odjemalci.back().poslji(buff, 1);
-        sporocilo("C %i Pzdravjem streznik!\n", odjemalci.back().id);
+
+        if (buff[5] == T_ODJEMALEC)
+        {
+
+            // Nastavljanje začetnih vrednosti novemu igralcu
+            odjemalci.push_back(Odjemalec_zs());
+            odjemalci.back().naslov_odjemalca = naslov_odjemalca;
+            odjemalci.back().velikost_naslova_odjemalca = velikost_naslova_odjemalca;
+            odjemalci.back().se_tu_nazadnje_cas = zdaj * T_SE_SEM_TU_INTERVAL * 2;
+            odjemalci.back().pozicija = mat::vec3(0);
+            odjemalci.back().rotacija = mat::vec3(0);
+            odjemalci.back().id = id;
+            odjemalci.back().poslji(buff, 1);
+            sporocilo("C %i Pzdravjem streznik!\n", odjemalci.back().id);
+        }
+        if (buff[5] == T_OPAZOVALEC)
+        {
+            opazovalci.push_back(Opazovalec_zs());
+            opazovalci.back().naslov_odjemalca = naslov_odjemalca;
+            opazovalci.back().velikost_naslova_odjemalca = velikost_naslova_odjemalca;
+            opazovalci.back().id = id;
+            opazovalci.back().poslji(buff, 1);
+            sporocilo("O %i Pzdravjem streznik!\n", opazovalci.back().id);
+        }
     }
 
     if (buff[0] == T_ZAPUSCAM)
@@ -205,25 +261,48 @@ void Streznik::obdelaj_sporocila()
         int poz = 0;
         buff[0] = T_ODOBRITEV_POVEZAVE;
         poz = 1;
-        memcpy(&buff[poz], (char *)&m_id_stevec, sizeof(m_id_stevec));
-        poz += sizeof(m_id_stevec);
-        sendto(m_vticnik, buff, poz, 0, (sockaddr *)&naslov_odjemalca, velikost_naslova_odjemalca);
-        m_id_stevec++;
-        sporocilo("C? :: Prosnja za povezavo!\n");
+        if (buff[1] == T_ODJEMALEC)
+        {
+
+            memcpy(&buff[poz], (char *)&m_id_stevec_odjemalci, sizeof(m_id_stevec_odjemalci));
+            poz += sizeof(m_id_stevec_odjemalci);
+            sendto(m_vticnik, buff, poz, 0, (sockaddr *)&naslov_odjemalca, velikost_naslova_odjemalca);
+            m_id_stevec_odjemalci++;
+            sporocilo("C? :: Prosnja za povezavo!\n");
+        }
+        if (buff[1] == T_OPAZOVALEC)
+        {
+
+            memcpy(&buff[poz], (char *)&m_id_stevec_opazovalci, sizeof(m_id_stevec_opazovalci));
+            poz += sizeof(m_id_stevec_opazovalci);
+            sendto(m_vticnik, buff, poz, 0, (sockaddr *)&naslov_odjemalca, velikost_naslova_odjemalca);
+            m_id_stevec_opazovalci++;
+            sporocilo("O? :: Prosnja za povezavo!\n");
+        }
     }
 
     if (buff[0] == T_O_SE_SEM_TU) // Igralec posilja da je še vedno prisoten
     {
         int id;
         memcpy((char *)&id, buff + 1, sizeof(id));
-        for (int i = 0; i < odjemalci.size(); i++)
-        {
-            if (odjemalci[i].id == id)
+        if (buff[5] == T_ODJEMALEC)
+            for (int i = 0; i < odjemalci.size(); i++)
             {
-                odjemalci[i].se_tu_nazadnje_cas = zdaj;
-                sporocilo("C %i Se sem tu!\n", id);
+                if (odjemalci[i].id == id)
+                {
+                    odjemalci[i].se_tu_nazadnje_cas = zdaj;
+                    sporocilo("C %i Se sem tu!\n", id);
+                }
             }
-        }
+        if (buff[5] == T_OPAZOVALEC)
+            for (int i = 0; i < opazovalci.size(); i++)
+            {
+                if (opazovalci[i].id == id)
+                {
+                    opazovalci[i].se_tu_nazadnje_cas = zdaj;
+                    sporocilo("O %i Se sem tu!\n", id);
+                }
+            }
     }
 
     if (buff[0] == T_PODATKI_IGRALCA) // Igralec pošilja svoje podatke
