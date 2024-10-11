@@ -112,7 +112,7 @@ void Streznik::poslji_sporocila()
     }
     if (m_naslednji_cas_za_podatke_o_igralcih <= zdaj)
     {
-        m_naslednji_cas_za_podatke_o_igralcih += T_SE_SEM_TU_INTERVAL;
+        m_naslednji_cas_za_podatke_o_igralcih += T_HITROST_POSILJANJA_PODATKOV;
         for (int i = 0; i < odjemalci.size(); i++)
         {
             buff[0] = T_PODATKI_O_IGRALCIH;
@@ -144,23 +144,12 @@ void Streznik::obdelaj_sporocila()
     sockaddr naslov_odjemalca;
     socklen_t velikost_naslova_odjemalca = sizeof(naslov_odjemalca);
     int n = recvfrom(m_vticnik, buff, 255, 0, (sockaddr *)&naslov_odjemalca, &velikost_naslova_odjemalca);
-    if (n == -1)
+    if (n == -1 || n == 0)
     {
         // napaka("streznik.cpp :: Napaka pri prejemu sporocila!\n");
         return;
     }
-    if (buff[0] == T_PROSNJA_ZA_POVEZAVO) //* Odjemalec se zeli povezati
-    {
-        //* Posijlanje id-ja odjemalcu
-        int poz = 0;
-        buff[0] = T_ODOBRITEV_POVEZAVE;
-        poz = 1;
-        memcpy(&buff[poz], (char *)&m_id_stevec, sizeof(m_id_stevec));
-        poz += sizeof(m_id_stevec);
-        sendto(m_vticnik, buff, poz, 0, (sockaddr *)&naslov_odjemalca, velikost_naslova_odjemalca);
-        m_id_stevec++;
-        sporocilo("C? :: Prosnja za povezavo!\n");
-    }
+
     if (buff[0] == T_POZZ_STREZNIK)
     {
         int poz = 1;
@@ -187,6 +176,18 @@ void Streznik::obdelaj_sporocila()
                 sporocilo("C %i Zapuscam!\n", id);
             }
         }
+    }
+    if (buff[0] == T_PROSNJA_ZA_POVEZAVO) //* Odjemalec se zeli povezati
+    {
+        //* Posijlanje id-ja odjemalcu
+        int poz = 0;
+        buff[0] = T_ODOBRITEV_POVEZAVE;
+        poz = 1;
+        memcpy(&buff[poz], (char *)&m_id_stevec, sizeof(m_id_stevec));
+        poz += sizeof(m_id_stevec);
+        sendto(m_vticnik, buff, poz, 0, (sockaddr *)&naslov_odjemalca, velikost_naslova_odjemalca);
+        m_id_stevec++;
+        sporocilo("C? :: Prosnja za povezavo!\n");
     }
     if (buff[0] == T_O_SE_SEM_TU)
     {
@@ -217,7 +218,7 @@ void Streznik::obdelaj_sporocila()
                 odjemalci[i].pozicija.x *= -1;
                 odjemalci[i].pozicija.y *= -1;
                 odjemalci[i].pozicija.z *= -1;
-                sporocilo("C %i Se sem tu!\n", id);
+                sporocilo("C %i Podatki Igralca \n", id);
             }
         }
     }

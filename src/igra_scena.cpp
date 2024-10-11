@@ -70,8 +70,8 @@ void Igra_scena::zacetek()
     else
     {
         napaka("igra_scena.cpp :: Povezava ni uspela!\n");
-        konec();
         p_zacena_scena->zacetek();
+        konec();
     }
 }
 
@@ -91,6 +91,7 @@ void Igra_scena::zanka()
     for (int i = 0; i < nasprotniki.size(); i++)
     {
         //! Interpolacija
+        // pozicija
         mat::vec3 smer = nasprotniki[i].tr_pozicija - nasprotniki[i].pr_pozicija;
         if (smer.dolzina() == 0)
             Nasprotnik::raketa.pozicija = nasprotniki[i].tr_pozicija;
@@ -99,6 +100,8 @@ void Igra_scena::zanka()
             nasprotniki[i].pr_pozicija += smer * Risalnik::kamera_3D.hitrost_premikanja * Cas::get_delta_cas();
             Nasprotnik::raketa.pozicija = nasprotniki[i].pr_pozicija;
         }
+
+        // rotacija
         smer = nasprotniki[i].tr_rotacija - nasprotniki[i].pr_pozicija;
         if (smer.dolzina() == 0)
             Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
@@ -107,6 +110,7 @@ void Igra_scena::zanka()
             nasprotniki[i].pr_rotacija += smer * Risalnik::kamera_3D.hitrost_miske * Cas::get_delta_cas();
             Nasprotnik::raketa.rotacija = nasprotniki[i].pr_rotacija;
         }
+
         Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
         Risalnik::narisi_3D_objekt(Nasprotnik::raketa);
     }
@@ -154,11 +158,12 @@ void Igra_scena::zanka()
     //* Komunikacija s streznikom
     if (m_cas_za_se_sem_tu <= Cas::get_cas())
     {
-        m_cas_za_se_sem_tu += T_SE_SEM_TU_INTERVAL;
+        m_cas_za_se_sem_tu = Cas::get_cas() + T_SE_SEM_TU_INTERVAL;
         char buff[10];
         buff[0] = T_O_SE_SEM_TU;
         memcpy(buff + 1, (char *)&m_odjmalec.id, 4);
         m_odjmalec.poslji(buff, 5);
+        izpis("%f\n", m_cas_za_se_sem_tu);
     }
     if (m_cas_naslednjega_posiljanja_podatkov <= Cas::get_cas())
     {
@@ -202,6 +207,7 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
         }
         if (buff[0] == T_PODATKI_O_IGRALCIH)
         {
+            sporocilo("S Podatki igralcev\n");
             for (int i = 0; i < is->nasprotniki.size(); i++)
                 is->nasprotniki[i].prebran = false;
             int vel;
