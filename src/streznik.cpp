@@ -3,6 +3,7 @@
 #include "sporocila_za_komunikacijo.h"
 #include "dnevnik.h"
 #include "chrono"
+
 void Odjemalec_zs::poslji(char buff[], int n)
 {
     int nn = sendto(Streznik::m_vticnik, buff, n, 0, (sockaddr *)&naslov_odjemalca, velikost_naslova_odjemalca);
@@ -67,7 +68,7 @@ bool Streznik::zazeni(int port)
         return false;
     }
 #endif
-    m_streznik_tece = true;
+    streznik_tece = true;
     m_nit_za_poslusanje = std::thread(poslusaj);
     sporocilo("streznik.cpp :: Streznik zagnan!\n");
     return true;
@@ -76,7 +77,7 @@ bool Streznik::zazeni(int port)
 void Streznik::poslusaj()
 {
     sporocilo("streznik.cpp :: Poslusam za nove povezave!\n");
-    while (m_streznik_tece)
+    while (streznik_tece)
     {
         obdelaj_sporocila();
         poslji_sporocila();
@@ -98,8 +99,10 @@ void Streznik::poslji_sporocila()
 {
 
     char buff[255] = {0};
+
     double zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
 
+    //* Posiljanje SE_SEM_TU
     if (m_naslednji_cas_za_se_sem_tu <= zdaj)
     {
         m_naslednji_cas_za_se_sem_tu += T_SE_SEM_TU_INTERVAL;
@@ -110,24 +113,33 @@ void Streznik::poslji_sporocila()
             odjemalci[i].poslji(buff, 5);
         }
     }
+
+    //* Posiljanje podatkov o igralcih vsem drugim igralcem
     if (m_naslednji_cas_za_podatke_o_igralcih <= zdaj)
     {
         m_naslednji_cas_za_podatke_o_igralcih += T_HITROST_POSILJANJA_PODATKOV;
+
         for (int i = 0; i < odjemalci.size(); i++)
         {
+            // Ustvarjanje sporočila
             buff[0] = T_PODATKI_O_IGRALCIH;
             int poz = 1;
             int vel = odjemalci.size() - 1;
             memcpy(buff + poz, (char *)&vel, sizeof(vel));
             poz += sizeof(vel);
-            for (int j = 0; j < odjemalci.size(); j++)
+            for (int j = 0; j < odjemalci.size(); j++) // Sporocilu dodamo podatke o določenem igralcu
             {
-                if (i != j)
+                if (i != j) // Izpustimo igralca kateremu se sporočilo pošilja
                 {
+                    // ID
                     memcpy(buff + poz, (char *)&odjemalci[j].id, sizeof(odjemalci[j].id));
                     poz += sizeof(odjemalci[j].id);
+
+                    // Pozicija
                     memcpy(buff + poz, (char *)&odjemalci[j].pozicija, sizeof(odjemalci[j].pozicija));
                     poz += sizeof(odjemalci[j].pozicija);
+
+                    // Rotacija
                     memcpy(buff + poz, (char *)&odjemalci[j].rotacija, sizeof(odjemalci[j].rotacija));
                     poz += sizeof(odjemalci[j].rotacija);
                 }
@@ -136,38 +148,47 @@ void Streznik::poslji_sporocila()
         }
     }
 }
+
 void Streznik::obdelaj_sporocila()
 {
     char buff[255] = {0};
     double zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
 
+    // Prejem sporočila
     sockaddr naslov_odjemalca;
     socklen_t velikost_naslova_odjemalca = sizeof(naslov_odjemalca);
     int n = recvfrom(m_vticnik, buff, 255, 0, (sockaddr *)&naslov_odjemalca, &velikost_naslova_odjemalca);
-    if (n == -1 || n == 0)
+
+    if (n == -1 || n == 0) // Nobeno sporočilo ni primerno za obdelavo
     {
-        // napaka("streznik.cpp :: Napaka pri prejemu sporocila!\n");
         return;
     }
 
     if (buff[0] == T_POZZ_STREZNIK)
     {
         int poz = 1;
+
+        // Nastavljanje začetnih vrednosti novemu igralcu
         odjemalci.push_back(Odjemalec_zs());
         odjemalci.back().naslov_odjemalca = naslov_odjemalca;
         odjemalci.back().velikost_naslova_odjemalca = velikost_naslova_odjemalca;
         odjemalci.back().se_tu_nazadnje_cas = zdaj * T_SE_SEM_TU_INTERVAL * 2;
         odjemalci.back().pozicija = mat::vec3(0);
         odjemalci.back().rotacija = mat::vec3(0);
+
         memcpy((char *)&odjemalci.back().id, buff + 1, sizeof(odjemalci.back().id));
-        buff[0] = T_POZZ_ODJEMALEC;
+
+        buff[0] = T_POZZ_ODJEMALEC; // Posiljanje pozdrava igralcu
         odjemalci.back().poslji(buff, 1);
+        sporocilo("C %i Pzdravjem streznik!\n", odjemalci.back().id);
     }
+
     if (buff[0] == T_ZAPUSCAM)
     {
         int id;
         memcpy((char *)&id, buff + 1, sizeof(id));
-        for (int i = 0; i < odjemalci.size(); i++)
+
+        for (int i = 0; i < odjemalci.size(); i++) // Brisanje igralca iz tabele vseh igralcev
         {
             if (odjemalci[i].id == id)
             {
@@ -177,6 +198,7 @@ void Streznik::obdelaj_sporocila()
             }
         }
     }
+
     if (buff[0] == T_PROSNJA_ZA_POVEZAVO) //* Odjemalec se zeli povezati
     {
         //* Posijlanje id-ja odjemalcu
@@ -189,7 +211,8 @@ void Streznik::obdelaj_sporocila()
         m_id_stevec++;
         sporocilo("C? :: Prosnja za povezavo!\n");
     }
-    if (buff[0] == T_O_SE_SEM_TU)
+
+    if (buff[0] == T_O_SE_SEM_TU) // Igralec posilja da je še vedno prisoten
     {
         int id;
         memcpy((char *)&id, buff + 1, sizeof(id));
@@ -202,7 +225,8 @@ void Streznik::obdelaj_sporocila()
             }
         }
     }
-    if (buff[0] == T_PODATKI_IGRALCA)
+
+    if (buff[0] == T_PODATKI_IGRALCA) // Igralec pošilja svoje podatke
     {
         int poz = 5;
         int id;
@@ -211,13 +235,19 @@ void Streznik::obdelaj_sporocila()
         {
             if (odjemalci[i].id == id)
             {
+                // Pozicija
                 memcpy((char *)&odjemalci[i].pozicija, buff + poz, sizeof(odjemalci[i].pozicija));
                 poz += sizeof(odjemalci[i].pozicija);
+
+                // Rotacija
                 memcpy((char *)&odjemalci[i].rotacija, buff + poz, sizeof(odjemalci[i].rotacija));
                 poz += sizeof(odjemalci[i].rotacija);
+
+                // Obdelava pozicije
                 odjemalci[i].pozicija.x *= -1;
                 odjemalci[i].pozicija.y *= -1;
                 odjemalci[i].pozicija.z *= -1;
+
                 sporocilo("C %i Podatki Igralca \n", id);
             }
         }
@@ -225,12 +255,14 @@ void Streznik::obdelaj_sporocila()
 }
 void Streznik::ugasni()
 {
-    m_streznik_tece = false;
+    streznik_tece = false;
 #ifdef LINUX
     close(m_vticnik);
 #endif
 #ifdef WINDOWS
     closesocket(m_vticnik);
+    //! NUJO DODAJ!!
+    /* WSACLEANUP*/
 #endif
     m_nit_za_poslusanje.join();
     sporocilo("streznik.cpp :: Konec streznika!\n");

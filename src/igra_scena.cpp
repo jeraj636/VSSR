@@ -43,8 +43,6 @@ void Igra_scena::zacetek()
     m_cas_za_se_sem_tu = 0;
     m_streznik_nazadnje_se_sem_tu = Cas::get_cas() + T_SE_SEM_TU_INTERVAL * 2;
     m_sem_povezan = false;
-    // morda malo nenavadno! zdaj sem ze pozabil kaj je nenavadno? nic ni nenavadno.
-    // m_zvezdno_nebo = Objekt_2D(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);//! to je bilo nenavadno
 
     //* Nastavljanje kamere in kazalca
     Risalnik::kamera_3D.premikanje_kamere = true;
@@ -70,8 +68,8 @@ void Igra_scena::zacetek()
     else
     {
         napaka("igra_scena.cpp :: Povezava ni uspela!\n");
-        p_zacena_scena->zacetek();
         konec();
+        p_zacena_scena->zacetek();
     }
 }
 
@@ -88,6 +86,8 @@ void Igra_scena::zanka()
 
     for (int i = 0; i < 10; i++) //* Risanje zemljevida
         Risalnik::narisi_3D_objekt(m_kamni1[i]);
+
+    //* Risanje nasprotnikov
     for (int i = 0; i < nasprotniki.size(); i++)
     {
         //! Interpolacija
@@ -114,6 +114,7 @@ void Igra_scena::zanka()
         Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
         Risalnik::narisi_3D_objekt(Nasprotnik::raketa);
     }
+
     //* Preverjanje stanj gumbov
     if (Risalnik::dobi_tipko(256 /*Tipka ESC*/))
     {
@@ -155,7 +156,9 @@ void Igra_scena::zanka()
         m_gumb_za_nadaljevanje.narisi_me();
         m_gumb_za_na_meni.narisi_me();
     }
+
     //* Komunikacija s streznikom
+    // Posiljanje se sem tu
     if (m_cas_za_se_sem_tu <= Cas::get_cas())
     {
         m_cas_za_se_sem_tu = Cas::get_cas() + T_SE_SEM_TU_INTERVAL;
@@ -165,6 +168,8 @@ void Igra_scena::zanka()
         m_odjmalec.poslji(buff, 5);
         izpis("%f\n", m_cas_za_se_sem_tu);
     }
+
+    // Posiljanje svojih podatkov
     if (m_cas_naslednjega_posiljanja_podatkov <= Cas::get_cas())
     {
         m_cas_naslednjega_posiljanja_podatkov += T_HITROST_POSILJANJA_PODATKOV;
@@ -180,12 +185,14 @@ void Igra_scena::zanka()
         m_odjmalec.poslji(buff, poz);
     }
 
+    // Strežnik že 4-krat ni poslal še sem tu
     if (m_streznik_nazadnje_se_sem_tu + T_SE_SEM_TU_INTERVAL * 4 < Cas::get_cas())
     {
         napaka("igra_scena.cpp :: Streznik se ne odziva!\n");
         konec();
         p_zacena_scena->zacetek();
     }
+
     if (!m_sem_povezan && !m_pavza /*Ko je pavza == true se kliče konec preko gumba ne pa če se povezava prekine*/) //* Če se povezava s strežnikom prekine se vrne na glavni meni
     {
         konec();
@@ -199,36 +206,58 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
     while (is->m_sem_povezan)
     {
         int n = is->m_odjmalec.prejmi(buff);
+
         if (n == -1)
             continue;
+
         if (buff[0] == T_S_SE_SEM_TU)
         {
             is->m_streznik_nazadnje_se_sem_tu = Cas::get_cas();
         }
+
+        /*
+        Ko strežnik pošlje podatke o igralcih so 4 možnisti:
+        1. Igralcev je enako število kot v moji tabeli
+            le posodobitev pozicij in rotacije
+        2. Igralcev je več kot v moji tabeli
+            dodajanje novih igralcev v tabel in posodabljanje
+        3. Igralcev je manj kot v moji tabeli
+            brisanje igralcev iz tabele in posodabljanje ostalih
+        4. 2. in 3. točka skupaj
+            Potrebno bo dodajati in izbrisovati nasprotnike
+        */
         if (buff[0] == T_PODATKI_O_IGRALCIH)
         {
             sporocilo("S Podatki igralcev\n");
-            for (int i = 0; i < is->nasprotniki.size(); i++)
+
+            for (int i = 0; i < is->nasprotniki.size(); i++) // nastavljnje da noben od naspotnikov še ni bil prebran v tej zanki
                 is->nasprotniki[i].prebran = false;
-            int vel;
-            int poz = 1;
-            memcpy((char *)&vel, buff + poz, sizeof(vel));
+
+            int vel; // služi da se ve koliko je poslanih nasprotnikov
+
+            int poz = 1; // Pozicija v bufferju
+
+            memcpy((char *)&vel, buff + poz, sizeof(vel)); // branje števila nasprotnikov
             poz += sizeof(vel);
+
             for (int i = 0; i < vel; i++)
             {
+                // Vsak podatek o nasprotniku je sestavljen iz njegovega ID, pozicije in rotacije
                 int id;
                 mat::vec3 pozicija;
                 mat::vec3 rotacija;
+
                 memcpy((char *)&id, buff + poz, sizeof(id));
                 poz += sizeof(id);
                 memcpy((char *)&pozicija, buff + poz, sizeof(pozicija));
                 poz += sizeof(pozicija);
                 memcpy((char *)&rotacija, buff + poz, sizeof(rotacija));
                 poz += sizeof(rotacija);
+
                 bool ali_je_v_tabeli = false;
                 for (int j = 0; j < is->nasprotniki.size(); j++)
                 {
-                    if (id == is->nasprotniki[j].id)
+                    if (id == is->nasprotniki[j].id) // Posodabljanje nasprotnikov
                     {
                         is->nasprotniki[j].pr_pozicija = is->nasprotniki[j].tr_pozicija;
                         is->nasprotniki[j].pr_rotacija = is->nasprotniki[j].tr_rotacija;
@@ -238,7 +267,8 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
                         ali_je_v_tabeli = true;
                     }
                 }
-                if (!ali_je_v_tabeli)
+
+                if (!ali_je_v_tabeli) // Ustvarjanje novega nasprotnika v primeru če tega ni v tabeli (nov nasprotnik)
                 {
 
                     Nasprotnik nov_nasprotnik;
@@ -251,7 +281,8 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
                     is->nasprotniki.back().prebran = true;
                 }
             }
-            for (int i = 0; i < is->nasprotniki.size(); i++)
+
+            for (int i = 0; i < is->nasprotniki.size(); i++) // brisanje neprebranih nasprotnikov teh namreč ni več v igri
             {
                 if (!is->nasprotniki[i].prebran)
                 {

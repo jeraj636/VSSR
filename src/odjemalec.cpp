@@ -48,7 +48,7 @@ int Odjemalec::zazeni(std::string naslov, int port)
 
     double zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
     double zac_cas = zdaj + T_CAS_ZA_POVEZOVANJE;
-    int n; // Stevec poskusov za povezavo, ker se udp paket lahko izgubi je treba zagotoviti ponovno pošiljanje
+    int n;
     do
     {
         zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
@@ -132,7 +132,7 @@ int Odjemalec::zazeni(std::string naslov, int port)
 
     double zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
     double zac_cas = zdaj + T_CAS_ZA_POVEZOVANJE;
-    int n; // Stevec neuspelih poskusov za prijavo
+    int n;
     do
     {
         zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();

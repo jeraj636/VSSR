@@ -18,7 +18,6 @@ Zacetna_scena::Zacetna_scena()
 
 void Zacetna_scena::zacetek()
 {
-    // morda malo nenavadno zdaj sem ze pozabil kaj je nenavadno
 
     Risalnik::kamera_3D.premikanje_kamere = false;
     Risalnik::nastavi_aktivnost_kazalca_miske(true);

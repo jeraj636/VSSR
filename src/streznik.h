@@ -46,6 +46,7 @@ public:
     static bool zazeni(int port);
     static void ugasni();
     friend class Odjemalec_zs;
+    static inline bool streznik_tece;
 
 private:
     static void obdelaj_sporocila();
@@ -54,7 +55,6 @@ private:
     static inline std::thread m_nit_za_poslusanje;
     static inline std::vector<Odjemalec_zs> odjemalci;
     static inline int m_id_stevec;
-    static inline bool m_streznik_tece;
     static inline double m_naslednji_cas_za_podatke_o_igralcih;
     static inline double m_naslednji_cas_za_se_sem_tu;
 

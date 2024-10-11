@@ -67,7 +67,7 @@ bool Streznik::zazeni(int port)
         return false;
     }
 #endif
-    m_streznik_tece = true;
+    streznik_tece = true;
     m_nit_za_poslusanje = std::thread(poslusaj);
     sporocilo("streznik.cpp :: Streznik zagnan!\n");
     return true;
@@ -76,7 +76,7 @@ bool Streznik::zazeni(int port)
 void Streznik::poslusaj()
 {
     sporocilo("streznik.cpp :: Poslusam za nove povezave!\n");
-    while (m_streznik_tece)
+    while (streznik_tece)
     {
         obdelaj_sporocila();
         poslji_sporocila();
@@ -205,7 +205,7 @@ void Streznik::obdelaj_sporocila()
 }
 void Streznik::ugasni()
 {
-    m_streznik_tece = false;
+    streznik_tece = false;
 #ifdef LINUX
     close(m_vticnik);
 #endif
