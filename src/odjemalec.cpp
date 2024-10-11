@@ -131,7 +131,8 @@ int Odjemalec::zazeni(std::string naslov, int port, int tip)
     // Posiljanje prošnje za povezavo
     char buff[10];
     buff[0] = T_PROSNJA_ZA_POVEZAVO;
-    sendto(m_vticnik, buff, 1, 0, (sockaddr *)&m_naslov_streznika, sizeof(m_naslov_streznika));
+    buff[1] = tip;
+    sendto(m_vticnik, buff, 2, 0, (sockaddr *)&m_naslov_streznika, sizeof(m_naslov_streznika));
 
     double zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
     double zac_cas = zdaj + T_CAS_ZA_POVEZOVANJE;
@@ -155,7 +156,8 @@ int Odjemalec::zazeni(std::string naslov, int port, int tip)
 
         memcpy((char *)&id, buff + 1, sizeof(id)); // Pošiljanje pozdrava strežniku
         buff[0] = T_POZZ_STREZNIK;
-        sendto(m_vticnik, buff, 5, 0, (sockaddr *)&m_naslov_streznika, sizeof(m_naslov_streznika));
+        buff[5] = tip;
+        sendto(m_vticnik, buff, 6, 0, (sockaddr *)&m_naslov_streznika, sizeof(m_naslov_streznika));
     }
 
     zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
