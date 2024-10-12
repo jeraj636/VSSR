@@ -19,7 +19,7 @@
 - [X] X invertacija miske ni OK
 - [X] Opazovalec
 - [ ] max st igralcev omejitec v steznik.cpp
-- [ ] popravi nastavitve gumbe
+- [X] popravi nastavitve gumbe
 - [ ] WSAcelenUP na WIN
 - [ ] Collizion
   - [ ] hitbox

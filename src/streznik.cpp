@@ -25,6 +25,8 @@ bool Streznik::zazeni(int port, int odjemalci, int opazovalci)
     m_naslednji_cas_za_se_sem_tu = 0;
     m_id_stevec_odjemalci = 1;
     m_id_stevec_opazovalci = 1;
+    max_st_odjemalcev = odjemalci;
+    max_st_opazovalcev = opazovalci;
     sporocilo("streznik.cpp :: Odpiranje streznika na vrtih %i\n", port);
 #ifdef LINUX
 
@@ -264,19 +266,28 @@ void Streznik::obdelaj_sporocila()
         if (buff[1] == T_ODJEMALEC)
         {
 
-            memcpy(&buff[poz], (char *)&m_id_stevec_odjemalci, sizeof(m_id_stevec_odjemalci));
-            poz += sizeof(m_id_stevec_odjemalci);
+            int id;
+            if (odjemalci.size() < max_st_odjemalcev)
+                id = m_id_stevec_odjemalci++;
+            else
+                id = -1;
+            memcpy(&buff[poz], (char *)&id, sizeof(id));
+            poz += sizeof(id);
             sendto(m_vticnik, buff, poz, 0, (sockaddr *)&naslov_odjemalca, velikost_naslova_odjemalca);
-            m_id_stevec_odjemalci++;
             sporocilo("C? :: Prosnja za povezavo!\n");
         }
         if (buff[1] == T_OPAZOVALEC)
         {
+            int id;
 
-            memcpy(&buff[poz], (char *)&m_id_stevec_opazovalci, sizeof(m_id_stevec_opazovalci));
+            if (opazovalci.size() < max_st_opazovalcev)
+                id = ++m_id_stevec_opazovalci;
+            else
+                id = -1;
+
+            memcpy(&buff[poz], (char *)&id, sizeof(id));
             poz += sizeof(m_id_stevec_opazovalci);
             sendto(m_vticnik, buff, poz, 0, (sockaddr *)&naslov_odjemalca, velikost_naslova_odjemalca);
-            m_id_stevec_opazovalci++;
             sporocilo("O? :: Prosnja za povezavo!\n");
         }
     }

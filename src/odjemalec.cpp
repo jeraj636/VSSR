@@ -69,6 +69,11 @@ int Odjemalec::zazeni(std::string naslov, int port, int tip)
 
         // Posiljanje pozdrava strezniku
         memcpy((char *)&id, buff + 1, sizeof(id)); //* Streznik ob odobritvi povezave poslje odjemalčev id
+        if (id == -1)
+        {
+            ustavi();
+            return -1;
+        }
         sporocilo("S :: Odobritev povezave id: %i   %i\n", id, sizeof(id));
 
         buff[0] = T_POZZ_STREZNIK;
