@@ -57,6 +57,16 @@ void Nastavitve_scena::zacetek()
     Risalnik::kamera_3D.premikanje_kamere = false;
     Risalnik::nastavi_aktivnost_kazalca_miske(true);
     Risalnik::aktivna_scena_ptr = this;
+
+    m_polje_za_vpis_streznika.cakaj_do = Cas::get_cas() + 1;
+    m_polje_za_vpis_vrat_odjemalca.cakaj_do = Cas::get_cas() + 1;
+    m_polje_za_vpis_hitrosti_miske.cakaj_do = Cas::get_cas() + 1;
+    m_polje_za_vpis_vrat_streznika.cakaj_do = Cas::get_cas() + 1;
+    m_polje_za_vpis_st_odjemalcev.cakaj_do = Cas::get_cas() + 1;
+    m_polje_za_vpis_st_opazovalcev.cakaj_do = Cas::get_cas() + 1;
+
+    m_gumb_za_vklop_izklop_opazovalca.cakaj_do = Cas::get_cas() + 1;
+    m_gumb_za_vklop_izkop_streznika.cakaj_do = Cas::get_cas() + 1;
 }
 
 void Nastavitve_scena::zanka()
