@@ -223,11 +223,11 @@ void Streznik::obdelaj_sporocila()
             odjemalci.push_back(Odjemalec_zs());
             odjemalci.back().naslov_odjemalca = naslov_odjemalca;
             odjemalci.back().velikost_naslova_odjemalca = velikost_naslova_odjemalca;
+            odjemalci.back().poslji(buff, 1);
             odjemalci.back().se_tu_nazadnje_cas = zdaj * T_SE_SEM_TU_INTERVAL * 2;
             odjemalci.back().pozicija = mat::vec3(0);
             odjemalci.back().rotacija = mat::vec3(0);
             odjemalci.back().id = id;
-            odjemalci.back().poslji(buff, 1);
             sporocilo("C %i Pzdravjem streznik!\n", odjemalci.back().id);
         }
         if (buff[5] == T_OPAZOVALEC)

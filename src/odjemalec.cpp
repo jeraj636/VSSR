@@ -103,11 +103,8 @@ int Odjemalec::zazeni(std::string naslov, int port, int tip)
         sporocilo("S :: Pozz objemalec\n");
         return id;
     }
-    else
-    {
-        ustavi();
-        return -1;
-    }
+
+    return id;
 #endif
 #ifdef WINDOWS
 
