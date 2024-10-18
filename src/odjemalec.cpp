@@ -183,8 +183,6 @@ int Odjemalec::zazeni(std::string naslov, int port, int tip)
         sporocilo("S :: Pozz objemalec\n");
         return id;
     }
-    else
-        return -1;
 
 #endif
 }
