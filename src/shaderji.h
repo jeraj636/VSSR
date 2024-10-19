@@ -50,26 +50,23 @@ out vec4 frag_color;
 
 in vec3 barva;
 in vec3 normale;
-in vec3 frag_pos;
+in vec4 trenutna_pozicija;
 
 uniform vec3 u_barva;// se ne uporablja
 uniform sampler2D u_tekstura;
-uniform vec3 u_pozicija_luci;
+in vec3 pozicija_luci;
 
 void main()
 {
-float moc_ambienta = 0.3f;
+float moc_ambienta = 1.5f;
 vec3 barva_luci = vec3(1.0f,1.0f,1.0f);
-vec3 ambient = barva_luci * moc_ambienta;
 
-vec3 norm = normalize(normale);
-vec3 smer_luci = normalize(u_pozicija_luci-frag_pos);
+vec3 normala = normalize(normale );
+vec3 smer_luci = normalize(pozicija_luci - vec3(trenutna_pozicija.xyz));
 
-float diff = max(dot(norm,smer_luci),0.0);
-vec3 diffuse = diff * barva_luci;
+float diffuse = max(dot(normala, vec3(smer_luci.x,smer_luci.y,smer_luci.z)) , 0.0f);
 
-vec3 rezultat = (ambient + diffuse) * barva ;
-frag_color =  vec4(rezultat,1.0);
+frag_color = vec4(barva * barva_luci * diffuse * moc_ambienta,1.0);
 }
 
 
@@ -125,16 +122,20 @@ layout (location = 2) in vec3 a_barva;
 out vec3 barva;
 out vec3 normale;
 out vec3 frag_pos;
+out vec4 trenutna_pozicija;
+out vec3 pozicija_luci;
 
 uniform mat4 u_transformacija;
 uniform mat4 u_projekcija;
 uniform mat4 u_kamera;
-
+uniform vec3 u_pozicija_luci;
 void main()
 {
     barva = a_barva;
     normale =  a_normale;
-    gl_Position = u_projekcija*u_kamera* u_transformacija * vec4(a_pos,1.0);
+    trenutna_pozicija=u_transformacija * vec4(a_pos,1.0);
+    pozicija_luci = u_pozicija_luci;
+    gl_Position = u_projekcija*u_kamera* trenutna_pozicija;
     frag_pos = vec3(gl_Position.x,gl_Position.y,gl_Position.z);
 }
 )";
