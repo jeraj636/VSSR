@@ -253,8 +253,6 @@ bool Objekt_3D::trk(const Objekt_3D &objekt_a, const Objekt_3D &objekt_b)
 {
     Objekt_3D hitbox_a = hitbox(objekt_a);
     Objekt_3D hitbox_b = hitbox(objekt_b);
-    Objekt_3D hitbox_a_tmp = hitbox_a;
-    Objekt_3D hitbox_b_tmp = hitbox_b;
 
     mat::mat4 transformacija_a(1);
     transformacija_a = mat::pozicijska(transformacija_a, hitbox_a.pozicija);
@@ -304,22 +302,21 @@ bool Objekt_3D::trk(const Objekt_3D &objekt_a, const Objekt_3D &objekt_b)
             break;
         }
     }
-    hitbox_a = hitbox_a_tmp;
-    hitbox_b = hitbox_b_tmp;
+    Objekt_3D izris_a = hitbox(objekt_a);
+    Objekt_3D izris_b = hitbox(objekt_b);
     if (ali_je_trk)
     {
-        hitbox_a.barva = 0xff000055;
-        hitbox_b.barva = 0xff000055;
-        std::cout << "trk\n";
+        izris_a.barva = 0xff000055;
+        izris_b.barva = 0xff000055;
     }
     else
     {
-        hitbox_a.barva = 0xffffff55;
-        hitbox_b.barva = 0xffffff55;
+        izris_a.barva = 0xffffff55;
+        izris_b.barva = 0xffffff55;
     }
 
-    Risalnik::narisi_3D_objekt(hitbox_a);
-    Risalnik::narisi_3D_objekt(hitbox_b);
+    // Risalnik::narisi_3D_objekt(izris_a);
+    Risalnik::narisi_3D_objekt(izris_b);
 
     return ali_je_trk;
 }

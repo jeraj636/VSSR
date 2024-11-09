@@ -77,3 +77,19 @@ void Kamera_3D::posodobi()
 
     m_mat_pogled = mat::poglej(pozicija, pozicija + spredaj, m_kamera_gor);
 }
+
+void Kamera_3D::premakni_nazaj()
+{
+    //* Premikanje kamere glede na pritisnjeno tipko
+    if (premikanje_kamere)
+    {
+        if (Risalnik::dobi_tipko('W'))
+            pozicija -= spredaj * hitrost_premikanja * Cas::get_delta_cas();
+        if (Risalnik::dobi_tipko('S'))
+            pozicija += spredaj * hitrost_premikanja * Cas::get_delta_cas();
+        if (Risalnik::dobi_tipko('A'))
+            pozicija -= mat::normaliziraj(mat::vektorski_produkt(spredaj, gor)) * hitrost_premikanja * Cas::get_delta_cas();
+        if (Risalnik::dobi_tipko('D'))
+            pozicija += mat::normaliziraj(mat::vektorski_produkt(spredaj, gor)) * hitrost_premikanja * Cas::get_delta_cas();
+    }
+}

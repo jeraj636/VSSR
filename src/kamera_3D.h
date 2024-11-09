@@ -12,6 +12,7 @@ public:
     Kamera_3D();
     void nastavi();
     void posodobi();
+    void premakni_nazaj();
     mat::vec3 pozicija;
     mat::vec3 smer;
     mat::vec3 tarca;
