@@ -83,7 +83,7 @@ void Igra_scena::zacetek()
         p_zacena_scena->zacetek();
     }
 }
-
+#include <iostream>
 void Igra_scena::zanka()
 {
     //* Risanje in posodabljanje elementov
@@ -94,9 +94,17 @@ void Igra_scena::zanka()
 
     m_zvezdno_nebo.velikost = Risalnik::vel_platna;
     m_zvezdno_nebo.pozicija = mat::vec2(0);
-
     for (int i = 0; i < 10; i++) //* Risanje zemljevida
+    {
         Risalnik::narisi_3D_objekt(m_kamni1[i]);
+
+        Nasprotnik::raketa.pozicija = Risalnik::kamera_3D.pozicija;
+        Nasprotnik::raketa.pozicija.x *= -1;
+        Nasprotnik::raketa.pozicija.y *= -1;
+        Nasprotnik::raketa.pozicija.z *= -1;
+
+        // Objekt_3D::trk(Nasprotnik::raketa, m_kamni1[i]);
+    }
 
     //* Risanje nasprotnikov
     for (int i = 0; i < nasprotniki.size(); i++)
@@ -124,7 +132,9 @@ void Igra_scena::zanka()
 
         Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
         Risalnik::narisi_3D_objekt(Nasprotnik::raketa);
-    }
+        for (int i = 0; i < 10; i++)
+            Objekt_3D::trk(m_kamni1[i], Nasprotnik::raketa);
+     }
 
     //* Preverjanje stanj gumbov
     if (Risalnik::dobi_tipko(256 /*Tipka ESC*/))

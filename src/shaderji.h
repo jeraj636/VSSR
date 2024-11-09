@@ -52,7 +52,7 @@ in vec3 barva;
 in vec3 normale;
 in vec4 trenutna_pozicija;
 
-uniform vec3 u_barva;// se ne uporablja
+uniform vec4 u_barva;// se ne uporablja
 uniform sampler2D u_tekstura;
 in vec3 pozicija_luci;
 
@@ -66,7 +66,7 @@ vec3 smer_luci = normalize(pozicija_luci - vec3(trenutna_pozicija.xyz));
 
 float diffuse = max(dot(normala, vec3(smer_luci.x,smer_luci.y,smer_luci.z)) , 0.0f);
 
-frag_color = vec4(barva * barva_luci * diffuse * moc_ambienta,1.0);
+frag_color = vec4(barva * barva_luci * diffuse * moc_ambienta,1.0) * u_barva;
 }
 
 

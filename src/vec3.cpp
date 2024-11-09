@@ -79,6 +79,15 @@ namespace mat
         tmp.y = t.mat[2][0] * x + t.mat[2][1] * y + t.mat[2][2] * z;
         return tmp;
     }
+    vec3 vec3::operator*(const mat4 &t) const
+    {
+        mat::vec3 tmp;
+        tmp.x = t.mat[0][0] * x + t.mat[0][1] * y + t.mat[0][2] * z + t.mat[0][3];
+        tmp.y = t.mat[1][0] * x + t.mat[1][1] * y + t.mat[1][2] * z + t.mat[1][3];
+        tmp.z = t.mat[2][0] * x + t.mat[2][1] * y + t.mat[2][2] * z + t.mat[2][3];
+        return tmp;
+    }
+
     vec3 &vec3::operator+=(const vec3 &t)
     {
         x += t.x;

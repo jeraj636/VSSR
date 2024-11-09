@@ -24,11 +24,17 @@ public:
     void preberi_obj(const std::string &pot_do_objekta);
     ~Objekt_3D();
     friend class Risalnik;
+    static Objekt_3D hitbox(const Objekt_3D &objekt);
+    static bool trk(const Objekt_3D &objekt_a, const Objekt_3D &objekt_b);
 
 protected:
     float *m_tocke;
     uint32_t m_velikost_tock;
     std::string m_pot_do_objekta;
     void preberi_obj();
+
+private:
+    static mat::vec3 max_proc_tocka(const Objekt_3D &obj, mat::vec3 smer);
+    static mat::vec3 max_proc_tocka_v_dveh(const Objekt_3D &a, const Objekt_3D &b, mat::vec3 smer);
 };
 #endif
