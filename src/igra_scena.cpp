@@ -13,7 +13,7 @@ Igra_scena::Igra_scena()
 {
     Nasprotnik::raketa.nastavi(mat::vec3(0), mat::vec3(1), mat::vec3(1, 1, 1), 0xffffffff, true, "../sredstva/raketa.obj");
     m_zvezdno_nebo.nastavi(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA); // naredi sicer podobno (isto)
-
+    m_srce.nastavi(mat::vec2(-0.8, 0.4), mat::vec2(0.05), 0, 0xff0000ff, "../sredstva/srce.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);
     //* Nastavljanje okolja
     //* Prebere se zemljevid (mapa) igre
     std::ifstream i_dat("../sredstva/kamni/podatki_o_kamnih.txt");
@@ -55,12 +55,17 @@ void Igra_scena::zacetek()
     m_streznik_nazadnje_se_sem_tu = Cas::get_cas() + T_SE_SEM_TU_INTERVAL * 2;
     m_sem_povezan = false;
     m_naslednje_streljanje = Cas::get_cas() + 1;
+
     //* Nastavljanje kamere in kazalca
     Risalnik::kamera_3D.premikanje_kamere = true;
     Risalnik::nastavi_aktivnost_kazalca_miske(false);
     Risalnik::aktivna_scena_ptr = this;
     Risalnik::kamera_3D.hitrost_miske = std::stoi(p_nastavitve_scena->m_hitrost_miske.niz);
 
+    m_st_src = 3;
+    m_vseh_st_src = 3;
+
+    m_ali_sem_umrl = false;
     //* Povezava na streznik
     for (int i = 0; i < 10; i++)
     {
@@ -82,6 +87,7 @@ void Igra_scena::zacetek()
         else
             break;
     }
+
     if (m_odjmalec.id != -1)
     {
         m_sem_povezan = true;
@@ -161,21 +167,59 @@ void Igra_scena::zanka()
             Risalnik::narisi_2D_objekt(m_merilec[i]);
         }
 
+        //* Risanje src
+        mat::vec2 poz_prvega_srca = m_srce.pozicija;
+        for (int i = 0; i < m_vseh_st_src; i++)
+        {
+            if (i > m_st_src)
+                m_srce.barva = 0x555555ff;
+
+            Risalnik::narisi_2D_objekt(m_srce);
+            m_srce.pozicija.x += 0.05;
+        }
+        m_srce.barva = 0xff0000ff;
+        m_srce.pozicija = poz_prvega_srca;
+
         //* Streljanje
         if (Risalnik::miskin_gumb.levi_gumb && m_naslednje_streljanje < Cas::get_cas())
         {
-            m_naslednje_streljanje += 0.2;
+            m_naslednje_streljanje = Cas::get_cas() + 1;
 
             m_izstrelki.push_back(Izstrelek());
             m_izstrelki.back().oblika.pozicija = Risalnik::kamera_3D.pozicija * -1;
+            m_izstrelki.back().oblika.pozicija += Risalnik::kamera_3D.smer * -1 * 2;
+
             m_izstrelki.back().smer = Risalnik::kamera_3D.smer;
         }
     }
+
     //* Risanje izstrelkov
     for (int i = 0; i < m_izstrelki.size(); i++)
     {
+
+        bool uporaben = true;
+        for (int j = 0; j < 10; j++)
+            if (Objekt_3D::trk(m_kamni1[j], m_izstrelki[i].oblika))
+            {
+                uporaben = false;
+            }
+
+        //* Ali je zadeta kakšnja ladja
+        for (int k = 0; k < nasprotniki.size(); k++)
+        {
+            Nasprotnik::raketa.pozicija = nasprotniki[k].pozicija;
+            Nasprotnik::raketa.rotacija = nasprotniki[k].rotacija;
+
+            if (uporaben && Objekt_3D::trk(Nasprotnik::raketa, m_izstrelki[i].oblika))
+            {
+                char buff[10];
+                buff[0] = T_USTRELIL;
+                memcpy(&buff[1], (char *)&nasprotniki[k].id, sizeof(nasprotniki[k].id));
+                m_odjmalec.poslji(buff, 5);
+            }
+        }
         //* Brisanje neuporabnih izstrelkov
-        if (m_izstrelki[i].sem_neuporaben())
+        if (m_izstrelki[i].sem_neuporaben() || !uporaben)
         {
             std::swap(m_izstrelki[i], m_izstrelki.back());
             m_izstrelki.pop_back();
@@ -213,6 +257,28 @@ void Igra_scena::zanka()
         Risalnik::narisi_3D_objekt(Nasprotnik::raketa);
     }
 
+    //* Ce je igralec mrtev
+    if (m_ali_sem_umrl)
+    {
+        Risalnik::kamera_3D.premikanje_kamere = false;
+        Risalnik::nastavi_aktivnost_kazalca_miske(true);
+        Risalnik::kamera_3D.pozicija = mat::vec3(1000);
+        if (m_cas_do_ozivetja <= Cas::get_cas())
+        {
+            m_ali_sem_umrl = false;
+
+            Risalnik::kamera_3D.nastavi();
+            m_st_src = 3;
+            if (!m_pavza)
+            {
+
+                Risalnik::kamera_3D.premikanje_kamere = true;
+                Risalnik::nastavi_aktivnost_kazalca_miske(false);
+            }
+        }
+        Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(0, -.1), 0.09, "Umrl si!", R_P_X_SREDINA | R_P_Y_SREDINA);
+    }
+
     //* Preverjanje stanj gumbov
     if (Risalnik::dobi_tipko(256 /*Tipka ESC*/))
     {
@@ -222,7 +288,7 @@ void Igra_scena::zanka()
     }
 
     //* Premor
-    if (m_pavza)
+    if (m_pavza && !m_ali_sem_umrl)
     {
         Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(0, -.1), 0.09, "Premor", R_P_X_SREDINA | R_P_Y_SREDINA);
 
@@ -314,7 +380,15 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
         {
             is->m_streznik_nazadnje_se_sem_tu = Cas::get_cas();
         }
-
+        if (buff[0] == T_USTRELJEN)
+        {
+            is->m_st_src--;
+            if (is->m_st_src == 0)
+            {
+                is->m_ali_sem_umrl = true;
+                is->m_cas_do_ozivetja = 10 + Cas::get_cas();
+            }
+        }
         /*
         Ko strežnik pošlje podatke o igralcih so 4 možnisti:
         1. Igralcev je enako število kot v moji tabeli

@@ -228,6 +228,7 @@ void Streznik::obdelaj_sporocila()
             odjemalci.back().pozicija = mat::vec3(0);
             odjemalci.back().rotacija = mat::vec3(0);
             odjemalci.back().id = id;
+            odjemalci.back().st_src = 3;
             sporocilo("C %i Pzdravjem streznik!\n", odjemalci.back().id);
         }
         if (buff[5] == T_OPAZOVALEC)
@@ -339,6 +340,20 @@ void Streznik::obdelaj_sporocila()
                 odjemalci[i].pozicija.z *= -1;
 
                 sporocilo("C %i Podatki Igralca \n", id);
+            }
+        }
+    }
+    if (buff[0] == T_USTRELIL)
+    {
+        int id;
+        memcpy((char *)&id, &buff[1], sizeof(id));
+        for (int i = 0; i < odjemalci.size(); i++)
+        {
+            if (odjemalci[i].id == id)
+            {
+                buff[0] = T_USTRELJEN;
+                odjemalci[i].poslji(buff, 5);
+                odjemalci[i].st_src--;
             }
         }
     }

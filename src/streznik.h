@@ -33,6 +33,8 @@ public:
     mat::vec3 pozicija;
     mat::vec3 rotacija;
     int id;
+    int st_src;
+    double cakaj_do_ozivljenja;
     double se_tu_nazadnje_cas;
     sockaddr naslov_odjemalca;
     socklen_t velikost_naslova_odjemalca;

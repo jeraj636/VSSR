@@ -67,6 +67,12 @@ private:
     std::vector<Izstrelek> m_izstrelki;
     double m_naslednje_streljanje;
 
+    int m_vseh_st_src;
+    int m_st_src;
+    Objekt_2D m_srce;
+    bool m_ali_sem_umrl;
+    double m_cas_do_ozivetja;
+
 private:
 };
 
