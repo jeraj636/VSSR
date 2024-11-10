@@ -320,3 +320,26 @@ bool Objekt_3D::trk(const Objekt_3D &objekt_a, const Objekt_3D &objekt_b)
 
     return ali_je_trk;
 }
+
+Izstrelek::Izstrelek()
+{
+    oblika.nastavi(mat::vec3(0), mat::vec3(0.2), 0, 0xffffffff, true, "../sredstva/izstrelek.obj");
+}
+
+void Izstrelek::posodobi()
+{
+    oblika.pozicija += smer * Izstrelek::hitrost * Cas::get_delta_cas() * -1;
+}
+
+bool Izstrelek::sem_neuporaben()
+{
+    if (
+        oblika.pozicija.x < -100.0f ||
+        oblika.pozicija.x > 100.0f ||
+        oblika.pozicija.y < -100.0f ||
+        oblika.pozicija.y > 100.0f ||
+        oblika.pozicija.z < -100.0f ||
+        oblika.pozicija.z > 100.0f)
+        return true;
+    return false;
+}

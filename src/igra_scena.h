@@ -15,6 +15,7 @@
 #define POCASEN_RAZMIK_MERILCA 0.03
 #define STOJIM_RAZMIK_MERILCA 0.02
 #define MERIM_RAZNIK_MERILCA 0.012
+
 class Nasprotnik
 {
 public:
@@ -46,6 +47,7 @@ private:
     Objekt_2D m_merilec[4];
     float m_razmik_merilca = 0.015;
     mat::vec2 m_velikost_merilca;
+
     static void vzdrzuj_povezavo(Igra_scena *is);
     bool m_pavza;
     bool m_sem_povezan;
@@ -61,6 +63,9 @@ private:
     std::vector<Nasprotnik> nasprotniki;
 
     bool m_opazujem;
+
+    std::vector<Izstrelek> m_izstrelki;
+    double m_naslednje_streljanje;
 
 private:
 };

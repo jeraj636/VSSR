@@ -54,7 +54,7 @@ void Igra_scena::zacetek()
     m_cas_za_se_sem_tu = 0;
     m_streznik_nazadnje_se_sem_tu = Cas::get_cas() + T_SE_SEM_TU_INTERVAL * 2;
     m_sem_povezan = false;
-
+    m_naslednje_streljanje = Cas::get_cas() + 1;
     //* Nastavljanje kamere in kazalca
     Risalnik::kamera_3D.premikanje_kamere = true;
     Risalnik::nastavi_aktivnost_kazalca_miske(false);
@@ -126,7 +126,7 @@ void Igra_scena::zanka()
     if (!m_pavza)
     {
         //* Risanje merilca
-        if (Risalnik::miskin_gumb.desni_gumb)
+        if (Risalnik::miskin_gumb.desni_gumb || Risalnik::miskin_gumb.levi_gumb)
         {
             m_razmik_merilca = MERIM_RAZNIK_MERILCA;
             Risalnik::kamera_3D.vidno_polje = OD_BLIZU;
@@ -160,6 +160,29 @@ void Igra_scena::zanka()
         {
             Risalnik::narisi_2D_objekt(m_merilec[i]);
         }
+
+        //* Streljanje
+        if (Risalnik::miskin_gumb.levi_gumb && m_naslednje_streljanje < Cas::get_cas())
+        {
+            m_naslednje_streljanje += 0.2;
+
+            m_izstrelki.push_back(Izstrelek());
+            m_izstrelki.back().oblika.pozicija = Risalnik::kamera_3D.pozicija * -1;
+            m_izstrelki.back().smer = Risalnik::kamera_3D.smer;
+        }
+    }
+    //* Risanje izstrelkov
+    for (int i = 0; i < m_izstrelki.size(); i++)
+    {
+        //* Brisanje neuporabnih izstrelkov
+        if (m_izstrelki[i].sem_neuporaben())
+        {
+            std::swap(m_izstrelki[i], m_izstrelki.back());
+            m_izstrelki.pop_back();
+        }
+        std::cout << m_izstrelki.size() << "\n";
+        m_izstrelki[i].posodobi();
+        Risalnik::narisi_3D_objekt(m_izstrelki[i].oblika);
     }
 
     //* Risanje nasprotnikov

@@ -37,4 +37,15 @@ private:
     static mat::vec3 max_proc_tocka(const Objekt_3D &obj, mat::vec3 smer);
     static mat::vec3 max_proc_tocka_v_dveh(const Objekt_3D &a, const Objekt_3D &b, mat::vec3 smer);
 };
+
+class Izstrelek
+{
+public:
+    Izstrelek();
+    void posodobi();
+    bool sem_neuporaben();
+    mat::vec3 smer;
+    Objekt_3D oblika;
+    static inline float hitrost = 1000;
+};
 #endif
