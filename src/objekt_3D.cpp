@@ -312,7 +312,7 @@ bool Objekt_3D::trk(const Objekt_3D &objekt_a, const Objekt_3D &objekt_b)
     else
     {
         izris_a.barva = 0xffffff55;
-        izris_b.barva = 0xffffff55;
+        izris_b.barva = 0xffffffff;
     }
 
     // Risalnik::narisi_3D_objekt(izris_a);

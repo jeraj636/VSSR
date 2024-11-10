@@ -354,6 +354,18 @@ void Streznik::obdelaj_sporocila()
                 buff[0] = T_USTRELJEN;
                 odjemalci[i].poslji(buff, 5);
                 odjemalci[i].st_src--;
+                napaka("TUUUUUU\n");
+                napaka("TUUUUUU\n");
+                napaka("TUUUUUU\n");
+                napaka("TUUUUUU\n");
+                napaka("TUUUUUU\n");
+                napaka("TUUUUUU\n");
+                napaka("TUUUUUU\n");
+                napaka("TUUUUUU\n");
+                napaka("TUUUUUU\n");
+                napaka("TUUUUUU\n");
+                napaka("TUUUUUU\n");
+                napaka("TUUUUUU\n");
             }
         }
     }

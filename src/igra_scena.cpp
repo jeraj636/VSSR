@@ -207,8 +207,8 @@ void Igra_scena::zanka()
         //* Ali je zadeta kakšnja ladja
         for (int k = 0; k < nasprotniki.size(); k++)
         {
-            Nasprotnik::raketa.pozicija = nasprotniki[k].pozicija;
-            Nasprotnik::raketa.rotacija = nasprotniki[k].rotacija;
+            Nasprotnik::raketa.pozicija = nasprotniki[k].tr_pozicija;
+            Nasprotnik::raketa.rotacija = nasprotniki[k].tr_rotacija;
             Nasprotnik::raketa.veliksot = 1;
             if (uporaben && Objekt_3D::trk(m_izstrelki[i].oblika, Nasprotnik::raketa))
             {
