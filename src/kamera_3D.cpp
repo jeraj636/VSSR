@@ -21,7 +21,7 @@ void Kamera_3D::nastavi()
     yaw = -90;
     pitch = 0;
     rotacija = mat::vec3(degToRad(yaw), 0, 0);
-    vidno_polje = 60;
+    vidno_polje = OD_DALEC;
     hitrost_premikanja = 50;
     // hitrost_miske = 100;
     m_kamera_gor = mat::vec3(0);
@@ -34,6 +34,25 @@ void Kamera_3D::posodobi()
     if (Risalnik::dobi_tipko('R'))
     {
         nastavi();
+    }
+
+    if (Risalnik::dobi_tipko(340))
+    {
+        hitrost_premikanja = 100;
+        if (Risalnik::dobi_tipko('W') &&
+            Risalnik::dobi_tipko('A') &&
+            Risalnik::dobi_tipko('S') &&
+            Risalnik::dobi_tipko('D'))
+            vidno_polje = 65;
+    }
+    else
+    {
+        if (!Risalnik::miskin_gumb.desni_gumb)
+        {
+
+            hitrost_premikanja = 50;
+            vidno_polje = 60;
+        }
     }
 
     //* Izračun za koliko se je premaknil karalec gleda na prejsni frame

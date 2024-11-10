@@ -11,6 +11,10 @@
 #include "odjemalec.h"
 #include "nastaviteve_scena.h"
 
+#define HITER_RAZMIK_MERILCA 0.05
+#define POCASEN_RAZMIK_MERILCA 0.03
+#define STOJIM_RAZMIK_MERILCA 0.02
+#define MERIM_RAZNIK_MERILCA 0.012
 class Nasprotnik
 {
 public:
@@ -37,6 +41,11 @@ private:
     Pisava m_pisava;
     Objekt_2D m_zvezdno_nebo;
     Objekt_3D m_kamni1[10];
+
+    //* Merilec
+    Objekt_2D m_merilec[4];
+    float m_razmik_merilca = 0.015;
+    mat::vec2 m_velikost_merilca;
     static void vzdrzuj_povezavo(Igra_scena *is);
     bool m_pavza;
     bool m_sem_povezan;
@@ -45,8 +54,8 @@ private:
     double m_cas_naslednjega_posiljanja_podatkov;
     double m_cas_za_se_sem_tu;
     double m_streznik_nazadnje_se_sem_tu;
-    Odjemalec m_odjmalec;
 
+    Odjemalec m_odjmalec;
     Besedilo m_gumb_za_na_meni;
     Besedilo m_gumb_za_nadaljevanje;
     std::vector<Nasprotnik> nasprotniki;

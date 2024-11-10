@@ -33,6 +33,17 @@ Igra_scena::Igra_scena()
         ss >> poz.x >> poz.y >> poz.z >> vel >> rot.x >> rot.x >> rot.z;
         m_kamni1[i].nastavi(poz, mat::vec3(vel / 0.5), rot, 0xffffffff, true, "../sredstva/kamni/K1.obj");
     }
+
+    m_velikost_merilca = mat::vec2(0.002, 0.02);
+    for (int i = 0; i < 4; i++)
+    {
+        m_merilec[i].nastavi(mat::vec2(0, 0.0), m_velikost_merilca, i * 90, 0xffffffff, "../sredstva/merilec.png", true, R_P_ZGORAJ | R_P_LEVO);
+    }
+    m_merilec[0].pozicija = mat::vec2(0, m_razmik_merilca);
+    m_merilec[1].pozicija = mat::vec2(m_razmik_merilca, 0);
+    m_merilec[2].pozicija = mat::vec2(0, -m_razmik_merilca);
+    m_merilec[3].pozicija = mat::vec2(-m_razmik_merilca, 0);
+
     i_dat.close();
 }
 
@@ -49,6 +60,7 @@ void Igra_scena::zacetek()
     Risalnik::nastavi_aktivnost_kazalca_miske(false);
     Risalnik::aktivna_scena_ptr = this;
     Risalnik::kamera_3D.hitrost_miske = std::stoi(p_nastavitve_scena->m_hitrost_miske.niz);
+
     //* Povezava na streznik
     for (int i = 0; i < 10; i++)
     {
@@ -108,6 +120,45 @@ void Igra_scena::zanka()
         {
             Risalnik::kamera_3D.premakni_nazaj();
             std::cout << "trk\n";
+        }
+    }
+
+    if (!m_pavza)
+    {
+        //* Risanje merilca
+        if (Risalnik::miskin_gumb.desni_gumb)
+        {
+            m_razmik_merilca = MERIM_RAZNIK_MERILCA;
+            Risalnik::kamera_3D.vidno_polje = OD_BLIZU;
+        }
+        else
+        {
+            m_razmik_merilca = STOJIM_RAZMIK_MERILCA;
+            Risalnik::kamera_3D.vidno_polje = OD_DALEC;
+        }
+
+        if (Risalnik::dobi_tipko('W') ||
+            Risalnik::dobi_tipko('A') ||
+            Risalnik::dobi_tipko('S') ||
+            Risalnik::dobi_tipko('D'))
+        {
+            m_razmik_merilca = POCASEN_RAZMIK_MERILCA;
+            Risalnik::kamera_3D.vidno_polje = OD_DALEC;
+
+            if (Risalnik::dobi_tipko(340) /*SHIFT*/)
+            {
+                m_razmik_merilca = HITER_RAZMIK_MERILCA;
+            }
+        }
+
+        m_merilec[0].pozicija = mat::vec2(0, m_razmik_merilca);
+        m_merilec[1].pozicija = mat::vec2(m_razmik_merilca, 0);
+        m_merilec[2].pozicija = mat::vec2(0, -m_razmik_merilca);
+        m_merilec[3].pozicija = mat::vec2(-m_razmik_merilca, 0);
+
+        for (int i = 0; i < 4; i++)
+        {
+            Risalnik::narisi_2D_objekt(m_merilec[i]);
         }
     }
 

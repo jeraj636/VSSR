@@ -2,7 +2,8 @@
 #define KAMERA_3D_H
 
 #include "matematika.h"
-
+#define OD_DALEC 60
+#define OD_BLIZU 40
 class Risalnik;
 
 class Kamera_3D

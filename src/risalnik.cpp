@@ -91,7 +91,6 @@ void Risalnik::posodobi_velikost_okna(GLFWwindow *okno, int dolzina, int visina)
 }
 void Risalnik::posodobi_tipke(GLFWwindow *okno, int tipka, int koda_skeniranja, int akcija, int modi)
 {
-
     if (tipka < 0 || tipka > 512) // Tipka ne obstaja!
         return;
     if (akcija == GLFW_PRESS) // Tipka pritisnjena!
