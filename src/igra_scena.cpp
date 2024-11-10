@@ -216,6 +216,7 @@ void Igra_scena::zanka()
                 buff[0] = T_USTRELIL;
                 memcpy(&buff[1], (char *)&nasprotniki[k].id, sizeof(nasprotniki[k].id));
                 m_odjmalec.poslji(buff, 5);
+                uporaben = false;
             }
         }
         //* Brisanje neuporabnih izstrelkov
