@@ -48,7 +48,7 @@ void Igra_scena::zacetek()
     Risalnik::kamera_3D.premikanje_kamere = true;
     Risalnik::nastavi_aktivnost_kazalca_miske(false);
     Risalnik::aktivna_scena_ptr = this;
-
+    Risalnik::kamera_3D.hitrost_miske = std::stoi(p_nastavitve_scena->m_hitrost_miske.niz);
     //* Povezava na streznik
     for (int i = 0; i < 10; i++)
     {

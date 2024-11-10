@@ -23,7 +23,7 @@ void Kamera_3D::nastavi()
     rotacija = mat::vec3(degToRad(yaw), 0, 0);
     vidno_polje = 60;
     hitrost_premikanja = 50;
-    hitrost_miske = 100;
+    // hitrost_miske = 100;
     m_kamera_gor = mat::vec3(0);
     m_mat_pogled = mat::mat4(0);
 }

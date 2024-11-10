@@ -58,13 +58,13 @@ in vec3 pozicija_luci;
 
 void main()
 {
-float moc_ambienta = 1.5f;
+float moc_ambienta = 2.3f;
 vec3 barva_luci = vec3(1.0f,1.0f,1.0f);
 
 vec3 normala = normalize(normale );
 vec3 smer_luci = normalize(pozicija_luci - vec3(trenutna_pozicija.xyz));
 
-float diffuse = max(dot(normala, vec3(smer_luci.x,smer_luci.y,smer_luci.z)) , 0.0f);
+float diffuse = max(dot(normala, vec3(smer_luci.xyz)) , 0.0f);
 
 frag_color = vec4(barva * barva_luci * diffuse * moc_ambienta,1.0) * u_barva;
 }
