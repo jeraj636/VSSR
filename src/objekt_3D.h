@@ -46,6 +46,6 @@ public:
     bool sem_neuporaben();
     mat::vec3 smer;
     Objekt_3D oblika;
-    static inline float hitrost = 1000;
+    static inline float hitrost = 100;
 };
 #endif
