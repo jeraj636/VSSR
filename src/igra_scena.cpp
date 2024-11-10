@@ -209,9 +209,10 @@ void Igra_scena::zanka()
         {
             Nasprotnik::raketa.pozicija = nasprotniki[k].pozicija;
             Nasprotnik::raketa.rotacija = nasprotniki[k].rotacija;
-
-            if (uporaben && Objekt_3D::trk(Nasprotnik::raketa, m_izstrelki[i].oblika))
+            Nasprotnik::raketa.veliksot = 1;
+            if (uporaben && Objekt_3D::trk(m_izstrelki[i].oblika, Nasprotnik::raketa))
             {
+
                 char buff[10];
                 buff[0] = T_USTRELIL;
                 memcpy(&buff[1], (char *)&nasprotniki[k].id, sizeof(nasprotniki[k].id));
@@ -225,7 +226,6 @@ void Igra_scena::zanka()
             std::swap(m_izstrelki[i], m_izstrelki.back());
             m_izstrelki.pop_back();
         }
-        std::cout << m_izstrelki.size() << "\n";
         m_izstrelki[i].posodobi();
         Risalnik::narisi_3D_objekt(m_izstrelki[i].oblika);
     }
