@@ -171,7 +171,7 @@ void Igra_scena::zanka()
         mat::vec2 poz_prvega_srca = m_srce.pozicija;
         for (int i = 0; i < m_vseh_st_src; i++)
         {
-            if (i > m_st_src)
+            if (i > m_st_src - 1)
                 m_srce.barva = 0x555555ff;
 
             Risalnik::narisi_2D_objekt(m_srce);
