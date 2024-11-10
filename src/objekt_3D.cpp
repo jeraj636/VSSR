@@ -333,13 +333,14 @@ void Izstrelek::posodobi()
 
 bool Izstrelek::sem_neuporaben()
 {
+    float meja = 1000;
     if (
-        oblika.pozicija.x < -100.0f ||
-        oblika.pozicija.x > 100.0f ||
-        oblika.pozicija.y < -100.0f ||
-        oblika.pozicija.y > 100.0f ||
-        oblika.pozicija.z < -100.0f ||
-        oblika.pozicija.z > 100.0f)
+        oblika.pozicija.x < -meja ||
+        oblika.pozicija.x > meja ||
+        oblika.pozicija.y < -meja ||
+        oblika.pozicija.y > meja ||
+        oblika.pozicija.z < meja ||
+        oblika.pozicija.z > meja)
         return true;
     return false;
 }
