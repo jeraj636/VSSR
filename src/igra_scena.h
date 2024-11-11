@@ -34,6 +34,13 @@ public:
     float jaw, pitch;
 };
 
+class Vidni_casovnik
+{
+public:
+    Objekt_2D spredaj;
+    Objekt_2D zadaj;
+};
+
 class Igra_scena : public Scena
 {
 public:
@@ -81,6 +88,8 @@ private:
     double m_cas_do_ozivetja;
 
     Teleportacija m_teleportacija;
+    double m_naslednja_teleportacija;
+    Vidni_casovnik m_vc_za_streljati, m_vc_za_teleportirati, m_vc_za_oziveti;
 
 private:
 };

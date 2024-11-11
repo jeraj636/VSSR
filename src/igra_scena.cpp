@@ -11,9 +11,21 @@ Igra_scena::Igra_scena()
       m_gumb_za_na_meni(m_pisava, 0xffffffff, mat::vec2(0, 0.09), 0.06, "Meni", R_P_X_SREDINA | R_P_Y_SREDINA),
       m_gumb_za_nadaljevanje(m_pisava, 0xffffffff, mat::vec2(0, 0), 0.06, "Nadaljuj", R_P_X_SREDINA | R_P_Y_SREDINA)
 {
+
     Nasprotnik::raketa.nastavi(mat::vec3(0), mat::vec3(1), mat::vec3(1, 1, 1), 0xffffffff, true, "../sredstva/raketa.obj");
     m_zvezdno_nebo.nastavi(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA); // naredi sicer podobno (isto)
+
+    m_vc_za_streljati.zadaj.nastavi(mat::vec2(0.6, 0.4), mat::vec2(0.3, 0.05), 0, 0x555555ff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
+    m_vc_za_streljati.spredaj.nastavi(mat::vec2(0.6, 0.4), mat::vec2(0.3, 0.05), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
+
+    m_vc_za_teleportirati.zadaj.nastavi(mat::vec2(0.6, 0.34), mat::vec2(0.3, 0.05), 0, 0x555555ff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
+    m_vc_za_teleportirati.spredaj.nastavi(mat::vec2(0.6, 0.34), mat::vec2(0.3, 0.05), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
+
+    m_vc_za_oziveti.zadaj.nastavi(mat::vec2(-0.4, 0.34), mat::vec2(0.8, 0.05), 0, 0x555555ff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
+    m_vc_za_oziveti.spredaj.nastavi(mat::vec2(-0.4, 0.34), mat::vec2(0.8, 0.05), 0, 0xffffffff, "../sredstva/prazen.png", true, R_P_LEVO | R_P_Y_SREDINA);
+
     m_srce.nastavi(mat::vec2(-0.8, 0.4), mat::vec2(0.05), 0, 0xff0000ff, "../sredstva/srce.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);
+
     //* Nastavljanje okolja
     //* Prebere se zemljevid (mapa) igre
     std::ifstream i_dat("../sredstva/kamni/podatki_o_kamnih.txt");
@@ -55,7 +67,7 @@ void Igra_scena::zacetek()
     m_streznik_nazadnje_se_sem_tu = Cas::get_cas() + T_SE_SEM_TU_INTERVAL * 2;
     m_sem_povezan = false;
     m_naslednje_streljanje = Cas::get_cas() + 1;
-
+    m_naslednja_teleportacija = Cas::get_cas() + 2;
     //* Nastavljanje kamere in kazalca
     Risalnik::kamera_3D.premikanje_kamere = true;
     Risalnik::nastavi_aktivnost_kazalca_miske(false);
@@ -135,7 +147,7 @@ void Igra_scena::zanka()
         }
     }
 
-    if (!m_pavza)
+    if (!m_pavza && !m_ali_sem_umrl)
     {
         //* Risanje merilca
         if (Risalnik::miskin_gumb.desni_gumb || Risalnik::miskin_gumb.levi_gumb)
@@ -196,7 +208,20 @@ void Igra_scena::zanka()
             m_izstrelki.back().oblika.pozicija += Risalnik::kamera_3D.smer * -1 * 2;
 
             m_izstrelki.back().smer = Risalnik::kamera_3D.smer;
+            m_vc_za_streljati.spredaj.velikost.x = 0;
         }
+
+        //* Risanje in izracun vidnih stevcev
+        // za streljanje
+        m_vc_za_streljati.spredaj.velikost.x += m_vc_za_streljati.zadaj.velikost.x * Cas::get_delta_cas();
+        m_vc_za_streljati.spredaj.velikost.x = mat::obrezi_st(m_vc_za_streljati.spredaj.velikost.x, 0.0f, m_vc_za_streljati.zadaj.velikost.x);
+        Risalnik::narisi_2D_objekt(m_vc_za_streljati.spredaj);
+        Risalnik::narisi_2D_objekt(m_vc_za_streljati.zadaj);
+        // za teleportacijo
+        m_vc_za_teleportirati.spredaj.velikost.x += m_vc_za_teleportirati.zadaj.velikost.x * Cas::get_delta_cas() / 2;
+        m_vc_za_teleportirati.spredaj.velikost.x = mat::obrezi_st(m_vc_za_teleportirati.spredaj.velikost.x, 0.0f, m_vc_za_teleportirati.zadaj.velikost.x);
+        Risalnik::narisi_2D_objekt(m_vc_za_teleportirati.spredaj);
+        Risalnik::narisi_2D_objekt(m_vc_za_teleportirati.zadaj);
     }
 
     //* Risanje izstrelkov
@@ -285,6 +310,12 @@ void Igra_scena::zanka()
             }
         }
         Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(0, -.1), 0.09, "Umrl si!", R_P_X_SREDINA | R_P_Y_SREDINA);
+
+        m_vc_za_oziveti.spredaj.velikost.x += m_vc_za_oziveti.zadaj.velikost.x * Cas::get_delta_cas() / 10;
+        m_vc_za_oziveti.spredaj.velikost.x = mat::obrezi_st(m_vc_za_oziveti.spredaj.velikost.x, 0.0f, m_vc_za_oziveti.zadaj.velikost.x);
+
+        Risalnik::narisi_2D_objekt(m_vc_za_oziveti.spredaj);
+        Risalnik::narisi_2D_objekt(m_vc_za_oziveti.zadaj);
     }
 
     //* Preverjanje stanj gumbov
@@ -294,11 +325,13 @@ void Igra_scena::zanka()
         Risalnik::kamera_3D.premikanje_kamere = false;
         Risalnik::nastavi_aktivnost_kazalca_miske(true);
     }
-    if (Risalnik::dobi_tipko('R'))
+    if (Risalnik::dobi_tipko('R') && m_naslednja_teleportacija <= Cas::get_cas())
     {
         Risalnik::kamera_3D.pozicija = m_teleportacija.pozicija;
         Risalnik::kamera_3D.yaw = m_teleportacija.jaw;
         Risalnik::kamera_3D.pitch = m_teleportacija.pitch;
+        m_naslednja_teleportacija += 2;
+        m_vc_za_teleportirati.spredaj.velikost.x = 0;
     }
     if (Risalnik::dobi_tipko('T'))
     {
@@ -406,6 +439,7 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
             {
                 is->m_ali_sem_umrl = true;
                 is->m_cas_do_ozivetja = 10 + Cas::get_cas();
+                is->m_vc_za_oziveti.spredaj.velikost.x = 0;
             }
         }
         /*
