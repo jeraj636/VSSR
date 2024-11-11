@@ -333,7 +333,7 @@ void Izstrelek::posodobi()
 
 bool Izstrelek::sem_neuporaben()
 {
-    float meja = 1000;
+    float meja = 100;
     if (
         oblika.pozicija.x < -meja ||
         oblika.pozicija.x > meja ||
