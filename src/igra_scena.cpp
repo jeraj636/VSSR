@@ -221,10 +221,11 @@ void Igra_scena::zanka()
             }
         }
         //* Brisanje neuporabnih izstrelkov
-        if (!m_izstrelki[i].sem_neuporaben() || !uporaben)
+        if (m_izstrelki[i].sem_neuporaben() || !uporaben)
         {
             std::swap(m_izstrelki[i], m_izstrelki.back());
             m_izstrelki.pop_back();
+            continue;
         }
         m_izstrelki[i].posodobi();
         Risalnik::narisi_3D_objekt(m_izstrelki[i].oblika);

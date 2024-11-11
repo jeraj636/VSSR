@@ -339,7 +339,7 @@ bool Izstrelek::sem_neuporaben()
         oblika.pozicija.x > meja ||
         oblika.pozicija.y < -meja ||
         oblika.pozicija.y > meja ||
-        oblika.pozicija.z < meja ||
+        oblika.pozicija.z < -meja ||
         oblika.pozicija.z > meja)
         return true;
     return false;
