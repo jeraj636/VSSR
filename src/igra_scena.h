@@ -27,6 +27,13 @@ public:
     bool prebran;
 };
 
+class Teleportacija
+{
+public:
+    mat::vec3 pozicija;
+    float jaw, pitch;
+};
+
 class Igra_scena : public Scena
 {
 public:
@@ -72,6 +79,8 @@ private:
     Objekt_2D m_srce;
     bool m_ali_sem_umrl;
     double m_cas_do_ozivetja;
+
+    Teleportacija m_teleportacija;
 
 private:
 };

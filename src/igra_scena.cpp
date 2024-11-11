@@ -62,6 +62,12 @@ void Igra_scena::zacetek()
     Risalnik::aktivna_scena_ptr = this;
     Risalnik::kamera_3D.hitrost_miske = std::stoi(p_nastavitve_scena->m_hitrost_miske.niz);
 
+    //* Nastavljanje transformacije
+    Risalnik::kamera_3D.nastavi();
+    m_teleportacija.pozicija = Risalnik::kamera_3D.pozicija;
+    m_teleportacija.jaw = Risalnik::kamera_3D.yaw;
+    m_teleportacija.pitch = Risalnik::kamera_3D.pitch;
+
     m_st_src = 3;
     m_vseh_st_src = 3;
 
@@ -288,7 +294,18 @@ void Igra_scena::zanka()
         Risalnik::kamera_3D.premikanje_kamere = false;
         Risalnik::nastavi_aktivnost_kazalca_miske(true);
     }
-
+    if (Risalnik::dobi_tipko('R'))
+    {
+        Risalnik::kamera_3D.pozicija = m_teleportacija.pozicija;
+        Risalnik::kamera_3D.yaw = m_teleportacija.jaw;
+        Risalnik::kamera_3D.pitch = m_teleportacija.pitch;
+    }
+    if (Risalnik::dobi_tipko('T'))
+    {
+        m_teleportacija.pozicija = Risalnik::kamera_3D.pozicija;
+        m_teleportacija.jaw = Risalnik::kamera_3D.yaw;
+        m_teleportacija.pitch = Risalnik::kamera_3D.pitch;
+    }
     //* Premor
     if (m_pavza && !m_ali_sem_umrl)
     {

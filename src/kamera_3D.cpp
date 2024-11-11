@@ -30,11 +30,13 @@ void Kamera_3D::nastavi()
 
 void Kamera_3D::posodobi()
 {
+    /*
     //! Samo za testiranje
     if (Risalnik::dobi_tipko('R'))
     {
         nastavi();
     }
+    */
 
     if (Risalnik::dobi_tipko(340))
     {
