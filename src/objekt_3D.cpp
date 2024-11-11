@@ -302,6 +302,7 @@ bool Objekt_3D::trk(const Objekt_3D &objekt_a, const Objekt_3D &objekt_b)
             break;
         }
     }
+    /*
     Objekt_3D izris_a = hitbox(objekt_a);
     Objekt_3D izris_b = hitbox(objekt_b);
     if (ali_je_trk)
@@ -315,8 +316,9 @@ bool Objekt_3D::trk(const Objekt_3D &objekt_a, const Objekt_3D &objekt_b)
         izris_b.barva = 0xffffffff;
     }
 
-    // Risalnik::narisi_3D_objekt(izris_a);
+    Risalnik::narisi_3D_objekt(izris_a);
     Risalnik::narisi_3D_objekt(izris_b);
+    */
 
     return ali_je_trk;
 }
