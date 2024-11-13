@@ -10,6 +10,7 @@
 #include "objekt_3D.h"
 #include "odjemalec.h"
 #include "nastaviteve_scena.h"
+#include "kamen.h"
 
 #define HITER_RAZMIK_MERILCA 0.05
 #define POCASEN_RAZMIK_MERILCA 0.03
@@ -55,7 +56,7 @@ public:
 private:
     Pisava m_pisava;
     Objekt_2D m_zvezdno_nebo;
-    Objekt_3D m_kamni1[10];
+    Kamen m_kamni1[10];
 
     //* Merilec
     Objekt_2D m_merilec[4];

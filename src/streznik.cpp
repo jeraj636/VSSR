@@ -3,6 +3,8 @@
 #include "sporocila_za_komunikacijo.h"
 #include "dnevnik.h"
 #include "chrono"
+
+#include <fstream>
 #include <iostream>
 void Odjemalec_zs::poslji(char buff[], int n)
 {
@@ -27,7 +29,35 @@ bool Streznik::zazeni(int port, int odjemalci, int opazovalci)
     m_id_stevec_opazovalci = 1;
     max_st_odjemalcev = odjemalci;
     max_st_opazovalcev = opazovalci;
+    m_naslednji_premik_kamnov = 0.1;
+    m_naslednje_posiljanje_kamnov = T_CAS_POSILJANJA_KAMNOV;
     sporocilo("streznik.cpp :: Odpiranje streznika na vrtih %i\n", port);
+
+    //* Nastavljanje kamnov
+    std::ifstream i_dat("../sredstva/kamni/podatki_o_kamnih.txt");
+    if (!i_dat.is_open())
+    {
+        std::cout << "Ni datoteke ../sredstva/kamni/podatki_o_kamnih.txt\n";
+        exit(1);
+    }
+    m_kamni = {};
+    for (int i = 0; i < 10; i++)
+    {
+        std::string s;
+        std::getline(i_dat, s);
+        mat::vec3 poz, rot;
+        float vel;
+        std::stringstream ss(s);
+        ss >> poz.x >> poz.y >> poz.z >> vel >> rot.x >> rot.x >> rot.z;
+        m_kamni.push_back(Kamen_zs());
+        m_kamni.back().pozicija = poz;
+        m_kamni.back().rotacija = rot;
+        m_kamni.back().vel = vel;
+        m_kamni.back().smer = mat::vec3(rand() * 10, rand() * 10, rand() * 10);
+        m_kamni.back().smer = m_kamni.back().smer.normaliziraj();
+        m_kamni.back().hitrost = rand();
+    }
+    i_dat.close();
 #ifdef LINUX
 
     //* Odpiranje vticnika
@@ -91,9 +121,9 @@ void Streznik::poslusaj()
         obdelaj_sporocila();
         poslji_sporocila();
         //* preverjanje odjemalcev
+        double zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
         for (int i = 0; i < odjemalci.size(); i++)
         {
-            double zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
             if (odjemalci[i].se_tu_nazadnje_cas + T_SE_SEM_TU_INTERVAL * 5 < zdaj)
             {
                 napaka("streznik.cpp :: Odjemalec %i je neodziven\n", odjemalci[i].id);
@@ -102,12 +132,24 @@ void Streznik::poslusaj()
                 i--;
             }
         }
+
+        /*
+         */
+        //* Premikanje kamnov
+        if (m_naslednji_premik_kamnov <= zdaj)
+        {
+            m_naslednji_premik_kamnov = zdaj + 0.1;
+            for (int i = 0; i < m_kamni.size(); i++)
+            {
+                m_kamni[i].pozicija += m_kamni[i].smer * m_kamni[i].hitrost * .000000001;
+            }
+        }
     }
 }
 void Streznik::poslji_sporocila()
 {
 
-    char buff[255] = {0};
+    char buff[512] = {0};
 
     double zdaj = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now().time_since_epoch()).count();
 
@@ -189,6 +231,61 @@ void Streznik::poslji_sporocila()
         for (int i = 0; i < opazovalci.size(); i++)
         {
             opazovalci[i].poslji(buff, poz + 1);
+        }
+    }
+
+    //* Posiljanje kamnov
+    if (m_naslednje_posiljanje_kamnov <= zdaj)
+    {
+        sporocilo("streznik.cpp :: posiljam kamne!\n");
+        m_naslednje_posiljanje_kamnov = zdaj + T_CAS_POSILJANJA_KAMNOV;
+
+        buff[0] = T_POSILJAM_KAMNE;
+        int vel = m_kamni.size();
+        napaka("vel: %i\n", vel);
+
+        for (int i = 0; i < m_kamni.size(); i++)
+        {
+            float meja = 100;
+            if (m_kamni[i].pozicija.x > meja ||
+                m_kamni[i].pozicija.x < -meja ||
+                m_kamni[i].pozicija.y > meja ||
+                m_kamni[i].pozicija.y < -meja ||
+                m_kamni[i].pozicija.z > meja ||
+                m_kamni[i].pozicija.z < -meja)
+            {
+                /*
+                m_kamni[i].smer = mat::vec3(rand() * 10, rand() * 10, rand() * 10);
+                m_kamni[i].smer = m_kamni.back().smer.normaliziraj();
+                */
+                m_kamni[i].smer = mat::vec3(0) - m_kamni[i].smer;
+
+                m_kamni[i].hitrost = rand();
+            }
+            m_kamni[i].pozicija.x = mat::obrezi_st(m_kamni[i].pozicija.x, -meja, meja);
+            m_kamni[i].pozicija.y = mat::obrezi_st(m_kamni[i].pozicija.y, -meja, meja);
+            m_kamni[i].pozicija.z = mat::obrezi_st(m_kamni[i].pozicija.z, -meja, meja);
+
+            int poz = 1;
+            memcpy(&buff[1], (char *)&i, sizeof(vel));
+            poz += sizeof(vel);
+            memcpy(&buff[poz], (char *)&m_kamni[i].pozicija, sizeof(m_kamni[i].pozicija));
+            poz += sizeof(m_kamni[i].pozicija);
+            memcpy(&buff[poz], (char *)&m_kamni[i].smer, sizeof(m_kamni[i].smer));
+            poz += sizeof(m_kamni[i].smer);
+            memcpy(&buff[poz], (char *)&m_kamni[i].rotacija, sizeof(m_kamni[i].rotacija));
+            poz += sizeof(m_kamni[i].rotacija);
+            memcpy(&buff[poz], (char *)&m_kamni[i].hitrost, sizeof(m_kamni[i].hitrost));
+            poz += sizeof(m_kamni[i].hitrost);
+
+            for (int i = 0; i < odjemalci.size(); i++)
+            {
+                odjemalci[i].poslji(buff, poz);
+            }
+            for (int i = 0; i < opazovalci.size(); i++)
+            {
+                opazovalci[i].poslji(buff, poz);
+            }
         }
     }
 }

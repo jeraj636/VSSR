@@ -1,6 +1,7 @@
 #ifndef STREZNIK_H
 #define STREZNIK_H
 #include "define.h"
+#include "matematika.h"
 
 #include <ctime>
 #include <thread>
@@ -50,6 +51,15 @@ public:
     double se_tu_nazadnje_cas;
     void poslji(char buff[], int n);
 };
+class Kamen_zs
+{
+public:
+    mat::vec3 pozicija;
+    float vel;
+    mat::vec3 smer;
+    mat::vec3 rotacija;
+    float hitrost;
+};
 class Streznik
 {
 public:
@@ -72,6 +82,9 @@ private:
     static inline double m_naslednji_cas_za_se_sem_tu;
     static inline int max_st_odjemalcev;
     static inline int max_st_opazovalcev;
+    static inline std::vector<Kamen_zs> m_kamni;
+    static inline double m_naslednji_premik_kamnov = 0.01;
+    static inline double m_naslednje_posiljanje_kamnov;
 
 protected:
 #ifdef LINUX

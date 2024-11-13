@@ -133,6 +133,7 @@ void Igra_scena::zanka()
 
     for (int i = 0; i < 10; i++) //* Risanje zemljevida
     {
+        m_kamni1[i].pozicija += m_kamni1[i].smer * m_kamni1[i].hitrost * Cas::get_delta_cas() * .00000001;
         Risalnik::narisi_3D_objekt(m_kamni1[i]);
 
         Nasprotnik::raketa.pozicija = Risalnik::kamera_3D.pozicija;
@@ -218,7 +219,7 @@ void Igra_scena::zanka()
         Risalnik::narisi_2D_objekt(m_vc_za_streljati.spredaj);
         Risalnik::narisi_2D_objekt(m_vc_za_streljati.zadaj);
         // za teleportacijo
-        m_vc_za_teleportirati.spredaj.velikost.x += m_vc_za_teleportirati.zadaj.velikost.x * Cas::get_delta_cas() / 2;
+        m_vc_za_teleportirati.spredaj.velikost.x += m_vc_za_teleportirati.zadaj.velikost.x * Cas::get_delta_cas() / 1.8 /*Korekcija če slučajno zalega*/;
         m_vc_za_teleportirati.spredaj.velikost.x = mat::obrezi_st(m_vc_za_teleportirati.spredaj.velikost.x, 0.0f, m_vc_za_teleportirati.zadaj.velikost.x);
         Risalnik::narisi_2D_objekt(m_vc_za_teleportirati.spredaj);
         Risalnik::narisi_2D_objekt(m_vc_za_teleportirati.zadaj);
@@ -420,7 +421,7 @@ void Igra_scena::zanka()
 }
 void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
 {
-    char buff[256] = {0};
+    char buff[512] = {0};
     while (is->m_sem_povezan)
     {
         int n = is->m_odjmalec.prejmi(buff);
@@ -441,6 +442,22 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
                 is->m_cas_do_ozivetja = 10 + Cas::get_cas();
                 is->m_vc_za_oziveti.spredaj.velikost.x = 0;
             }
+        }
+        if (buff[0] == T_POSILJAM_KAMNE)
+        {
+            sporocilo("S posiljam kamne!\n");
+            int kateri_kamen = 0;
+            int poz = 1;
+            memcpy((char *)&kateri_kamen, &buff[poz], sizeof(kateri_kamen));
+            poz += sizeof(kateri_kamen);
+            memcpy((char *)&is->m_kamni1[kateri_kamen].pozicija, &buff[poz], sizeof(mat::vec3));
+            poz += sizeof(mat::vec3);
+            memcpy((char *)&is->m_kamni1[kateri_kamen].smer, &buff[poz], sizeof(mat::vec3));
+            poz += sizeof(mat::vec3);
+            memcpy((char *)&is->m_kamni1[kateri_kamen].rotacija, &buff[poz], sizeof(mat::vec3));
+            poz += sizeof(mat::vec3);
+            memcpy((char *)&is->m_kamni1[kateri_kamen].hitrost, &buff[poz], sizeof(float));
+            poz += sizeof(float);
         }
         /*
         Ko strežnik pošlje podatke o igralcih so 4 možnisti:
