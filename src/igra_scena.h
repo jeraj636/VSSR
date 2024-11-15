@@ -12,10 +12,10 @@
 #include "nastaviteve_scena.h"
 #include "kamen.h"
 
-#define HITER_RAZMIK_MERILCA 0.05
-#define POCASEN_RAZMIK_MERILCA 0.03
-#define STOJIM_RAZMIK_MERILCA 0.02
-#define MERIM_RAZNIK_MERILCA 0.012
+#define HITER_RAZMIK_MERILCA 0.1
+#define POCASEN_RAZMIK_MERILCA 0.05
+#define STOJIM_RAZMIK_MERILCA 0.03
+#define MERIM_RAZNIK_MERILCA 0.013
 
 class Nasprotnik
 {

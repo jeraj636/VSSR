@@ -150,15 +150,18 @@ void Igra_scena::zanka()
     if (!m_pavza && !m_ali_sem_umrl && !p_nastavitve_scena->ali_sem_opazovalec)
     {
         //* Risanje merilca
-        if (Risalnik::miskin_gumb.desni_gumb || Risalnik::miskin_gumb.levi_gumb)
+        if (Risalnik::miskin_gumb.desni_gumb)
         {
             m_razmik_merilca = MERIM_RAZNIK_MERILCA;
             Risalnik::kamera_3D.vidno_polje = OD_BLIZU;
+            Risalnik::kamera_3D.hitrost_miske = atoi(p_nastavitve_scena->m_hitrost_miske.niz.c_str()) / 2;
         }
         else
         {
             m_razmik_merilca = STOJIM_RAZMIK_MERILCA;
             Risalnik::kamera_3D.vidno_polje = OD_DALEC;
+            //! Ce se mi bo ljubilo lahko dodam spodnjo vrstico v nižje pogoje
+            Risalnik::kamera_3D.hitrost_miske = atoi(p_nastavitve_scena->m_hitrost_miske.niz.c_str());
         }
 
         if (Risalnik::dobi_tipko('W') ||
@@ -209,6 +212,10 @@ void Igra_scena::zanka()
 
             m_izstrelki.back().smer = Risalnik::kamera_3D.smer;
             m_vc_za_streljati.spredaj.velikost.x = 0;
+
+            // Reciol
+            // Ce je treba
+            Risalnik::kamera_3D.pitch -= 3;
         }
 
         //* Risanje in izracun vidnih stevcev

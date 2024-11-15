@@ -77,6 +77,10 @@ void Objekt_2D::nastavi(mat::vec2 t_pozicija, mat::vec2 t_velikost, float t_rota
 
 bool Objekt_2D::ali_je_miska_gor()
 {
+    if (cakaj_do <= Cas::get_cas())
+        aktiven = true;
+    else
+        aktiven = false;
     mat::vec2 poz = pozicija;
     //* Zamik glede na poravanvo
     //! Potrebno testirati
@@ -94,7 +98,6 @@ bool Objekt_2D::ali_je_miska_gor()
         Risalnik::kazalec_miske.pozicija_kazalca_na_platnu.x < poz.x + velikost.x / 2 &&
         Risalnik::kazalec_miske.pozicija_kazalca_na_platnu.y > poz.y - velikost.y / 2 &&
         Risalnik::kazalec_miske.pozicija_kazalca_na_platnu.y < poz.y + velikost.y / 2)
-
         return true;
     return false;
 }
