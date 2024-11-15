@@ -664,12 +664,12 @@ void Risalnik::posodobi_gumb_miske(GLFWwindow *window, int gumb, int akcija, int
 {
     if (gumb == GLFW_MOUSE_BUTTON_LEFT && akcija == GLFW_PRESS)
         miskin_gumb.levi_gumb = true;
-    else
+    if (gumb == GLFW_MOUSE_BUTTON_LEFT && akcija == GLFW_RELEASE)
         miskin_gumb.levi_gumb = false;
 
     if (gumb == GLFW_MOUSE_BUTTON_RIGHT && akcija == GLFW_PRESS)
         miskin_gumb.desni_gumb = true;
-    else
+    if (gumb == GLFW_MOUSE_BUTTON_RIGHT && akcija == GLFW_RELEASE)
         miskin_gumb.desni_gumb = false;
 }
 void Risalnik::posodobi_besedilo_vhod(GLFWwindow *okno, uint32_t unicode)

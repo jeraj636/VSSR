@@ -58,7 +58,7 @@ in vec3 pozicija_luci;
 
 void main()
 {
-float moc_ambienta = 2.3f;
+float moc_ambienta = 0.8f;
 vec3 barva_luci = vec3(1.0f,1.0f,1.0f);
 
 vec3 normala = normalize(normale );
