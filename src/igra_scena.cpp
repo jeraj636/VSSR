@@ -141,14 +141,13 @@ void Igra_scena::zanka()
         Nasprotnik::raketa.pozicija.y *= -1;
         Nasprotnik::raketa.pozicija.z *= -1;
 
-        if (Objekt_3D::trk(Nasprotnik::raketa, m_kamni1[i]))
+        if (!p_nastavitve_scena->ali_sem_opazovalec && Objekt_3D::trk(Nasprotnik::raketa, m_kamni1[i]))
         {
             Risalnik::kamera_3D.premakni_nazaj();
-            std::cout << "trk\n";
         }
     }
 
-    if (!m_pavza && !m_ali_sem_umrl)
+    if (!m_pavza && !m_ali_sem_umrl && !p_nastavitve_scena->ali_sem_opazovalec)
     {
         //* Risanje merilca
         if (Risalnik::miskin_gumb.desni_gumb || Risalnik::miskin_gumb.levi_gumb)
@@ -326,7 +325,7 @@ void Igra_scena::zanka()
         Risalnik::kamera_3D.premikanje_kamere = false;
         Risalnik::nastavi_aktivnost_kazalca_miske(true);
     }
-    if (Risalnik::dobi_tipko('R') && m_naslednja_teleportacija <= Cas::get_cas())
+    if (Risalnik::dobi_tipko('R') && (m_naslednja_teleportacija <= Cas::get_cas() || p_nastavitve_scena->ali_sem_opazovalec))
     {
         Risalnik::kamera_3D.pozicija = m_teleportacija.pozicija;
         Risalnik::kamera_3D.yaw = m_teleportacija.jaw;
@@ -334,7 +333,7 @@ void Igra_scena::zanka()
         m_naslednja_teleportacija += 2;
         m_vc_za_teleportirati.spredaj.velikost.x = 0;
     }
-    if (Risalnik::dobi_tipko('T'))
+    if (Risalnik::dobi_tipko('T') && !p_nastavitve_scena->ali_sem_opazovalec)
     {
         m_teleportacija.pozicija = Risalnik::kamera_3D.pozicija;
         m_teleportacija.jaw = Risalnik::kamera_3D.yaw;
