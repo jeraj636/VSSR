@@ -154,7 +154,7 @@ void Igra_scena::zanka()
         {
             m_razmik_merilca = MERIM_RAZNIK_MERILCA;
             Risalnik::kamera_3D.vidno_polje = OD_BLIZU;
-            Risalnik::kamera_3D.hitrost_miske = atoi(p_nastavitve_scena->m_hitrost_miske.niz.c_str()) / 2;
+            Risalnik::kamera_3D.hitrost_miske = atoi(p_nastavitve_scena->m_hitrost_miske.niz.c_str()) / 5;
         }
         else
         {
@@ -208,10 +208,18 @@ void Igra_scena::zanka()
 
             m_izstrelki.push_back(Izstrelek());
             m_izstrelki.back().oblika.pozicija = Risalnik::kamera_3D.pozicija * -1;
-            m_izstrelki.back().oblika.pozicija += Risalnik::kamera_3D.smer * -1 * 2;
 
             m_izstrelki.back().smer = Risalnik::kamera_3D.smer;
             m_vc_za_streljati.spredaj.velikost.x = 0;
+
+            //* Posiljanje strezniku da sem ustrelil
+            // Malo grda koda ampak je kul :)
+            char buff[128];
+            buff[0] = T_POSILJAM_METEK;
+            memcpy(&buff[1], (char *)&m_odjmalec.id, sizeof(m_odjmalec.id));
+            memcpy(&buff[5], (char *)&m_izstrelki.back().oblika.pozicija, sizeof(mat::vec3));
+            memcpy(&buff[5 + sizeof(mat::vec3)], (char *)&m_izstrelki.back().smer, sizeof(mat::vec3));
+            m_odjmalec.poslji(buff, 6 + 2 * sizeof(mat::vec3));
 
             // Reciol
             // Ce je treba
@@ -231,7 +239,40 @@ void Igra_scena::zanka()
         Risalnik::narisi_2D_objekt(m_vc_za_teleportirati.zadaj);
     }
 
-    //* Risanje izstrelkov
+    //* Izris tujeih izstrelkov
+    for (int i = 0; i < m_tuji_izstrelki.size(); i++)
+    {
+        bool uporaben = true;
+        for (int j = 0; j < 10; j++)
+            if (Objekt_3D::trk(m_kamni1[j], m_tuji_izstrelki[i].oblika))
+            {
+                uporaben = false;
+            }
+        int st_trkov_z_naspotniki = 0;
+        for (int k = 0; k < nasprotniki.size(); k++)
+        {
+            Nasprotnik::raketa.pozicija = nasprotniki[k].tr_pozicija;
+            Nasprotnik::raketa.rotacija = nasprotniki[k].tr_rotacija;
+            Nasprotnik::raketa.veliksot = 1;
+            if (Objekt_3D::trk(m_tuji_izstrelki[i].oblika, Nasprotnik::raketa))
+            {
+                st_trkov_z_naspotniki++;
+            }
+        }
+        if (st_trkov_z_naspotniki > 1) //* Ker se lahko zaleti v tistega, ki ga je izstrelil
+            uporaben = false;
+
+        //* Brisanje neuporabnih izstrelkov
+        if (m_tuji_izstrelki[i].sem_neuporaben() || !uporaben)
+        {
+            std::swap(m_tuji_izstrelki[i], m_tuji_izstrelki.back());
+            m_tuji_izstrelki.pop_back();
+            continue;
+        }
+        m_tuji_izstrelki[i].posodobi();
+        Risalnik::narisi_3D_objekt(m_tuji_izstrelki[i].oblika);
+    }
+    //* Risanje svojih izstrelkov
     for (int i = 0; i < m_izstrelki.size(); i++)
     {
 
@@ -250,11 +291,12 @@ void Igra_scena::zanka()
             Nasprotnik::raketa.veliksot = 1;
             if (uporaben && Objekt_3D::trk(m_izstrelki[i].oblika, Nasprotnik::raketa))
             {
-
+                // Posiljanje streznuku da sem zadel nakoga
                 char buff[10];
                 buff[0] = T_USTRELIL;
                 memcpy(&buff[1], (char *)&nasprotniki[k].id, sizeof(nasprotniki[k].id));
                 m_odjmalec.poslji(buff, 5);
+                // Zdaj je metek neuporaben
                 uporaben = false;
             }
         }
@@ -360,8 +402,8 @@ void Igra_scena::zanka()
                 p_zacena_scena->zacetek();
             }
         }
-        else
-            m_gumb_za_na_meni.barva_besedila.a = 1;
+
+        m_gumb_za_na_meni.barva_besedila.a = 1;
 
         if (m_gumb_za_nadaljevanje.ali_je_miska_gor())
         {
@@ -464,6 +506,13 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
             poz += sizeof(mat::vec3);
             memcpy((char *)&is->m_kamni1[kateri_kamen].hitrost, &buff[poz], sizeof(float));
             poz += sizeof(float);
+        }
+        if (buff[0] == T_POSILJAM_METEK)
+        {
+            sporocilo("S posiljam podatke o metku\n");
+            is->m_tuji_izstrelki.push_back(Izstrelek());
+            memcpy((char *)&is->m_tuji_izstrelki.back().oblika.pozicija, &buff[5], sizeof(mat::vec3));
+            memcpy((char *)&is->m_tuji_izstrelki.back().smer, &buff[5 + sizeof(mat::vec3)], sizeof(mat::vec3));
         }
         /*
         Ko strežnik pošlje podatke o igralcih so 4 možnisti:

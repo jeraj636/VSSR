@@ -80,6 +80,7 @@ private:
     bool m_opazujem;
 
     std::vector<Izstrelek> m_izstrelki;
+    std::vector<Izstrelek> m_tuji_izstrelki;
     double m_naslednje_streljanje;
 
     int m_vseh_st_src;

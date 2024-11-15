@@ -453,18 +453,21 @@ void Streznik::obdelaj_sporocila()
                 buff[0] = T_USTRELJEN;
                 odjemalci[i].poslji(buff, 5);
                 odjemalci[i].st_src--;
-                napaka("TUUUUUU\n");
-                napaka("TUUUUUU\n");
-                napaka("TUUUUUU\n");
-                napaka("TUUUUUU\n");
-                napaka("TUUUUUU\n");
-                napaka("TUUUUUU\n");
-                napaka("TUUUUUU\n");
-                napaka("TUUUUUU\n");
-                napaka("TUUUUUU\n");
-                napaka("TUUUUUU\n");
-                napaka("TUUUUUU\n");
-                napaka("TUUUUUU\n");
+                sporocilo("C %i Ustrelil sem igralca\n", id);
+            }
+        }
+    }
+
+    if (buff[0] == T_POSILJAM_METEK)
+    {
+        int id;
+        memcpy((char *)&id, &buff[1], sizeof(id));
+        sporocilo("C %i Posiljam metek\n", id);
+        for (int i = 0; i < odjemalci.size(); i++)
+        {
+            if (odjemalci[i].id != id)
+            {
+                odjemalci[i].poslji(buff, n);
             }
         }
     }
