@@ -40,8 +40,10 @@ bool Streznik::zazeni(int port, int odjemalci, int opazovalci)
         std::cout << "Ni datoteke ../sredstva/kamni/podatki_o_kamnih.txt\n";
         exit(1);
     }
+
+    //* Želim da se premika samo pol kamnov
     m_kamni = {};
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 5 /*namsesto 10*/; i++)
     {
         std::string s;
         std::getline(i_dat, s);
