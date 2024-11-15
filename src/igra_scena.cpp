@@ -144,6 +144,7 @@ void Igra_scena::zanka()
         m_kamni1[i].pozicija += m_kamni1[i].smer * m_kamni1[i].hitrost * Cas::get_delta_cas() * .00000001;
         Risalnik::narisi_3D_objekt(m_kamni1[i]);
 
+        //* Preverjanje trkov
         Nasprotnik::raketa.pozicija = Risalnik::kamera_3D.pozicija;
         Nasprotnik::raketa.pozicija.x *= -1;
         Nasprotnik::raketa.pozicija.y *= -1;
@@ -247,9 +248,10 @@ void Igra_scena::zanka()
         Risalnik::narisi_2D_objekt(m_vc_za_teleportirati.zadaj);
     }
 
-    //* Izris tujeih izstrelkov
+    //* Izris tujih izstrelkov
     for (int i = 0; i < m_tuji_izstrelki.size(); i++)
     {
+        // Brisnje izstelov
         bool uporaben = true;
         for (int j = 0; j < 10; j++)
             if (Objekt_3D::trk(m_kamni1[j], m_tuji_izstrelki[i].oblika))
@@ -270,20 +272,22 @@ void Igra_scena::zanka()
         if (st_trkov_z_naspotniki > 1) //* Ker se lahko zaleti v tistega, ki ga je izstrelil
             uporaben = false;
 
-        //* Brisanje neuporabnih izstrelkov
+        // Brisanje iz tabele
         if (m_tuji_izstrelki[i].sem_neuporaben() || !uporaben)
         {
             std::swap(m_tuji_izstrelki[i], m_tuji_izstrelki.back());
             m_tuji_izstrelki.pop_back();
             continue;
         }
+        // Risanje izstrelkov
         m_tuji_izstrelki[i].posodobi();
         Risalnik::narisi_3D_objekt(m_tuji_izstrelki[i].oblika);
     }
+
     //* Risanje svojih izstrelkov
     for (int i = 0; i < m_izstrelki.size(); i++)
     {
-
+        // Brisnje izstrelkov
         bool uporaben = true;
         for (int j = 0; j < 10; j++)
             if (Objekt_3D::trk(m_kamni1[j], m_izstrelki[i].oblika))
@@ -291,7 +295,7 @@ void Igra_scena::zanka()
                 uporaben = false;
             }
 
-        //* Ali je zadeta kakšnja ladja
+        // Ali je zadeta kakšnja ladja
         for (int k = 0; k < nasprotniki.size(); k++)
         {
             Nasprotnik::raketa.pozicija = nasprotniki[k].tr_pozicija;
@@ -308,13 +312,14 @@ void Igra_scena::zanka()
                 uporaben = false;
             }
         }
-        //* Brisanje neuporabnih izstrelkov
+        // Brisanje neuporabnih izstrelkov iz tabeles
         if (m_izstrelki[i].sem_neuporaben() || !uporaben)
         {
             std::swap(m_izstrelki[i], m_izstrelki.back());
             m_izstrelki.pop_back();
             continue;
         }
+        // Izrsis izstrelkov
         m_izstrelki[i].posodobi();
         Risalnik::narisi_3D_objekt(m_izstrelki[i].oblika);
     }
@@ -334,7 +339,7 @@ void Igra_scena::zanka()
         }
 
         // rotacija
-        smer = nasprotniki[i].tr_rotacija - nasprotniki[i].pr_pozicija;
+        smer = nasprotniki[i].tr_rotacija - nasprotniki[i].pr_rotacija;
         if (smer.dolzina() == 0)
             Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
         else
@@ -343,7 +348,7 @@ void Igra_scena::zanka()
             Nasprotnik::raketa.rotacija = nasprotniki[i].pr_rotacija;
         }
 
-        Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
+        // Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
         Risalnik::narisi_3D_objekt(Nasprotnik::raketa);
     }
 
