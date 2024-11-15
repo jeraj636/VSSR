@@ -72,8 +72,16 @@ void Igra_scena::zacetek()
     Risalnik::kamera_3D.premikanje_kamere = true;
     Risalnik::nastavi_aktivnost_kazalca_miske(false);
     Risalnik::aktivna_scena_ptr = this;
-    Risalnik::kamera_3D.hitrost_miske = std::stoi(p_nastavitve_scena->m_hitrost_miske.niz);
+    try
+    {
+        m_hitrost_miske = std::stoi(p_nastavitve_scena->m_hitrost_miske.niz);
+    }
+    catch (const std::exception &e)
+    {
+        m_hitrost_miske = 50;
+    }
 
+    Risalnik::kamera_3D.hitrost_miske = m_hitrost_miske;
     //* Nastavljanje transformacije
     Risalnik::kamera_3D.nastavi();
     m_teleportacija.pozicija = Risalnik::kamera_3D.pozicija;
@@ -154,14 +162,14 @@ void Igra_scena::zanka()
         {
             m_razmik_merilca = MERIM_RAZNIK_MERILCA;
             Risalnik::kamera_3D.vidno_polje = OD_BLIZU;
-            Risalnik::kamera_3D.hitrost_miske = atoi(p_nastavitve_scena->m_hitrost_miske.niz.c_str()) / 5;
+            Risalnik::kamera_3D.hitrost_miske = m_hitrost_miske;
         }
         else
         {
             m_razmik_merilca = STOJIM_RAZMIK_MERILCA;
             Risalnik::kamera_3D.vidno_polje = OD_DALEC;
             //! Ce se mi bo ljubilo lahko dodam spodnjo vrstico v nižje pogoje
-            Risalnik::kamera_3D.hitrost_miske = atoi(p_nastavitve_scena->m_hitrost_miske.niz.c_str());
+            Risalnik::kamera_3D.hitrost_miske = m_hitrost_miske;
         }
 
         if (Risalnik::dobi_tipko('W') ||

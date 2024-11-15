@@ -62,7 +62,7 @@ private:
     Objekt_2D m_merilec[4];
     float m_razmik_merilca = 0.015;
     mat::vec2 m_velikost_merilca;
-
+    float m_hitrost_miske;
     static void vzdrzuj_povezavo(Igra_scena *is);
     bool m_pavza;
     bool m_sem_povezan;
