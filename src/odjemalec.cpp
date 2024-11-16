@@ -1,3 +1,9 @@
+/*
+Opis: Funkcije za razred Odjemalec
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include "define.h"
 #include "odjemalec.h"
 #include "dnevnik.h"

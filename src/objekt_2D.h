@@ -1,3 +1,9 @@
+/*
+Opis: Deklaracija razreda Objekt_2D
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #ifndef OBJEKT_2D_H
 #define OBJEKT_2D_H
 

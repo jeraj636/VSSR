@@ -1,3 +1,9 @@
+/*
+Opis: Funkcije za razred Objekt_#D
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include "objekt_3D.h"
 
 Objekt_3D::Objekt_3D()
@@ -138,6 +144,7 @@ Objekt_3D Objekt_3D::hitbox(const Objekt_3D &objekt)
     return izh;
 }
 
+// Funkcija za izračun točke, ki je najbolj proč od izhodišča v določeni smeri
 mat::vec3 Objekt_3D::max_proc_tocka(const Objekt_3D &obj, mat::vec3 smer)
 {
     mat::vec3 max_t(obj.m_tocke[0], obj.m_tocke[1], obj.m_tocke[2]);
@@ -158,13 +165,13 @@ mat::vec3 Objekt_3D::max_proc_tocka(const Objekt_3D &obj, mat::vec3 smer)
     return max_t;
 }
 
+//* Vrne najbolj oddaljeno točko od izhodiišča v določeni smeri iz minkowske razlike dveh objektov
 mat::vec3 Objekt_3D::max_proc_tocka_v_dveh(const Objekt_3D &a, const Objekt_3D &b, mat::vec3 smer)
 {
     return Objekt_3D::max_proc_tocka(a, smer) - Objekt_3D::max_proc_tocka(b, mat::vec3(0) - smer);
 }
 
 #include <deque>
-
 bool preveri_simpleks(std::deque<mat::vec3> &simpleks, mat::vec3 &smer)
 {
     if (simpleks.size() == 2)
@@ -302,23 +309,6 @@ bool Objekt_3D::trk(const Objekt_3D &objekt_a, const Objekt_3D &objekt_b)
             break;
         }
     }
-    /*
-    Objekt_3D izris_a = hitbox(objekt_a);
-    Objekt_3D izris_b = hitbox(objekt_b);
-    if (ali_je_trk)
-    {
-        izris_a.barva = 0xff000055;
-        izris_b.barva = 0xff000055;
-    }
-    else
-    {
-        izris_a.barva = 0xffffff55;
-        izris_b.barva = 0xffffffff;
-    }
-
-    Risalnik::narisi_3D_objekt(izris_a);
-    Risalnik::narisi_3D_objekt(izris_b);
-    */
 
     return ali_je_trk;
 }

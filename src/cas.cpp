@@ -1,3 +1,9 @@
+/*
+Opis: Funkcije za razred Cas
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include "risalnik.h"
 
 double Cas::get_cas()

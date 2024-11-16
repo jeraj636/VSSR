@@ -1,3 +1,9 @@
+/*
+Opis: Glavna datoteka projekta VSSR
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include <iostream>
 
 #include "objekt_3D.h"
@@ -13,6 +19,7 @@ int main()
 {
     Risalnik::odpri_okno("VSSR", 0x111111ff);
 
+    //* Nastavljanje scen
     Igra_scena is;
     Nastavitve_scena ns;
     Zacetna_scena zs;

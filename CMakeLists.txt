@@ -20,6 +20,7 @@ src/mat4.cpp
 src/matematika.cpp
 src/streznik.cpp
 )
+
 add_subdirectory(lib/glfw)
 add_executable(${PROJECT_NAME}
 lib/glad/src/glad.c

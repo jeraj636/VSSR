@@ -1,3 +1,9 @@
+/*
+Opis: Funkcije za razred Tekstura
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include <iostream>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -48,7 +54,7 @@ uint32_t nalozi_teksturo(const std::string &pot_do_teksture)
         break;
     };
 
-        stbi_image_free(podatki);
+    stbi_image_free(podatki);
     return tekstura;
 }
 

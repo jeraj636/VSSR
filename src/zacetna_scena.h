@@ -1,3 +1,9 @@
+/*
+Opis: Deklaracija razreda Zacetna_scena
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #ifndef ZACETNA_SCENA_H
 #define ZACETNA_SCENA_H
 

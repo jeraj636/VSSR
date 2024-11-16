@@ -1,9 +1,14 @@
+/*
+Opis: GLSL programi (shaderji)
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #ifndef SHADERJI_H
 #define SHADERJI_H
 
 // ! Polepšja kodo
 const char *fragment_shader_2D_s = R"(
-
 
 #version 330 core
 out vec4 frag_color;
@@ -19,11 +24,9 @@ void main()
     frag_color = tekstura * u_barva;
 }
 
-
 )";
 
 const char *fragment_shader_2D_p_s = R"(
-
 
 #version 330 core
 in vec2 tek_poz;
@@ -43,7 +46,6 @@ void main()
 )";
 
 const char *fragment_shader_3D_s = R"(
-
 
 #version 330 core
 out vec4 frag_color;
@@ -73,6 +75,7 @@ frag_color = vec4(barva * barva_luci * diffuse * moc_ambienta,1.0) * u_barva;
 )";
 
 const char *vertex_shader_2D_p_s = R"(
+
 #version 330 core
 
 
@@ -94,6 +97,7 @@ void main()
 )";
 
 const char *vertex_shader_2D_s = R"(
+
 #version 330 core
 
 layout (location = 0) in vec2 a_pos;
@@ -114,6 +118,7 @@ void main()
 )";
 
 const char *vertex_shader_3D_s = R"(
+
 #version 330 core
 layout (location = 0) in vec3 a_pos;
 layout (location = 1) in vec3 a_normale;

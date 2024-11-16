@@ -1,3 +1,9 @@
+/*
+Opis: Deklaracija razreda Objekt_3D in Izstrelek
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #ifndef OBJEKT_3D_H
 #define OBJEKT_3D_H
 

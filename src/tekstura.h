@@ -1,3 +1,9 @@
+/*
+Opis: Deklaracija razreda Tekstura
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #ifndef TEKSTURA_H
 #define TEKSTURA_H
 

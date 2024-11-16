@@ -1,3 +1,9 @@
+/*
+Opis: Deklaracije vseh razredov in funkcij, ki so povazane z matematiko
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #ifndef MATEMATIKA_H
 #define MATEMATIKA_H
 

@@ -1,3 +1,9 @@
+/*
+Opis: Funkcije razreda Kamera_3D
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include <cmath>
 #include <iostream>
 
@@ -23,22 +29,13 @@ void Kamera_3D::nastavi()
     rotacija = mat::vec3(degToRad(yaw), 0, 0);
     vidno_polje = OD_DALEC;
     hitrost_premikanja = 50;
-    // hitrost_miske = 100;
     m_kamera_gor = mat::vec3(0);
     m_mat_pogled = mat::mat4(0);
 }
 
 void Kamera_3D::posodobi()
 {
-    /*
-    //! Samo za testiranje
-    if (Risalnik::dobi_tipko('R'))
-    {
-        nastavi();
-    }
-    */
-
-    if (Risalnik::dobi_tipko(340))
+    if (Risalnik::dobi_tipko(340) /*tipka SHIFT*/)
     {
         hitrost_premikanja = 100;
         if (Risalnik::dobi_tipko('W') &&
@@ -53,7 +50,7 @@ void Kamera_3D::posodobi()
         {
 
             hitrost_premikanja = 50;
-            vidno_polje = 60;
+            vidno_polje = 60; //! Povečaca
         }
     }
 

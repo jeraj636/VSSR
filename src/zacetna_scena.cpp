@@ -1,3 +1,9 @@
+/*
+Opis: Funkcije razreda Zacetna_scena
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include "zacetna_scena.h"
 #include "risalnik.h"
 #include "streznik.h"

@@ -1,3 +1,9 @@
+/*
+Opis: Deklaracija razreda Nastavitve_scena
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #ifndef NASTAVITVE_SCENA_H
 #define NASTAVITVE_SCENA_H
 
@@ -17,6 +23,7 @@ public:
     void zanka() override;
     void konec() override;
 
+public:
     Scena *p_zacetna_scena;
 
     friend class Igra_scena;

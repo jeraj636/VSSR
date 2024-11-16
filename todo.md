@@ -18,11 +18,15 @@
 - [X] Testiraj sockete
 - [X] X invertacija miske ni OK
 - [X] Opazovalec
-- [ ] max st igralcev omejitec v steznik.cpp
+- [X]  max st igralcev omejitec v steznik.cpp
 - [X] popravi nastavitve gumbe
-- [ ] WSAcelenUP na WIN
-- [ ] Collizion
-  - [ ] hitbox
-- [ ] Streljanje
-  - [ ] Chroshair
-  - [ ] Dejanska logika
+- [X] WSAcelenUP na WIN
+- [X] Collizion
+  - [X] hitbox
+- [X] Streljanje
+  - [X] Chroshair
+  - [X] Dejanska logika
+- [X] Client side interpolacija
+- [X] Premikanje meteoritov
+- [ ] Boljse odzadje ?
+- [ ] Boljsa pozicija luci ? 

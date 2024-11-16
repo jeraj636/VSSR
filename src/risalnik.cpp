@@ -1,11 +1,20 @@
+/*
+Opis: Funkcije za razred Risalnik
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include "risalnik.h"
+
 #include <iostream>
+#include <stdlib.h>
+
 #include "objekt_2D.h"
 #include "objekt_3D.h"
-#include <stdlib.h>
 #include "shaderji.h"
 #include "pisava.h"
 #include "dnevnik.h"
+
 void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
 {
     m_resolucija = mat::vec2(800, 600);

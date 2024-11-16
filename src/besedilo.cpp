@@ -1,15 +1,13 @@
+/*
+Opis: Funkcije za razred Besedilo
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include <iostream>
 
 #include "besedilo.h"
 #include "pisava.h"
-
-Splosne_nastavitve_besedil::Splosne_nastavitve_besedil(Pisava t_pisava, uint32_t t_barva_besedil, uint8_t t_poravnava, float t_velikost)
-    : pisava(t_pisava)
-{
-    barva_besedil = t_barva_besedil;
-    poravnava = t_poravnava;
-    velikost = t_velikost;
-}
 
 Besedilo::Besedilo(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozicija, float t_velikost, const std::string t_niz, uint8_t t_poravnava)
     : pisava(t_pisava)
@@ -22,19 +20,10 @@ Besedilo::Besedilo(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_pozi
     aktiven = true;
     cakaj_do = Cas::get_cas();
 }
+
 Besedilo::Besedilo(Pisava &t_pisava)
     : pisava(t_pisava)
 {
-    aktiven = true;
-    cakaj_do = Cas::get_cas();
-}
-
-Besedilo::Besedilo(Splosne_nastavitve_besedil t_spl_nst_bes)
-    : pisava(t_spl_nst_bes.pisava)
-{
-    barva_besedila = t_spl_nst_bes.barva_besedil;
-    poravnava = t_spl_nst_bes.poravnava;
-    velikost = t_spl_nst_bes.velikost;
     aktiven = true;
     cakaj_do = Cas::get_cas();
 }
@@ -50,6 +39,7 @@ void Besedilo::nastavi(Pisava &t_pisava, uint32_t t_barva_besedila, mat::vec2 t_
     aktiven = true;
     cakaj_do = Cas::get_cas();
 }
+
 bool Besedilo::ali_je_miska_gor()
 {
     posodobi();
@@ -63,10 +53,12 @@ bool Besedilo::ali_je_miska_gor()
     else
         return false;
 }
+
 void Besedilo::narisi_me()
 {
     Risalnik::narisi_besedilo(pisava, barva_besedila, pozicija, velikost, niz, poravnava);
 }
+
 void Besedilo::posodobi()
 {
     if (cakaj_do <= Cas::get_cas())
@@ -93,6 +85,7 @@ void Besedilo::posodobi()
             min_y = quad.y0;
     }
     x *= mnozitelj_velikosti;
+
     //* Izračun zamika po osi x glede na poravnavo besedila
     m_leva_pozicija = pozicija;
     if ((poravnava & R_P_X_SREDINA) == R_P_X_SREDINA)

@@ -1,3 +1,8 @@
+/*
+Opis: Funkcije za razred Streznik
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
 
 #include "streznik.h"
 #include "sporocila_za_komunikacijo.h"
@@ -6,6 +11,7 @@
 
 #include <fstream>
 #include <iostream>
+
 void Odjemalec_zs::poslji(char buff[], int n)
 {
     int nn = sendto(Streznik::m_vticnik, buff, n, 0, (sockaddr *)&naslov_odjemalca, velikost_naslova_odjemalca);

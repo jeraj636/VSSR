@@ -1,3 +1,9 @@
+/*
+Opis: Deklaracija razreda Odjemalec
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #ifndef ODJEMALEC_H
 #define ODJEMALEC_H
 

@@ -1,3 +1,9 @@
+/*
+Opis: Funkcije za razred Nastavitve_scena
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include <fstream>
 #include <iostream>
 
@@ -58,6 +64,7 @@ void Nastavitve_scena::zacetek()
     Risalnik::nastavi_aktivnost_kazalca_miske(true);
     Risalnik::aktivna_scena_ptr = this;
 
+    //* Scena počaka eno sekunda da se slučajno ne sproži kakšen gumb
     m_polje_za_vpis_streznika.cakaj_do = Cas::get_cas() + 1;
     m_polje_za_vpis_vrat_odjemalca.cakaj_do = Cas::get_cas() + 1;
     m_polje_za_vpis_hitrosti_miske.cakaj_do = Cas::get_cas() + 1;
@@ -73,7 +80,6 @@ void Nastavitve_scena::zanka()
 {
     Risalnik::nastavi_testiranje_globine(false);
     Risalnik::narisi_2D_objekt(m_zvezdno_nebo);
-
     m_zvezdno_nebo.velikost = Risalnik::vel_platna;
     m_zvezdno_nebo.pozicija = mat::vec2(0);
 

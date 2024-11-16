@@ -1,3 +1,9 @@
+/*
+Opis: Deklaracija rezreda Pisava
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #ifndef PISAVA_H
 #define PISAVA_H
 

@@ -1,3 +1,9 @@
+/*
+Opis: Funkcije razreda Scena
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -35,6 +41,7 @@ Igra_scena::Igra_scena()
         exit(1);
     }
 
+    //* Branje kamnov iz datoteke
     for (int i = 0; i < 10; i++)
     {
         std::string s;
@@ -45,7 +52,9 @@ Igra_scena::Igra_scena()
         ss >> poz.x >> poz.y >> poz.z >> vel >> rot.x >> rot.x >> rot.z;
         m_kamni1[i].nastavi(poz, mat::vec3(vel / 0.5), rot, 0xffffffff, true, "../sredstva/kamni/K1.obj");
     }
+    i_dat.close();
 
+    //* Nastavljanje merilca
     m_velikost_merilca = mat::vec2(0.002, 0.02);
     for (int i = 0; i < 4; i++)
     {
@@ -55,23 +64,28 @@ Igra_scena::Igra_scena()
     m_merilec[1].pozicija = mat::vec2(m_razmik_merilca, 0);
     m_merilec[2].pozicija = mat::vec2(0, -m_razmik_merilca);
     m_merilec[3].pozicija = mat::vec2(-m_razmik_merilca, 0);
-
-    i_dat.close();
 }
 
 void Igra_scena::zacetek()
 {
+    //* Stanja
     m_pavza = false;
+    m_ali_sem_umrl = false;
+    m_sem_povezan = false;
+
+    //* Casovniki
     m_cas_naslednjega_posiljanja_podatkov = 0;
     m_cas_za_se_sem_tu = 0;
     m_streznik_nazadnje_se_sem_tu = Cas::get_cas() + T_SE_SEM_TU_INTERVAL * 2;
-    m_sem_povezan = false;
     m_naslednje_streljanje = Cas::get_cas() + 1;
     m_naslednja_teleportacija = Cas::get_cas() + 2;
+
     //* Nastavljanje kamere in kazalca
     Risalnik::kamera_3D.premikanje_kamere = true;
     Risalnik::nastavi_aktivnost_kazalca_miske(false);
     Risalnik::aktivna_scena_ptr = this;
+
+    //* Nastavljanje hitrosti miske
     try
     {
         m_hitrost_miske = std::stoi(p_nastavitve_scena->m_hitrost_miske.niz);
@@ -80,9 +94,9 @@ void Igra_scena::zacetek()
     {
         m_hitrost_miske = 50;
     }
-
     Risalnik::kamera_3D.hitrost_miske = m_hitrost_miske;
-    //* Nastavljanje transformacije
+
+    //* Nastavljanje teleportacije
     Risalnik::kamera_3D.nastavi();
     m_teleportacija.pozicija = Risalnik::kamera_3D.pozicija;
     m_teleportacija.jaw = Risalnik::kamera_3D.yaw;
@@ -91,8 +105,17 @@ void Igra_scena::zacetek()
     m_st_src = 3;
     m_vseh_st_src = 3;
 
-    m_ali_sem_umrl = false;
     //* Povezava na streznik
+    int port;
+    try
+    {
+        port = atoi(p_nastavitve_scena->m_vrata_odjemalca.niz.c_str());
+    }
+    catch (const std::exception &e)
+    {
+        port = -1;
+    }
+
     for (int i = 0; i < 10; i++)
     {
         int tip;
@@ -106,7 +129,7 @@ void Igra_scena::zacetek()
             tip = T_ODJEMALEC;
             m_opazujem = false;
         }
-        if (m_odjmalec.zazeni(p_nastavitve_scena->m_streznik.niz, atoi(p_nastavitve_scena->m_vrata_odjemalca.niz.c_str()), tip) < 0)
+        if (m_odjmalec.zazeni(p_nastavitve_scena->m_streznik.niz, port, tip) < 0)
         {
             opozorilo("igra_scena.cpp :: Poskus povezave %i od %i ni uspel!\n", i + 1, 10);
         }
@@ -161,7 +184,7 @@ void Igra_scena::zanka()
         //* Risanje merilca
         if (Risalnik::miskin_gumb.desni_gumb)
         {
-            m_razmik_merilca = MERIM_RAZNIK_MERILCA;
+            m_razmik_merilca = MERIM_RAZMIK_MERILCA;
             Risalnik::kamera_3D.vidno_polje = OD_BLIZU;
             Risalnik::kamera_3D.hitrost_miske = m_hitrost_miske;
         }

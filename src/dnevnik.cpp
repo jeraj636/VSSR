@@ -1,3 +1,9 @@
+/*
+Opis: Funkcije za sporočil
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,7 +25,7 @@ void napaka(const char *sporocilo, ...) //* Sporocilo o napaki
 #endif
 #ifdef WINDOWS
                 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-                SetConsoleTextAttribute(hConsole, FOREGROUND_RED); // Zeleni tekst
+                SetConsoleTextAttribute(hConsole, FOREGROUND_RED); // rdeča
 #endif
                 va_list parametri;
                 va_start(parametri, sporocilo);
@@ -30,6 +36,7 @@ void napaka(const char *sporocilo, ...) //* Sporocilo o napaki
                 printf("\033[0m");
 #endif
 #ifdef WINDOWS
+                //! Ker je Windows pac Windows vcasih malo zasteka
                 SetConsoleTextAttribute(hConsole, FOREGROUND_INTENSITY); // Resetiranje tekst
 #endif
         }
@@ -46,7 +53,7 @@ void opozorilo(const char *sporocilo, ...)
 #endif
 #ifdef WINDOWS
                 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-                SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE); // Zeleni tekst
+                SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE); // modra tekst
 #endif
                 va_list parametri;
                 va_start(parametri, sporocilo);

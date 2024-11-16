@@ -1,3 +1,9 @@
+/*
+Opis: Funkcije za razred mat::mat3
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include <cmath>
 
 #include "matematika.h"

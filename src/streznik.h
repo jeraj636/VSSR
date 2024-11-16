@@ -1,3 +1,9 @@
+/*
+Opis: Deklaracija razredova Streznik, Odjemalec_zs, Opazovalec_zs, Kamen_zs (zs pomeni za strežnik)
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #ifndef STREZNIK_H
 #define STREZNIK_H
 #include "define.h"

@@ -1,3 +1,9 @@
+/*
+Opis: Funkcije za razred Objekt_2D
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include "objekt_2D.h"
 #include "tekstura.h"
 #include "risalnik.h"

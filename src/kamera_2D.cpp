@@ -1,3 +1,9 @@
+/*
+Opis: Razred v katerem so funkcije razreda Kamera_2D
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include "kamera_2D.h"
 #include "risalnik.h"
 

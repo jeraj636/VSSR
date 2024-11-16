@@ -1,3 +1,9 @@
+/*
+Opis: Funkcije za razred Barva
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include <iostream>
 
 #include "barva.h"

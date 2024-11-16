@@ -1,3 +1,9 @@
+/*
+Opis: Ostale funkcije datoteke matematika.h
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include <cmath>
 
 #include "matematika.h"

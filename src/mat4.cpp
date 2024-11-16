@@ -1,3 +1,9 @@
+/*
+Opis: Funkcije za razred mat::mat4
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include <iostream>
 #include <cmath>
 

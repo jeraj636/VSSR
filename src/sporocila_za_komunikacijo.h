@@ -1,3 +1,9 @@
+/*
+Opis: Tukaj so makroti za vse kar je v zvezi s povezovo po omrežju
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #ifndef SPOROCILA_ZA_KOMUNIKACIJO_H
 #define SPOROCILA_ZA_KOMUNIKACIJO_H
 
@@ -19,6 +25,7 @@
 #define T_POSILJAM_KAMNE 12
 #define T_POSILJAM_METEK 13
 
+//* Časovniki (interrvali)
 #define T_HITROST_POSILJANJA_PODATKOV 0.1
 #define T_SE_SEM_TU_INTERVAL 2.0
 #define T_CAS_ZA_POVEZOVANJE 0.5

@@ -1,3 +1,9 @@
+/*
+Opis: Funkcije razreda vec2
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include <cmath>
 #include <iostream>
 

@@ -1,3 +1,9 @@
+/*
+Opis: Funkcije za razred Pisava
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <fstream>

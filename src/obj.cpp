@@ -1,3 +1,9 @@
+/*
+Opis: Datoteka s funkcijami, ki so povezane z nalaganjem objektov iz datotek .obj
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
+
 #include <fstream>
 #include <iostream>
 #include <string>
