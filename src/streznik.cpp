@@ -39,6 +39,8 @@ bool Streznik::zazeni(int port, int odjemalci, int opazovalci)
     m_naslednje_posiljanje_kamnov = T_CAS_POSILJANJA_KAMNOV;
     sporocilo("streznik.cpp :: Odpiranje streznika na vrtih %i\n", port);
 
+    srand(time(NULL));
+
     //* Nastavljanje kamnov
     std::ifstream i_dat("../sredstva/kamni/podatki_o_kamnih.txt");
     if (!i_dat.is_open())
@@ -149,7 +151,7 @@ void Streznik::poslusaj()
             m_naslednji_premik_kamnov = zdaj + 0.1;
             for (int i = 0; i < m_kamni.size(); i++)
             {
-                m_kamni[i].pozicija += m_kamni[i].smer * m_kamni[i].hitrost * .000000001;
+                m_kamni[i].pozicija += m_kamni[i].smer * m_kamni[i].hitrost * 0.1;
             }
         }
     }
@@ -261,13 +263,12 @@ void Streznik::poslji_sporocila()
                 m_kamni[i].pozicija.z > meja ||
                 m_kamni[i].pozicija.z < -meja)
             {
-                /*
-                m_kamni[i].smer = mat::vec3(rand() * 10, rand() * 10, rand() * 10);
-                m_kamni[i].smer = m_kamni.back().smer.normaliziraj();
-                */
-                m_kamni[i].smer = mat::vec3(0) - m_kamni[i].smer;
 
-                m_kamni[i].hitrost = rand();
+                m_kamni[i].smer = mat::vec3((rand() / (float)RAND_MAX * 10) - 5);
+                m_kamni[i].smer = mat::vec3(0) - m_kamni[i].pozicija;
+                m_kamni[i].smer = m_kamni[i].smer.normaliziraj();
+
+                m_kamni[i].hitrost = (rand() / (float)RAND_MAX * 10.0) + 5;
             }
             m_kamni[i].pozicija.x = mat::obrezi_st(m_kamni[i].pozicija.x, -meja, meja);
             m_kamni[i].pozicija.y = mat::obrezi_st(m_kamni[i].pozicija.y, -meja, meja);

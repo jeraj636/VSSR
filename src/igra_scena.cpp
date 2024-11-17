@@ -53,6 +53,7 @@ Igra_scena::Igra_scena()
         std::stringstream ss(s);
         ss >> poz.x >> poz.y >> poz.z >> vel >> rot.x >> rot.x >> rot.z;
         m_kamni1[i].nastavi(poz, mat::vec3(vel / 0.5), rot, 0xffffffff, true, "../sredstva/kamni/K1.obj");
+        m_kamni1[i].hitrost = 0;
     }
     i_dat.close();
 
@@ -174,18 +175,21 @@ void Igra_scena::zanka()
     Risalnik::narisi_3D_objekt(m_modri_kamen);
     if (!p_nastavitve_scena->ali_sem_opazovalec && Objekt_3D::trk(Nasprotnik::raketa, m_modri_kamen))
     {
-        Risalnik::kamera_3D.premakni_nazaj();
+
+        mat::vec3 smer_premika = mat::normaliziraj(m_modri_kamen.pozicija - Nasprotnik::raketa.pozicija);
+        Risalnik::kamera_3D.pozicija += smer_premika * Cas::get_delta_cas() * 100;
     }
     for (int i = 0; i < 10; i++)
     {
-        m_kamni1[i].pozicija += m_kamni1[i].smer * m_kamni1[i].hitrost * Cas::get_delta_cas() * .00000001;
+        m_kamni1[i].pozicija += m_kamni1[i].smer * m_kamni1[i].hitrost * Cas::get_delta_cas();
         Risalnik::narisi_3D_objekt(m_kamni1[i]);
 
         //* Preverjanje trkov
 
         if (!p_nastavitve_scena->ali_sem_opazovalec && Objekt_3D::trk(Nasprotnik::raketa, m_kamni1[i]))
         {
-            Risalnik::kamera_3D.premakni_nazaj();
+            mat::vec3 smer_premika = mat::normaliziraj(m_kamni1[i].pozicija - Nasprotnik::raketa.pozicija);
+            Risalnik::kamera_3D.pozicija += smer_premika * Cas::get_delta_cas() * 100;
         }
     }
 
