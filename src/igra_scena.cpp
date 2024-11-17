@@ -154,7 +154,6 @@ void Igra_scena::zacetek()
         p_zacena_scena->zacetek();
     }
 }
-#include <iostream>
 void Igra_scena::zanka()
 {
     //* Risanje in posodabljanje elementov
