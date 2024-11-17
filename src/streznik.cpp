@@ -250,7 +250,6 @@ void Streznik::poslji_sporocila()
 
         buff[0] = T_POSILJAM_KAMNE;
         int vel = m_kamni.size();
-        napaka("vel: %i\n", vel);
 
         for (int i = 0; i < m_kamni.size(); i++)
         {

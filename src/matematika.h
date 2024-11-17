@@ -28,6 +28,7 @@ namespace mat
         vec2 operator+(float t) const;
         vec2 operator-(const vec2 &t) const;
         vec2 operator-(float t) const;
+        vec2 operator*(float t) const;
         vec2 operator/(float t) const;
 
         vec2 &operator+=(const vec2 &t);

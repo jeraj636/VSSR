@@ -38,4 +38,15 @@ protected:
     uint32_t m_tekstura_id;
     std::string m_pot_do_teksture;
 };
+#include "matematika.h"
+class Meteor : public Objekt_2D
+{
+public:
+    mat::vec2 smer;
+    float hitrost = 10;
+    Meteor();
+    void posodobi();
+    void nastavi_rotacijo();
+};
+
 #endif

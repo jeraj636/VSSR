@@ -78,8 +78,10 @@ void Nastavitve_scena::zacetek()
 
 void Nastavitve_scena::zanka()
 {
+    m_meteor.posodobi();
     Risalnik::nastavi_testiranje_globine(false);
     Risalnik::narisi_2D_objekt(m_zvezdno_nebo);
+    Risalnik::narisi_2D_objekt(m_meteor);
     m_zvezdno_nebo.velikost = Risalnik::vel_platna;
     m_zvezdno_nebo.pozicija = mat::vec2(0);
 

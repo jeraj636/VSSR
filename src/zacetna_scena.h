@@ -40,6 +40,8 @@ private:
     Objekt_3D m_raketa;
     Objekt_2D m_zvezdno_nebo;
 
+    Meteor m_meteor;
+
 private:
     void posodobi_meni();
 };

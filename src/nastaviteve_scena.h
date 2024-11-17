@@ -39,6 +39,7 @@ private:
     Objekt_2D m_polje_za_vpis_vrat_streznika;
     Objekt_2D m_polje_za_vpis_st_odjemalcev;
     Objekt_2D m_polje_za_vpis_st_opazovalcev;
+    Meteor m_meteor;
 
     Besedilo m_gumb_za_na_meni;
     Besedilo m_gumb_za_vklop_izkop_streznika;

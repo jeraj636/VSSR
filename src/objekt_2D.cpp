@@ -7,7 +7,7 @@ Licenca: GNU GPL 3
 #include "objekt_2D.h"
 #include "tekstura.h"
 #include "risalnik.h"
-
+#include "stdlib.h"
 Objekt_2D::Objekt_2D()
 {
     m_tekstura_id = -1;
@@ -106,4 +106,47 @@ bool Objekt_2D::ali_je_miska_gor()
         Risalnik::kazalec_miske.pozicija_kazalca_na_platnu.y < poz.y + velikost.y / 2)
         return true;
     return false;
+}
+
+Meteor::Meteor()
+    : Objekt_2D(mat::vec2(11), mat::vec2(0.1), 0, 0xffffffff, "../sredstva/meteorcek.png", true, R_P_X_SREDINA | R_P_Y_SREDINA)
+{
+    hitrost = -2;
+}
+
+void Meteor::posodobi()
+{
+    if (pozicija.x > 5 || pozicija.x < -5 ||
+        pozicija.y > 5 || pozicija.y < -5)
+    {
+        int stranica = (int)(rand() % 4);
+        float poz = rand() / (float)RAND_MAX * 10;
+        poz -= 5;
+        switch (stranica)
+        {
+        case 0:
+            pozicija = mat::vec2(poz, -4);
+            break;
+        case 1:
+            pozicija = mat::vec2(4, poz);
+            break;
+        case 2:
+            pozicija = mat::vec2(poz, 4);
+            break;
+        case 3:
+            pozicija = mat::vec2(-4, poz);
+            break;
+        }
+        smer = pozicija - mat::vec2(0);
+        smer = smer.normaliziraj();
+        nastavi_rotacijo();
+    }
+    // std::cout << smer << "\n";
+    pozicija += smer * Cas::get_delta_cas() * hitrost;
+}
+
+#include <cmath>
+void Meteor::nastavi_rotacijo()
+{
+    rotacija = radToDeg(atan2(smer.y, smer.x));
 }

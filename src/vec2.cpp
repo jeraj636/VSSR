@@ -59,6 +59,13 @@ vec2 vec2::operator-(float t) const
     tmp.y -= t;
     return tmp;
 }
+vec2 vec2::operator*(float t) const
+{
+    vec2 tmp = *this;
+    tmp.x *= t;
+    tmp.y *= t;
+    return tmp;
+}
 vec2 vec2::operator/(float t) const
 {
     vec2 tmp = *this;

@@ -29,7 +29,7 @@
 - [X] Client side interpolacija
 - [X] Premikanje meteoritov
 - [ ] Boljse odzadje ? 
-  - [ ] Cube
-  - [ ] Metoriti v odzadju
-  - [ ] dodaj modro kroglo
-- [ ] Boljsa pozicija luci ? 
+  - [] Cube
+  - [X] Metoriti v odzadju
+  - [X] dodaj modro kroglo
+- [X] Boljsa pozicija luci ? 

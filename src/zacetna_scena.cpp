@@ -34,8 +34,10 @@ void Zacetna_scena::zacetek()
 
 void Zacetna_scena::zanka()
 {
+    m_meteor.posodobi();
     Risalnik::nastavi_testiranje_globine(false);
     Risalnik::narisi_2D_objekt(m_zvezdno_nebo);
+    Risalnik::narisi_2D_objekt(m_meteor);
     Risalnik::nastavi_testiranje_globine(true);
 
     posodobi_meni();

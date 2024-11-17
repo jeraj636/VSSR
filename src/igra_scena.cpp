@@ -157,9 +157,10 @@ void Igra_scena::zacetek()
 void Igra_scena::zanka()
 {
     //* Risanje in posodabljanje elementov
+    m_meteor.posodobi();
     Risalnik::nastavi_testiranje_globine(false);
     Risalnik::narisi_2D_objekt(m_zvezdno_nebo);
-
+    Risalnik::narisi_2D_objekt(m_meteor);
     Risalnik::nastavi_testiranje_globine(true);
 
     m_zvezdno_nebo.velikost = Risalnik::vel_platna;
