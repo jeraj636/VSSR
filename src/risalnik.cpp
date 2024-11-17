@@ -85,6 +85,7 @@ void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
     //*Inicializacija kamer
     // kamera_2D.Nastavi(100, mat::vec2(0));
     kamera_3D.nastavi();
+    pozicija_3D_luci = mat::vec3(0, 20, 0);
 
     aktivna_scena_ptr = nullptr;
     buffer_za_vpis_podatkov = nullptr;
@@ -96,7 +97,7 @@ void Risalnik::posodobi_velikost_okna(GLFWwindow *okno, int dolzina, int visina)
 
     glViewport(0, 0, dolzina, visina);
 
-    kamera_3D.nastavi();
+    // kamera_3D.nastavi();
 }
 void Risalnik::posodobi_tipke(GLFWwindow *okno, int tipka, int koda_skeniranja, int akcija, int modi)
 {
@@ -176,7 +177,7 @@ void Risalnik::zacetek_okvir()
     if (sprememba_velikosti)
     {
         kazalec_miske.pr_pozicija_kazalca = kazalec_miske.pozicija_kazalca;
-        kamera_3D.nastavi();
+        // kamera_3D.nastavi();
     }
 }
 

@@ -32,6 +32,8 @@ Igra_scena::Igra_scena()
 
     m_srce.nastavi(mat::vec2(-0.8, 0.4), mat::vec2(0.05), 0, 0xff0000ff, "../sredstva/srce.png", true, R_P_X_SREDINA | R_P_Y_SREDINA);
 
+    m_modri_kamen.nastavi(mat::vec3(0), mat::vec3(3), mat::vec3(0), 0xffffffff, true, "../sredstva/modra_zadeva.obj");
+
     //* Nastavljanje okolja
     //* Prebere se zemljevid (mapa) igre
     std::ifstream i_dat("../sredstva/kamni/podatki_o_kamnih.txt");
@@ -98,6 +100,7 @@ void Igra_scena::zacetek()
 
     //* Nastavljanje teleportacije
     Risalnik::kamera_3D.nastavi();
+    Risalnik::kamera_3D.pozicija = mat::vec3(0, 0, 30);
     m_teleportacija.pozicija = Risalnik::kamera_3D.pozicija;
     m_teleportacija.jaw = Risalnik::kamera_3D.yaw;
     m_teleportacija.pitch = Risalnik::kamera_3D.pitch;
@@ -162,16 +165,22 @@ void Igra_scena::zanka()
     m_zvezdno_nebo.velikost = Risalnik::vel_platna;
     m_zvezdno_nebo.pozicija = mat::vec2(0);
 
-    for (int i = 0; i < 10; i++) //* Risanje zemljevida
+    //* Risanje zemljevida
+    Nasprotnik::raketa.pozicija = Risalnik::kamera_3D.pozicija;
+    Nasprotnik::raketa.pozicija.x *= -1;
+    Nasprotnik::raketa.pozicija.y *= -1;
+    Nasprotnik::raketa.pozicija.z *= -1;
+    Risalnik::narisi_3D_objekt(m_modri_kamen);
+    if (!p_nastavitve_scena->ali_sem_opazovalec && Objekt_3D::trk(Nasprotnik::raketa, m_modri_kamen))
+    {
+        Risalnik::kamera_3D.premakni_nazaj();
+    }
+    for (int i = 0; i < 10; i++)
     {
         m_kamni1[i].pozicija += m_kamni1[i].smer * m_kamni1[i].hitrost * Cas::get_delta_cas() * .00000001;
         Risalnik::narisi_3D_objekt(m_kamni1[i]);
 
         //* Preverjanje trkov
-        Nasprotnik::raketa.pozicija = Risalnik::kamera_3D.pozicija;
-        Nasprotnik::raketa.pozicija.x *= -1;
-        Nasprotnik::raketa.pozicija.y *= -1;
-        Nasprotnik::raketa.pozicija.z *= -1;
 
         if (!p_nastavitve_scena->ali_sem_opazovalec && Objekt_3D::trk(Nasprotnik::raketa, m_kamni1[i]))
         {
@@ -265,7 +274,7 @@ void Igra_scena::zanka()
         Risalnik::narisi_2D_objekt(m_vc_za_streljati.spredaj);
         Risalnik::narisi_2D_objekt(m_vc_za_streljati.zadaj);
         // za teleportacijo
-        m_vc_za_teleportirati.spredaj.velikost.x += m_vc_za_teleportirati.zadaj.velikost.x * Cas::get_delta_cas() / 1.8 /*Korekcija če slučajno zalega*/;
+        m_vc_za_teleportirati.spredaj.velikost.x += m_vc_za_teleportirati.zadaj.velikost.x * Cas::get_delta_cas() / 1.7 /*Korekcija če slučajno zalega*/;
         m_vc_za_teleportirati.spredaj.velikost.x = mat::obrezi_st(m_vc_za_teleportirati.spredaj.velikost.x, 0.0f, m_vc_za_teleportirati.zadaj.velikost.x);
         Risalnik::narisi_2D_objekt(m_vc_za_teleportirati.spredaj);
         Risalnik::narisi_2D_objekt(m_vc_za_teleportirati.zadaj);
@@ -276,6 +285,7 @@ void Igra_scena::zanka()
     {
         // Brisnje izstelov
         bool uporaben = true;
+        uporaben = (Objekt_3D::trk(m_modri_kamen, m_tuji_izstrelki[i].oblika)) ? false : true;
         for (int j = 0; j < 10; j++)
             if (Objekt_3D::trk(m_kamni1[j], m_tuji_izstrelki[i].oblika))
             {
@@ -312,6 +322,7 @@ void Igra_scena::zanka()
     {
         // Brisnje izstrelkov
         bool uporaben = true;
+        uporaben = (Objekt_3D::trk(m_modri_kamen, m_izstrelki[i].oblika)) ? false : true;
         for (int j = 0; j < 10; j++)
             if (Objekt_3D::trk(m_kamni1[j], m_izstrelki[i].oblika))
             {

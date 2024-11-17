@@ -66,6 +66,7 @@ private:
     Pisava m_pisava;
     Objekt_2D m_zvezdno_nebo;
     Kamen m_kamni1[10];
+    Objekt_3D m_modri_kamen;
 
     //* Merilec
     Objekt_2D m_merilec[4];
