@@ -401,6 +401,7 @@ void Igra_scena::zanka()
             m_ali_sem_umrl = false;
 
             Risalnik::kamera_3D.nastavi();
+            Risalnik::kamera_3D.pozicija = mat::vec3(0, 0, 30);
             m_st_src = 3;
             if (!m_pavza)
             {
