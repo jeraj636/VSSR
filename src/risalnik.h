@@ -16,6 +16,7 @@ Licenca: GNU GPL 3
 #include "barva.h"
 #include "kamera_2D.h"
 #include "kamera_3D.h"
+#include "nebesna_kocka.h"
 
 class Pisava;
 class Risalnik;
@@ -77,9 +78,13 @@ private:
     static inline uint32_t m_VBO_2D, m_EBO_2D, m_VAO_2D;
     static inline uint32_t m_VBO_2D_p, m_EBO_2D_p, m_VAO_2D_p;
     static inline uint32_t m_VBO_3D, m_EBO_3D, m_VAO_3D;
+    static inline uint32_t m_VBO_nk, m_EBO_nk, m_VAO_nk;
+
     static inline uint32_t m_shader_program_2D;
     static inline uint32_t m_shader_program_2D_p;
     static inline uint32_t m_shader_program_3D;
+    static inline uint32_t m_shader_program_nk;
+
     static inline mat::mat3 m_ortho_mat_2D;
     static inline mat::mat4 m_proj_mat_3D;
     static inline mat::vec2 m_velikost_okna;
@@ -93,6 +98,7 @@ public:
     static void narisi_2D_objekt(Objekt_2D &obj);
     static void narisi_3D_objekt(const Objekt_3D &obj);
     static void narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat::vec2 pozicija, float velikost, const std::string niz, uint8_t zastavice);
+    static void narisi_nebesno_kocko(Nebesna_kocka nk);
     static bool ali_je_okno_za_zapreti();
     static bool dobi_tipko(int katera_tipka);
     static void zapri_okno();
@@ -107,10 +113,12 @@ private:
     static void ustvari_bufferje_2D();
     static void ustvari_bufferje_3D();
     static void ustvari_bufferje_2D_p();
+    static void ustvari_bufferje_nk();
 
     static void ustvari_shaderje_2D();
     static void ustvari_shaderje_3D();
     static void ustvari_shaderje_2D_p();
+    static void ustvari_shaderje_nk();
 };
 
 #endif

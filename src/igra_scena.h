@@ -17,6 +17,7 @@ Licenca: GNU GPL 3
 #include "odjemalec.h"
 #include "nastaviteve_scena.h"
 #include "kamen.h"
+#include "nebesna_kocka.h"
 
 #define HITER_RAZMIK_MERILCA 0.1
 #define POCASEN_RAZMIK_MERILCA 0.05
@@ -65,6 +66,7 @@ private:
 private:
     Pisava m_pisava;
     Objekt_2D m_zvezdno_nebo;
+    Nebesna_kocka m_nebesna_kocka;
     Kamen m_kamni1[10];
     Objekt_3D m_modri_kamen;
     Meteor m_meteor;

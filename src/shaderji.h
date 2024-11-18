@@ -74,6 +74,22 @@ frag_color = vec4(barva * barva_luci * diffuse * moc_ambienta,1.0) * u_barva;
 
 )";
 
+const char *fragment_shader_nk_s = R"(
+
+#version 330 core
+out vec4 FragColor;
+
+in vec3 TexCoords;
+
+uniform samplerCube skybox;
+
+void main()
+{    
+    FragColor = texture(skybox, TexCoords);
+}
+
+)";
+
 const char *vertex_shader_2D_p_s = R"(
 
 #version 330 core
@@ -145,5 +161,22 @@ void main()
     frag_pos = vec3(gl_Position.x,gl_Position.y,gl_Position.z);
 }
 )";
+const char *vertex_shader_nk_s = R"(
 
+#version 330 core
+layout (location = 0) in vec3 aPos;
+
+out vec3 TexCoords;
+
+uniform mat4 projection;
+uniform mat4 view;
+uniform mat4 obj;
+
+void main()
+{
+    TexCoords = aPos;
+    vec4 trenutna_pozicija=obj * vec4(aPos,1.0);
+    gl_Position = projection * view * trenutna_pozicija;
+}  
+)";
 #endif

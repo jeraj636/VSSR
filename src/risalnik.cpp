@@ -69,11 +69,13 @@ void Risalnik::odpri_okno(const std::string &naslov_okna, Barva t_barva_okna)
     ustvari_bufferje_2D_p();
     ustvari_bufferje_2D();
     ustvari_bufferje_3D();
+    ustvari_bufferje_nk();
 
     //* Ustvarjanje shaderjev
     ustvari_shaderje_2D_p();
     ustvari_shaderje_2D();
     ustvari_shaderje_3D();
+    ustvari_shaderje_nk();
 
     //* Da se ne vidi skozi 3D elemente
     glEnable(GL_DEPTH_TEST);
@@ -308,6 +310,67 @@ void Risalnik::ustvari_bufferje_3D()
     glEnableVertexAttribArray(2);
 }
 
+void Risalnik::ustvari_bufferje_nk()
+{
+
+    float tocke[] = {
+        // tocke
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+
+        -1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f,
+
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+
+        -1.0f, -1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f,
+
+        -1.0f, 1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, -1.0f,
+
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f, 1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f};
+
+    //* Ustvarjanje VAO-ja
+    glGenVertexArrays(1, &m_VAO_nk);
+    glBindVertexArray(m_VAO_nk);
+
+    //* Ustvarjanje VBO-ja
+    glGenBuffers(1, &m_VBO_nk);
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO_nk);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(tocke), tocke, GL_STATIC_DRAW);
+
+    //* Nastavljanje attrib kazalcev
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
+}
+
 void Risalnik::ustvari_shaderje_3D()
 {
     int uspeh;
@@ -358,6 +421,64 @@ void Risalnik::ustvari_shaderje_3D()
     {
         glGetProgramInfoLog(m_shader_program_3D, 512, nullptr, informacije);
         napaka("risalnik.cpp :: Napaka: pri povezovanju m_shader_program_3D:  %s\n", informacije);
+        glfwTerminate();
+        exit(1);
+    }
+
+    glDeleteShader(fragment_shader);
+    glDeleteShader(vertex_shader);
+}
+
+void Risalnik::ustvari_shaderje_nk()
+{
+    int uspeh;
+    char informacije[512];
+
+    //* ustvarjanje verex shaderja
+    uint32_t vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertex_shader, 1, &vertex_shader_nk_s, nullptr);
+
+    glCompileShader(vertex_shader);
+
+    //* Preverjanje napak
+    glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &uspeh);
+
+    if (!uspeh)
+    {
+        glGetShaderInfoLog(vertex_shader, 512, nullptr, informacije);
+        napaka("risalnik.cpp :: Napaka: vertex_shader_nk.glsl: %s\n", informacije);
+        glfwTerminate();
+        exit(1);
+    }
+
+    uint32_t fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragment_shader, 1, &fragment_shader_nk_s, nullptr);
+
+    glCompileShader(fragment_shader);
+
+    //* Preverjanje napak
+    glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &uspeh);
+
+    if (!uspeh)
+    {
+        glGetShaderInfoLog(fragment_shader, 512, nullptr, informacije);
+        snprintf(informacije, sizeof(informacije), "NAPAKA %s", informacije);
+        napaka("risalnik.cpp :: Napaka: fragment_shader_nk.glsl: %s\n", informacije);
+        glfwTerminate();
+        exit(1);
+    }
+
+    //* Ustvarjanje shader programa
+    m_shader_program_nk = glCreateProgram();
+    glAttachShader(m_shader_program_nk, vertex_shader);
+    glAttachShader(m_shader_program_nk, fragment_shader);
+    glLinkProgram(m_shader_program_nk);
+
+    glGetProgramiv(m_shader_program_nk, GL_LINK_STATUS, &uspeh);
+    if (!uspeh)
+    {
+        glGetProgramInfoLog(m_shader_program_nk, 512, nullptr, informacije);
+        napaka("risalnik.cpp :: Napaka: pri povezovanju m_shader_program_nk:  %s\n", informacije);
         glfwTerminate();
         exit(1);
     }
@@ -657,6 +778,35 @@ void Risalnik::narisi_besedilo(const Pisava &pisava, const Barva b_besedila, mat
     delete[] indeksi;
 }
 
+void Risalnik::narisi_nebesno_kocko(Nebesna_kocka nk)
+{
+    glDepthMask(GL_FALSE);
+
+    glUseProgram(m_shader_program_nk);
+    glBindVertexArray(m_VAO_nk);
+
+    //* Priprava transformacijske matrike
+    mat::vec3 pozicija = 0;
+    mat::vec3 velikost = 150;
+    mat::vec3 rotacija = 0;
+
+    mat::mat4 transformacija(1);
+    transformacija = mat::pozicijska(transformacija, pozicija);
+    transformacija = mat::velikostna(transformacija, velikost);
+    transformacija = mat::rotacijska(transformacija, rotacija);
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO_nk);
+    glUniformMatrix4fv(glGetUniformLocation(m_shader_program_nk, "projection"), 1, GL_TRUE, &m_proj_mat_3D.mat[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(m_shader_program_nk, "view"), 1, GL_TRUE, &kamera_3D.m_mat_pogled.mat[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(m_shader_program_nk, "obj"), 1, GL_TRUE, &transformacija.mat[0][0]);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, nk.id_teksture);
+    glUniform1i(glGetUniformLocation(m_shader_program_nk, "skybox"), 0);
+
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glDepthMask(GL_TRUE);
+}
 mat::vec2 Risalnik::dobi_velikost_okna()
 {
     return m_velikost_okna;

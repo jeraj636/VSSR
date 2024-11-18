@@ -47,6 +47,7 @@ src/nastavitve_scena.cpp
 src/streznik.cpp
 src/odjemalec.cpp
 src/dnevnik.cpp
+src/nebesna_kocka.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
