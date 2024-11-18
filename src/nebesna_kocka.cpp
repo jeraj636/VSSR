@@ -15,7 +15,10 @@ void Nebesna_kocka::nastavi(std::vector<std::string> ploskve)
         unsigned char *podatki = stbi_load(ploskve[i].c_str(), &sirina, &visina, &kanali, 0);
         if (podatki)
         {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, sirina, visina, 0, GL_RGBA, GL_UNSIGNED_BYTE, podatki);
+            if (kanali == 4)
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, sirina, visina, 0, GL_RGBA, GL_UNSIGNED_BYTE, podatki);
+            if (kanali == 3)
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, sirina, visina, 0, GL_RGB, GL_UNSIGNED_BYTE, podatki);
             stbi_image_free(podatki);
         }
         else

@@ -514,7 +514,7 @@ void Igra_scena::zanka()
         m_odjmalec.poslji(buff, poz);
     }
     // Strežnik že 4-krat ni poslal še sem tu
-    if (m_streznik_nazadnje_se_sem_tu + T_SE_SEM_TU_INTERVAL * 4 < Cas::get_cas())
+    if (m_streznik_nazadnje_se_sem_tu + T_SE_SEM_TU_INTERVAL * 10 < Cas::get_cas())
     {
         napaka("igra_scena.cpp :: Streznik se ne odziva!\n");
         konec();
