@@ -786,23 +786,22 @@ void Risalnik::narisi_nebesno_kocko(Nebesna_kocka nk)
     glBindVertexArray(m_VAO_nk);
 
     //* Priprava transformacijske matrike
-    mat::vec3 pozicija = 0;
-    mat::vec3 velikost = 150;
-    mat::vec3 rotacija = 0;
 
     mat::mat4 transformacija(1);
-    transformacija = mat::pozicijska(transformacija, pozicija);
-    transformacija = mat::velikostna(transformacija, velikost);
-    transformacija = mat::rotacijska(transformacija, rotacija);
+    transformacija = mat::pozicijska(transformacija, nk.pozicija);
+    transformacija = mat::velikostna(transformacija, nk.velikost);
+    transformacija = mat::rotacijska(transformacija, nk.rotacija);
 
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO_nk);
-    glUniformMatrix4fv(glGetUniformLocation(m_shader_program_nk, "projection"), 1, GL_TRUE, &m_proj_mat_3D.mat[0][0]);
-    glUniformMatrix4fv(glGetUniformLocation(m_shader_program_nk, "view"), 1, GL_TRUE, &kamera_3D.m_mat_pogled.mat[0][0]);
-    glUniformMatrix4fv(glGetUniformLocation(m_shader_program_nk, "obj"), 1, GL_TRUE, &transformacija.mat[0][0]);
+
+    //* Nalaganje matrik
+    glUniformMatrix4fv(glGetUniformLocation(m_shader_program_nk, "u_projekcijska"), 1, GL_TRUE, &m_proj_mat_3D.mat[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(m_shader_program_nk, "u_kamera"), 1, GL_TRUE, &kamera_3D.m_mat_pogled.mat[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(m_shader_program_nk, "u_obj"), 1, GL_TRUE, &transformacija.mat[0][0]);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, nk.id_teksture);
-    glUniform1i(glGetUniformLocation(m_shader_program_nk, "skybox"), 0);
+    glUniform1i(glGetUniformLocation(m_shader_program_nk, "u_tek_id"), 0);
 
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glDepthMask(GL_TRUE);

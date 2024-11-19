@@ -17,13 +17,13 @@ Igra_scena::Igra_scena()
       m_gumb_za_na_meni(m_pisava, 0xffffffff, mat::vec2(0, 0.09), 0.06, "Meni", R_P_X_SREDINA | R_P_Y_SREDINA),
       m_gumb_za_nadaljevanje(m_pisava, 0xffffffff, mat::vec2(0, 0), 0.06, "Nadaljuj", R_P_X_SREDINA | R_P_Y_SREDINA)
 {
-
     m_nebesna_kocka.nastavi({"../sredstva/neki.png",
                              "../sredstva/neki.png",
                              "../sredstva/neki.png",
                              "../sredstva/neki.png",
                              "../sredstva/neki.png",
-                             "../sredstva/neki.png"});
+                             "../sredstva/neki.png"},
+                            mat::vec3(0), mat::vec3(0), mat::vec3(300));
 
     Nasprotnik::raketa.nastavi(mat::vec3(0), mat::vec3(1), mat::vec3(1, 1, 1), 0xffffffff, true, "../sredstva/raketa.obj");
     m_zvezdno_nebo.nastavi(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA); // naredi sicer podobno (isto)
@@ -164,17 +164,22 @@ void Igra_scena::zacetek()
 void Igra_scena::zanka()
 {
     //* Risanje in posodabljanje elementov
-    /*
-    m_meteor.posodobi();
-    Risalnik::nastavi_testiranje_globine(false);
-    Risalnik::narisi_2D_objekt(m_zvezdno_nebo);
-    Risalnik::narisi_2D_objekt(m_meteor);
-    Risalnik::nastavi_testiranje_globine(true);
-    */
+    if (m_pavza || m_ali_sem_umrl)
+    {
+        m_meteor.posodobi();
+        Risalnik::nastavi_testiranje_globine(false);
 
-    m_zvezdno_nebo.velikost = Risalnik::vel_platna;
-    m_zvezdno_nebo.pozicija = mat::vec2(0);
-    Risalnik::narisi_nebesno_kocko(m_nebesna_kocka);
+        m_zvezdno_nebo.velikost = Risalnik::vel_platna;
+        m_zvezdno_nebo.pozicija = mat::vec2(0); // Ni potrebno
+
+        Risalnik::narisi_2D_objekt(m_zvezdno_nebo);
+        Risalnik::narisi_2D_objekt(m_meteor);
+        Risalnik::nastavi_testiranje_globine(true);
+    }
+    else
+    {
+        Risalnik::narisi_nebesno_kocko(m_nebesna_kocka);
+    }
     //* Risanje zemljevida
     Nasprotnik::raketa.pozicija = Risalnik::kamera_3D.pozicija;
     Nasprotnik::raketa.pozicija.x *= -1;

@@ -81,11 +81,11 @@ out vec4 FragColor;
 
 in vec3 TexCoords;
 
-uniform samplerCube skybox;
+uniform samplerCube u_tek_id;
 
 void main()
 {    
-    FragColor = texture(skybox, TexCoords);
+    FragColor = texture(u_tek_id, TexCoords);
 }
 
 )";
@@ -168,15 +168,15 @@ layout (location = 0) in vec3 aPos;
 
 out vec3 TexCoords;
 
-uniform mat4 projection;
-uniform mat4 view;
-uniform mat4 obj;
+uniform mat4 u_projekcijska;
+uniform mat4 u_kamera;
+uniform mat4 u_obj;
 
 void main()
 {
     TexCoords = aPos;
-    vec4 trenutna_pozicija=obj * vec4(aPos,1.0);
-    gl_Position = projection * view * trenutna_pozicija;
+    vec4 trenutna_pozicija= u_obj * vec4(aPos,1.0);
+    gl_Position = u_projekcijska * u_kamera * trenutna_pozicija;
 }  
 )";
 #endif
