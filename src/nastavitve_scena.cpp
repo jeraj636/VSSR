@@ -256,6 +256,8 @@ void Nastavitve_scena::posodobi_gumbe()
         m_polje_za_vpis_st_odjemalcev.barva.a = 0.5;
         if (Risalnik::miskin_gumb.levi_gumb && m_polje_za_vpis_st_odjemalcev.aktiven)
         {
+            Streznik::ugasni();
+            ali_streznik_tece = false;
             m_st_odjemalcev.niz = "";
             m_polje_za_vpis_st_odjemalcev.cakaj_do = Cas::get_cas() + 1;
             Risalnik::buffer_za_vpis_podatkov = &m_st_odjemalcev.niz;
@@ -269,6 +271,8 @@ void Nastavitve_scena::posodobi_gumbe()
         m_polje_za_vpis_st_opazovalcev.barva.a = 0.5;
         if (Risalnik::miskin_gumb.levi_gumb && m_polje_za_vpis_st_opazovalcev.aktiven)
         {
+            Streznik::ugasni();
+            ali_streznik_tece = false;
             m_st_opazovalcev.niz = "";
             m_polje_za_vpis_st_opazovalcev.cakaj_do = Cas::get_cas() + 1;
             Risalnik::buffer_za_vpis_podatkov = &m_st_opazovalcev.niz;

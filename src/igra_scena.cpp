@@ -258,7 +258,7 @@ void Igra_scena::zanka()
         //* Streljanje
         if (Risalnik::miskin_gumb.levi_gumb && m_naslednje_streljanje < Cas::get_cas())
         {
-            m_naslednje_streljanje = Cas::get_cas() + 1;
+            m_naslednje_streljanje = Cas::get_cas() + 0.5;
 
             m_izstrelki.push_back(Izstrelek());
             m_izstrelki.back().oblika.pozicija = Risalnik::kamera_3D.pozicija * -1;
@@ -282,7 +282,7 @@ void Igra_scena::zanka()
 
         //* Risanje in izracun vidnih stevcev
         // za streljanje
-        m_vc_za_streljati.spredaj.velikost.x += m_vc_za_streljati.zadaj.velikost.x * Cas::get_delta_cas();
+        m_vc_za_streljati.spredaj.velikost.x += m_vc_za_streljati.zadaj.velikost.x * Cas::get_delta_cas() * 2;
         m_vc_za_streljati.spredaj.velikost.x = mat::obrezi_st(m_vc_za_streljati.spredaj.velikost.x, 0.0f, m_vc_za_streljati.zadaj.velikost.x);
         Risalnik::narisi_2D_objekt(m_vc_za_streljati.spredaj);
         Risalnik::narisi_2D_objekt(m_vc_za_streljati.zadaj);
