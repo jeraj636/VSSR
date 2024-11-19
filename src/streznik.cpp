@@ -11,7 +11,7 @@ Licenca: GNU GPL 3
 
 #include <fstream>
 #include <iostream>
-
+#include <sstream>
 void Odjemalec_zs::poslji(char buff[], int n)
 {
     int nn = sendto(Streznik::m_vticnik, buff, n, 0, (sockaddr *)&naslov_odjemalca, velikost_naslova_odjemalca);
