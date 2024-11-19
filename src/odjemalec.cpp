@@ -219,10 +219,10 @@ void Odjemalec::ustavi()
     close(m_vticnik);
 #endif
 #ifdef WINDOWS
-    //! NUJO DOPOLNI
     id = -1;
     closesocket(m_vticnik);
-    /*TIkaj naka WSAFREE*/
+    WSACleanup();
+    std::cout << "tu\m";
 #endif
 }
 

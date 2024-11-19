@@ -182,6 +182,7 @@ void Nastavitve_scena::zanka()
 
 void Nastavitve_scena::konec()
 {
+    Risalnik::buffer_za_vpis_podatkov = nullptr;
     std::ofstream o_dat("../sredstva/nastavitve.txt");
     o_dat << m_streznik.niz << std::endl;
     o_dat << m_vrata_odjemalca.niz << std::endl;
