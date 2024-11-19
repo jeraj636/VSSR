@@ -28,7 +28,7 @@ void Kamera_3D::nastavi()
     pitch = 0;
     rotacija = mat::vec3(degToRad(yaw), 0, 0);
     vidno_polje = OD_DALEC;
-    hitrost_premikanja = 50;
+    hitrost_premikanja = 25;
     m_kamera_gor = mat::vec3(0);
     m_mat_pogled = mat::mat4(0);
 }
@@ -37,7 +37,7 @@ void Kamera_3D::posodobi()
 {
     if (Risalnik::dobi_tipko(340) /*tipka SHIFT*/)
     {
-        hitrost_premikanja = 100;
+        hitrost_premikanja = 50;
         if (Risalnik::dobi_tipko('W') &&
             Risalnik::dobi_tipko('A') &&
             Risalnik::dobi_tipko('S') &&
@@ -49,7 +49,7 @@ void Kamera_3D::posodobi()
         if (!Risalnik::miskin_gumb.desni_gumb)
         {
 
-            hitrost_premikanja = 50;
+            hitrost_premikanja = 25;
             vidno_polje = 60; //! Povečaca
         }
     }

@@ -381,7 +381,7 @@ void Igra_scena::zanka()
             Nasprotnik::raketa.pozicija = nasprotniki[i].tr_pozicija;
         else
         {
-            nasprotniki[i].pr_pozicija += smer * Risalnik::kamera_3D.hitrost_premikanja * Cas::get_delta_cas();
+            nasprotniki[i].pr_pozicija += smer * Risalnik::kamera_3D.hitrost_premikanja * Cas::get_delta_cas() * T_HITROST_POSILJANJA_PODATKOV;
             Nasprotnik::raketa.pozicija = nasprotniki[i].pr_pozicija;
         }
 
