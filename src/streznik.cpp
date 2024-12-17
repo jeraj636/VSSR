@@ -25,10 +25,10 @@ void Opazovalec_zs::poslji(char buff[], int n)
     if (nn == -1)
         napaka("streznik.cpp :: Napaka pri posiljanju!\n");
 }
-
 bool Streznik::zazeni(int port, int odjemalci, int opazovalci)
 {
     //* Nastavljanje spremenjivk
+    std::cout << "zazeni\n";
     m_naslednji_cas_za_podatke_o_igralcih = 0;
     m_naslednji_cas_za_se_sem_tu = 0;
     m_id_stevec_odjemalci = 1;
@@ -480,6 +480,14 @@ void Streznik::obdelaj_sporocila()
 }
 void Streznik::ugasni()
 {
+    while (odjemalci.size() > 0)
+    {
+        odjemalci.pop_back();
+    }
+    while (opazovalci.size() > 0)
+    {
+        opazovalci.pop_back();
+    }
     streznik_tece = false;
 #ifdef LINUX
     close(m_vticnik);
