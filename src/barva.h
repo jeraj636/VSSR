@@ -12,7 +12,7 @@ Licenca: GNU GPL 3
 
 /*
 Razred sharanjuje podatke o barvi na način RGBA v spremenjivkah r, g, b in a.
-Zgroraj omenjene spremenjivke so javne in imajo vrednost med 0 in 1.
+Zgoraj omenjene spremenjivke so javne in imajo vrednost med 0 in 1.
 Razred dobi podatke o barvi v HEX kodiranju.
 */
 class Barva

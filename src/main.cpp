@@ -13,6 +13,7 @@ Licenca: GNU GPL 3
 #include "zacetna_scena.h"
 #include "igra_scena.h"
 #include "nastaviteve_scena.h"
+#include "navodila_scena.h"
 #include "dnevnik.h"
 
 int main()
@@ -22,15 +23,19 @@ int main()
     //* Nastavljanje scen
     Igra_scena is;
     Nastavitve_scena ns;
+    Navodila_scena nas;
     Zacetna_scena zs;
 
     zs.p_igra_scena = &is;
     zs.p_nastavitve_scena = &ns;
+    zs.p_navodila_scena = &nas;
 
     ns.p_zacetna_scena = &zs;
 
     is.p_zacena_scena = &zs;
     is.p_nastavitve_scena = &ns;
+
+    nas.p_zacetna_scena = &zs;
 
     zs.zacetek();
 

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(VSSR)
 set(CMAKE_CXX_STANDARD 20)
-option(JE_WIN "Gradim za windows?" OFF)
+option(JE_WIN "Gradim za windows?" ON)
 
 if(JE_WIN)
     set(OPEN_GL_LIB opengl32 ws2_32)
@@ -24,6 +24,7 @@ src/streznik.cpp
 add_subdirectory(lib/glfw)
 add_executable(${PROJECT_NAME}
 lib/glad/src/glad.c
+src/navodila_scena.cpp
 src/main.cpp
 src/barva.cpp
 src/mat3.cpp
