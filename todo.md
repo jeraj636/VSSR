@@ -28,8 +28,12 @@
   - [X] Dejanska logika
 - [X] Client side interpolacija
 - [X] Premikanje meteoritov
-- [ ] Boljse odzadje ? 
-  - [] Cube
+- [X] Boljse odzadje ? 
+  - [X] Cube
   - [X] Metoriti v odzadju
   - [X] dodaj modro kroglo
 - [X] Boljsa pozicija luci ? 
+- [ ] Pocasnejse kugle
+- [ ] hitrejsni meterotii samo nekateri
+- [ ] Zaključna dela
+  - [ ] Odstrani izpise

@@ -69,7 +69,7 @@ public:
 class Streznik
 {
 public:
-    static bool zazeni(int port, int odjemalci, int opazovalci);
+    static bool zazeni(int port, int odjemalci, int opazovalci, bool cli);
     static void ugasni();
     friend class Odjemalec_zs;
     friend class Opazovalec_zs;

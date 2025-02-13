@@ -25,7 +25,7 @@ void Opazovalec_zs::poslji(char buff[], int n)
     if (nn == -1)
         napaka("streznik.cpp :: Napaka pri posiljanju!\n");
 }
-bool Streznik::zazeni(int port, int odjemalci, int opazovalci)
+bool Streznik::zazeni(int port, int odjemalci, int opazovalci, bool cli)
 {
     //* Nastavljanje spremenjivk
     std::cout << "zazeni\n";
@@ -123,7 +123,8 @@ bool Streznik::zazeni(int port, int odjemalci, int opazovalci)
     sporocilo("streznik.cpp :: Streznik zagnan!\n");
 
     std::cout << "tu\n";
-    m_nit_za_poslusanje.join();
+    if (cli)
+        m_nit_za_poslusanje.join();
     return true;
 }
 

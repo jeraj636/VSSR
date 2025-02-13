@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
         printf("Uporaba ./streznik/streznik.exe <vrata> <st_igralcev> <st_odjemalcev>\n");
         return 1;
     }
-    Streznik::zazeni(std::atoi(argv[1]), std::atoi(argv[2]), std::atoi(argv[3]));
+    Streznik::zazeni(std::atoi(argv[1]), std::atoi(argv[2]), std::atoi(argv[3]), true);
     while (Streznik::streznik_tece)
         ;
 }

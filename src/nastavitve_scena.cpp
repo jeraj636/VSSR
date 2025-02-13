@@ -143,7 +143,7 @@ void Nastavitve_scena::zanka()
         {
             if (!ali_streznik_tece)
             {
-                ali_streznik_tece = Streznik::zazeni(atoi(m_vrata_streznika.niz.c_str()), atoi(m_st_odjemalcev.niz.c_str()), atoi(m_st_opazovalcev.niz.c_str()));
+                ali_streznik_tece = Streznik::zazeni(atoi(m_vrata_streznika.niz.c_str()), atoi(m_st_odjemalcev.niz.c_str()), atoi(m_st_opazovalcev.niz.c_str()), false);
                 m_gumb_za_vklop_izkop_streznika.cakaj_do = Cas::get_cas() + 1;
             }
             else
