@@ -76,7 +76,7 @@ Igra_scena::Igra_scena()
     }
     for (int i = 3; i < 6; i++) //* Vem da je grdo, življenje ni potica
     {
-        m_pocivalisce[i].nastavi(mat::vec3(0), mat::vec3(13), mat::vec3(0), 0xffffffff, true, "../sredstva/pocivalisce.obj");
+        m_pocivalisce[i].nastavi(mat::vec3(0), mat::vec3(11), mat::vec3(0), 0xffffffff, true, "../sredstva/pocivalisce.obj");
     }
     m_pocivalisce[0].pozicija = mat::vec3(80, 90, 90);
     m_pocivalisce[1].pozicija = mat::vec3(0, -50, 0);

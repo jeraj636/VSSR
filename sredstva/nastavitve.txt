@@ -1,4 +1,4 @@
-kokosek.si
+localhost
 6589
 5
 6589

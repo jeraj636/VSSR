@@ -71,6 +71,13 @@ bool Streznik::zazeni(int port, int odjemalci, int opazovalci, bool cli)
     kamen2.preberi_obj("../sredstva/kamni/K1.obj");
 
     m_modra_kugla.nastavi(mat::vec3(0), mat::vec3(3), mat::vec3(0), 0xffffffff, true, "../sredstva/modra_zadeva.obj");
+    for (int i = 0; i < 3; i++)
+    {
+        m_zelene_kugle[i].nastavi(mat::vec3(0), mat::vec3(15), mat::vec3(0), 0xffffffff, true, "../sredstva/pocivalisce.obj");
+    }
+    m_zelene_kugle[0].pozicija = mat::vec3(80, 90, 90);
+    m_zelene_kugle[1].pozicija = mat::vec3(0, -50, 0);
+    m_zelene_kugle[2].pozicija = mat::vec3(-40, 60, -90);
     i_dat.close();
 #ifdef LINUX
 
@@ -173,6 +180,16 @@ void Streznik::poslusaj()
                     m_kamni[i].smer = m_kamni[i].smer * -1;
                     m_kamni[i].smer = m_kamni[i].smer.normaliziraj();
                     m_kamni[i].pozicija += m_kamni[i].smer * m_kamni[i].hitrost * 0.1;
+                }
+                for (int j = 0; j < 3; j++)
+                {
+                    if (Objekt_3D::trk(kamen1, m_zelene_kugle[j]))
+                    {
+                        std::cout << "trkkkkk!\n";
+                        m_kamni[i].smer = m_zelene_kugle[i].pozicija - m_kamni[i].pozicija;
+                        m_kamni[i].smer = m_kamni[i].smer.normaliziraj();
+                        m_kamni[i].pozicija += m_kamni[i].smer * m_kamni[i].hitrost * 0.1;
+                    }
                 }
                 for (int j = 0; j < m_kamni.size(); j++)
                 {

@@ -95,6 +95,7 @@ private:
     static inline double m_naslednje_posiljanje_kamnov;
     static inline Kamen kamen1, kamen2;
     static inline Objekt_3D m_modra_kugla;
+    static inline Objekt_3D m_zelene_kugle[3];
 
 protected:
 #ifdef LINUX
