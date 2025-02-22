@@ -3,9 +3,7 @@ Opis: Funkcije za razred Cas
 Avtor: Jakob Jeraj
 Licenca: GNU GPL 3
 */
-
-#include "risalnik.h"
-
+#include "cas.h"
 double Cas::get_cas()
 {
     return m_cas;

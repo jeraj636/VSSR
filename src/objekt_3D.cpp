@@ -5,6 +5,7 @@ Licenca: GNU GPL 3
 */
 
 #include "objekt_3D.h"
+#include "cas.h"
 
 Objekt_3D::Objekt_3D()
 {
@@ -84,7 +85,7 @@ void Objekt_3D::nastavi(mat::vec3 t_pozicija, mat::vec3 t_velikost, mat::vec3 t_
 }
 #include <iostream>
 #include <cmath>
-#include "risalnik.h"
+// #include "risalnik.h"
 Objekt_3D Objekt_3D::hitbox(const Objekt_3D &objekt)
 {
     Objekt_3D izh;

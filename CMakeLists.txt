@@ -10,18 +10,8 @@ else()
     set(OPEN_GL_LIB GL)
 endif()
 
-add_executable(streznik
-src/streznik_main.cpp
-src/dnevnik.cpp
-src/vec3.cpp
-src/vec2.cpp
-src/mat3.cpp
-src/mat4.cpp
-src/matematika.cpp
-src/streznik.cpp
-)
-
 add_subdirectory(lib/glfw)
+
 add_executable(${PROJECT_NAME}
 lib/glad/src/glad.c
 src/navodila_scena.cpp
@@ -51,8 +41,24 @@ src/dnevnik.cpp
 src/nebesna_kocka.cpp
 )
 
+add_executable(streznik
+src/streznik_main.cpp
+src/dnevnik.cpp
+src/vec3.cpp
+src/vec2.cpp
+src/mat3.cpp
+src/mat4.cpp
+src/matematika.cpp
+src/streznik.cpp
+src/objekt_3D.cpp
+src/cas.cpp
+src/barva.cpp
+src/obj.cpp
+)
+
 target_include_directories(${PROJECT_NAME} PUBLIC
 lib/glad/include/
+lib/glad/
 lib/glfw/include/
 lib/stb/
 lib/stb/fmt/include/

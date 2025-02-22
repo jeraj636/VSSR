@@ -8,6 +8,8 @@ Licenca: GNU GPL 3
 #define STREZNIK_H
 #include "define.h"
 #include "matematika.h"
+#include "objekt_3D.h"
+#include "kamen.h"
 
 #include <ctime>
 #include <thread>
@@ -91,6 +93,7 @@ private:
     static inline std::vector<Kamen_zs> m_kamni;
     static inline double m_naslednji_premik_kamnov = 0.01;
     static inline double m_naslednje_posiljanje_kamnov;
+    static inline Kamen kamen1, kamen2;
 
 protected:
 #ifdef LINUX

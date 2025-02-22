@@ -51,7 +51,7 @@ bool Streznik::zazeni(int port, int odjemalci, int opazovalci, bool cli)
 
     //* Želim da se premika samo pol kamnov
     m_kamni = {};
-    for (int i = 0; i < 5 /*namsesto 10*/; i++)
+    for (int i = 0; i < 10 /*namsesto 10*/; i++)
     {
         std::string s;
         std::getline(i_dat, s);
@@ -67,6 +67,8 @@ bool Streznik::zazeni(int port, int odjemalci, int opazovalci, bool cli)
         m_kamni.back().smer = m_kamni.back().smer.normaliziraj();
         m_kamni.back().hitrost = rand();
     }
+    kamen1.preberi_obj("../sredstva/kamni/K1.obj");
+    kamen2.preberi_obj("../sredstva/kamni/K1.obj");
     i_dat.close();
 #ifdef LINUX
 
@@ -157,6 +159,33 @@ void Streznik::poslusaj()
             for (int i = 0; i < m_kamni.size(); i++)
             {
                 m_kamni[i].pozicija += m_kamni[i].smer * m_kamni[i].hitrost * 0.1;
+
+                //! preverjanje in resevanje trikov (se mi zdi da deluje drugace komentiraj
+                //* Ker delam commit
+                kamen1.veliksot = m_kamni[i].vel;
+                kamen1.pozicija = m_kamni[i].pozicija;
+                kamen1.rotacija = m_kamni[i].rotacija;
+                for (int j = 0; j < m_kamni.size(); j++)
+                {
+                    if (j != i)
+                    {
+                        kamen2.veliksot = m_kamni[j].vel;
+                        kamen2.pozicija = m_kamni[j].pozicija;
+                        kamen2.rotacija = m_kamni[j].rotacija;
+                        if (Objekt_3D::trk(kamen2, kamen1))
+                        {
+                            mat::vec3 smer = m_kamni[i].smer;
+                            m_kamni[i].smer = m_kamni[j].smer;
+                            m_kamni[j].smer = smer;
+
+                            float hitrost = m_kamni[i].hitrost;
+                            m_kamni[i].hitrost = m_kamni[j].hitrost;
+                            m_kamni[i].hitrost = hitrost;
+
+                            m_kamni[i].pozicija += m_kamni[i].smer * m_kamni[i].hitrost * 0.1;
+                        }
+                    }
+                }
             }
         }
     }

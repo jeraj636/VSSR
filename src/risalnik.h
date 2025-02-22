@@ -17,6 +17,7 @@ Licenca: GNU GPL 3
 #include "kamera_2D.h"
 #include "kamera_3D.h"
 #include "nebesna_kocka.h"
+#include "cas.h"
 
 class Pisava;
 class Risalnik;
@@ -48,17 +49,6 @@ public:
     bool desni_gumb;
 };
 
-class Cas
-{
-public:
-    friend class Risalnik;
-    static double get_cas();
-    static double get_delta_cas();
-    static void nastavi_zamik(double zamik);
-
-protected:
-    static inline double m_zamik, m_cas, m_delta_cas, m_zacetek_frame_cas;
-};
 class Risalnik
 {
 public:
