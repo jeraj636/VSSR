@@ -248,6 +248,21 @@ void Igra_scena::zanka()
                 m_naslednje_zdravljenje = Cas::get_cas() + 2;
             }
         }
+        for (int j = 10; j < 10; j++)
+        {
+            if (i != j && Objekt_3D::trk(m_kamni1[i], m_kamni1[j]))
+            {
+                m_kamni1[i].smer = m_kamni1[i].pozicija - m_kamni1[j].pozicija;
+                m_kamni1[j].smer = m_kamni1[j].pozicija - m_kamni1[i].pozicija;
+                m_kamni1[i].smer = m_kamni1[i].smer.normaliziraj();
+                m_kamni1[j].smer = m_kamni1[j].smer.normaliziraj();
+
+                m_kamni1[i].pozicija += m_kamni1[i].smer * m_kamni1[i].hitrost * Cas::get_delta_cas();
+                m_kamni1[i].pozicija += m_kamni1[i].smer * m_kamni1[i].hitrost * Cas::get_delta_cas();
+                m_kamni1[j].pozicija += m_kamni1[j].smer * m_kamni1[j].hitrost * Cas::get_delta_cas();
+                m_kamni1[j].pozicija += m_kamni1[j].smer * m_kamni1[j].hitrost * Cas::get_delta_cas();
+            }
+        }
     }
     for (int i = 3; i < 6; i++)
     {

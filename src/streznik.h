@@ -94,6 +94,7 @@ private:
     static inline double m_naslednji_premik_kamnov = 0.01;
     static inline double m_naslednje_posiljanje_kamnov;
     static inline Kamen kamen1, kamen2;
+    static inline Objekt_3D m_modra_kugla;
 
 protected:
 #ifdef LINUX

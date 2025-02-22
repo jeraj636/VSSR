@@ -69,6 +69,8 @@ bool Streznik::zazeni(int port, int odjemalci, int opazovalci, bool cli)
     }
     kamen1.preberi_obj("../sredstva/kamni/K1.obj");
     kamen2.preberi_obj("../sredstva/kamni/K1.obj");
+
+    m_modra_kugla.nastavi(mat::vec3(0), mat::vec3(3), mat::vec3(0), 0xffffffff, true, "../sredstva/modra_zadeva.obj");
     i_dat.close();
 #ifdef LINUX
 
@@ -165,6 +167,13 @@ void Streznik::poslusaj()
                 kamen1.veliksot = m_kamni[i].vel;
                 kamen1.pozicija = m_kamni[i].pozicija;
                 kamen1.rotacija = m_kamni[i].rotacija;
+                if (Objekt_3D::trk(kamen1, m_modra_kugla))
+                {
+                    std::cout << "trkkkkk!\n";
+                    m_kamni[i].smer = m_kamni[i].smer * -1;
+                    m_kamni[i].smer = m_kamni[i].smer.normaliziraj();
+                    m_kamni[i].pozicija += m_kamni[i].smer * m_kamni[i].hitrost * 0.1;
+                }
                 for (int j = 0; j < m_kamni.size(); j++)
                 {
                     if (j != i)
@@ -174,15 +183,15 @@ void Streznik::poslusaj()
                         kamen2.rotacija = m_kamni[j].rotacija;
                         if (Objekt_3D::trk(kamen2, kamen1))
                         {
-                            mat::vec3 smer = m_kamni[i].smer;
-                            m_kamni[i].smer = m_kamni[j].smer;
-                            m_kamni[j].smer = smer;
-
-                            float hitrost = m_kamni[i].hitrost;
-                            m_kamni[i].hitrost = m_kamni[j].hitrost;
-                            m_kamni[i].hitrost = hitrost;
+                            m_kamni[i].smer = m_kamni[i].pozicija - m_kamni[j].pozicija;
+                            m_kamni[j].smer = m_kamni[j].pozicija - m_kamni[i].pozicija;
+                            m_kamni[i].smer = m_kamni[i].smer.normaliziraj();
+                            m_kamni[j].smer = m_kamni[j].smer.normaliziraj();
 
                             m_kamni[i].pozicija += m_kamni[i].smer * m_kamni[i].hitrost * 0.1;
+                            m_kamni[i].pozicija += m_kamni[i].smer * m_kamni[i].hitrost * 0.1;
+                            m_kamni[j].pozicija += m_kamni[j].smer * m_kamni[j].hitrost * 0.1;
+                            m_kamni[j].pozicija += m_kamni[j].smer * m_kamni[j].hitrost * 0.1;
                         }
                     }
                 }
