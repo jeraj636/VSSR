@@ -122,14 +122,12 @@ bool Streznik::zazeni(int port, int odjemalci, int opazovalci)
 
     sporocilo("streznik.cpp :: Streznik zagnan!\n");
 
-    std::cout << "tu\n";
     m_nit_za_poslusanje.join();
     return true;
 }
 
 void Streznik::poslusaj()
 {
-    std::cout << "tu2\n";
     sporocilo("streznik.cpp :: Poslusam za nove povezave!\n");
     while (streznik_tece)
     {
