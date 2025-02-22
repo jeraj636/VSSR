@@ -70,6 +70,7 @@ private:
     Kamen m_kamni1[10];
     Objekt_3D m_modri_kamen;
     Meteor m_meteor;
+    Objekt_3D m_pocivalisce[6];
 
     //* Merilec
     Objekt_2D m_merilec[4];
@@ -90,7 +91,8 @@ private:
     double m_naslednje_streljanje;
     double m_naslednja_teleportacija;
     double m_cas_do_ozivetja;
-
+    double m_naslednje_odvzetje_zivljenja_ob_trku;
+    double m_naslednje_zdravljenje;
     Odjemalec m_odjmalec;
 
     Besedilo m_gumb_za_na_meni;
@@ -106,6 +108,7 @@ private:
     int m_vseh_st_src;
     int m_st_src;
     Objekt_2D m_srce;
+    int m_st_uspesnih_zadetkov;
 
     Teleportacija m_teleportacija;
     Vidni_casovnik m_vc_za_streljati, m_vc_za_teleportirati, m_vc_za_oziveti;
