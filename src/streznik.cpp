@@ -159,8 +159,6 @@ void Streznik::poslusaj()
             }
         }
 
-        /*
-         */
         //* Premikanje kamnov
         if (m_naslednji_premik_kamnov <= zdaj)
         {
@@ -169,28 +167,29 @@ void Streznik::poslusaj()
             {
                 m_kamni[i].pozicija += m_kamni[i].smer * m_kamni[i].hitrost * 0.1;
 
-                //! preverjanje in resevanje trikov (se mi zdi da deluje drugace komentiraj
+                //! preverjanje in resevanje trikov (se mi zdi da deluje drugace zakomentiraj
                 //* Ker delam commit
                 kamen1.veliksot = m_kamni[i].vel;
                 kamen1.pozicija = m_kamni[i].pozicija;
                 kamen1.rotacija = m_kamni[i].rotacija;
+                // Preverjanje trka z modro kuglo
                 if (Objekt_3D::trk(kamen1, m_modra_kugla))
                 {
-                    std::cout << "trkkkkk!\n";
                     m_kamni[i].smer = m_kamni[i].smer * -1;
                     m_kamni[i].smer = m_kamni[i].smer.normaliziraj();
                     m_kamni[i].pozicija += m_kamni[i].smer * m_kamni[i].hitrost * 0.1;
                 }
+                // Preverjanje trka z zelo kuglo
                 for (int j = 0; j < 3; j++)
                 {
                     if (Objekt_3D::trk(kamen1, m_zelene_kugle[j]))
                     {
-                        std::cout << "trkkkkk!\n";
                         m_kamni[i].smer = m_zelene_kugle[i].pozicija - m_kamni[i].pozicija;
                         m_kamni[i].smer = m_kamni[i].smer.normaliziraj();
                         m_kamni[i].pozicija += m_kamni[i].smer * m_kamni[i].hitrost * 0.1;
                     }
                 }
+                // Preverjanje trka z ostlimi kamni
                 for (int j = 0; j < m_kamni.size(); j++)
                 {
                     if (j != i)
