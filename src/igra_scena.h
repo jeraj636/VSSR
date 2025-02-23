@@ -31,6 +31,7 @@ public:
     mat::vec3 pozicija, rotacija;
     mat::vec3 pr_pozicija, pr_rotacija;
     mat::vec3 tr_pozicija, tr_rotacija;
+    float hitrost;
     int id;
     bool prebran;
 };

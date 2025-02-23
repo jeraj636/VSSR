@@ -452,8 +452,8 @@ void Igra_scena::zanka()
         // pozicija
         mat::vec3 smer = mat::vec3(0) - (nasprotniki[i].pr_pozicija - nasprotniki[i].tr_pozicija);
         smer = smer.normaliziraj();
-        std::cout << smer << "   " << smer.dolzina() << "\n";
-        nasprotniki[i].pozicija += smer * Cas::get_delta_cas() * Risalnik::kamera_3D.hitrost_premikanja;
+        std::cout << nasprotniki[i].hitrost << "   " << Risalnik::kamera_3D.hitrost_premikanja << "\n";
+        nasprotniki[i].pozicija += smer * Cas::get_delta_cas() * nasprotniki[i].hitrost;
 
         // rotacija
         smer = nasprotniki[i].tr_rotacija - nasprotniki[i].pr_rotacija;
@@ -587,10 +587,9 @@ void Igra_scena::zanka()
         poz += sizeof(Risalnik::kamera_3D.pozicija);
         memcpy(buff + poz, (char *)&Risalnik::kamera_3D.rotacija, sizeof(Risalnik::kamera_3D.rotacija));
         poz += sizeof(Risalnik::kamera_3D.rotacija);
-        /*
-        memcpy(buff + poz, (char *)&Risalnik::kamera_3D.rotacija, sizeof(Risalnik::kamera_3D.hitrost_premikanja));
+        memcpy(buff + poz, (char *)&Risalnik::kamera_3D.hitrost_premikanja, sizeof(Risalnik::kamera_3D.hitrost_premikanja));
         poz += sizeof(Risalnik::kamera_3D.hitrost_premikanja);
-        */
+
         m_odjmalec.poslji(buff, poz);
     }
     // Strežnik že 4-krat ni poslal še sem tu
@@ -686,14 +685,15 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
                 int id;
                 mat::vec3 pozicija;
                 mat::vec3 rotacija;
-
+                float hitrost;
                 memcpy((char *)&id, buff + poz, sizeof(id));
                 poz += sizeof(id);
                 memcpy((char *)&pozicija, buff + poz, sizeof(pozicija));
                 poz += sizeof(pozicija);
                 memcpy((char *)&rotacija, buff + poz, sizeof(rotacija));
                 poz += sizeof(rotacija);
-
+                memcpy((char *)&hitrost, buff + poz, sizeof(hitrost));
+                poz += sizeof(hitrost);
                 bool ali_je_v_tabeli = false;
                 for (int j = 0; j < is->nasprotniki.size(); j++)
                 {
@@ -705,7 +705,7 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
 
                         is->nasprotniki[j].pr_rotacija = is->nasprotniki[j].tr_rotacija;
                         is->nasprotniki[j].tr_rotacija = rotacija;
-
+                        is->nasprotniki[j].hitrost = hitrost;
                         is->nasprotniki[j].prebran = true;
                         ali_je_v_tabeli = true;
                     }
@@ -721,6 +721,7 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
                     is->nasprotniki.back().tr_rotacija = rotacija;
                     is->nasprotniki.back().pr_rotacija = rotacija;
                     is->nasprotniki.back().prebran = true;
+                    is->nasprotniki.back().hitrost = hitrost;
                 }
             }
 

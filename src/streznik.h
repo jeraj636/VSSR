@@ -41,6 +41,7 @@ class Odjemalec_zs
 public:
     mat::vec3 pozicija;
     mat::vec3 rotacija;
+    float hitrost;
     int id;
     int st_src;
     double cakaj_do_ozivljenja;

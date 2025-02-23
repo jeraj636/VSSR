@@ -271,6 +271,10 @@ void Streznik::poslji_sporocila()
                     // Rotacija
                     memcpy(buff + poz, (char *)&odjemalci[j].rotacija, sizeof(odjemalci[j].rotacija));
                     poz += sizeof(odjemalci[j].rotacija);
+
+                    // Hitrost
+                    memcpy(buff + poz, (char *)&odjemalci[j].hitrost, sizeof(odjemalci[j].hitrost));
+                    poz += sizeof(odjemalci[j].hitrost);
                 }
             }
             odjemalci[i].poslji(buff, poz);
@@ -498,6 +502,10 @@ void Streznik::obdelaj_sporocila()
                 // Rotacija
                 memcpy((char *)&odjemalci[i].rotacija, buff + poz, sizeof(odjemalci[i].rotacija));
                 poz += sizeof(odjemalci[i].rotacija);
+
+                // Hitrost
+                memcpy((char *)&odjemalci[i].hitrost, buff + poz, sizeof(odjemalci[i].hitrost));
+                poz += sizeof(odjemalci[i].hitrost);
 
                 // Obdelava pozicije
                 odjemalci[i].pozicija.x *= -1;
