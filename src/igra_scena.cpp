@@ -450,17 +450,14 @@ void Igra_scena::zanka()
     {
         //! Interpolacija
         // pozicija
-        mat::vec3 smer = nasprotniki[i].tr_pozicija - nasprotniki[i].pr_pozicija;
-        if (smer.dolzina() == 0)
-            Nasprotnik::raketa.pozicija = nasprotniki[i].tr_pozicija;
-        else
-        {
-            nasprotniki[i].pr_pozicija += smer * Risalnik::kamera_3D.hitrost_premikanja * Cas::get_delta_cas();
-            Nasprotnik::raketa.pozicija = nasprotniki[i].pr_pozicija;
-        }
+        mat::vec3 smer = mat::vec3(0) - (nasprotniki[i].pr_pozicija - nasprotniki[i].tr_pozicija);
+        smer = smer.normaliziraj();
+        std::cout << smer << "   " << smer.dolzina() << "\n";
+        nasprotniki[i].pozicija += smer * Cas::get_delta_cas() * Risalnik::kamera_3D.hitrost_premikanja;
 
         // rotacija
         smer = nasprotniki[i].tr_rotacija - nasprotniki[i].pr_rotacija;
+        // smer = smer.normaliziraj();
         if (smer.dolzina() == 0)
             Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
         else
@@ -468,7 +465,7 @@ void Igra_scena::zanka()
             nasprotniki[i].pr_rotacija += smer * Risalnik::kamera_3D.hitrost_miske * Cas::get_delta_cas();
             Nasprotnik::raketa.rotacija = nasprotniki[i].pr_rotacija;
         }
-
+        Nasprotnik::raketa.pozicija = nasprotniki[i].pozicija;
         // Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
         Risalnik::narisi_3D_objekt(Nasprotnik::raketa);
     }
@@ -590,6 +587,10 @@ void Igra_scena::zanka()
         poz += sizeof(Risalnik::kamera_3D.pozicija);
         memcpy(buff + poz, (char *)&Risalnik::kamera_3D.rotacija, sizeof(Risalnik::kamera_3D.rotacija));
         poz += sizeof(Risalnik::kamera_3D.rotacija);
+        /*
+        memcpy(buff + poz, (char *)&Risalnik::kamera_3D.rotacija, sizeof(Risalnik::kamera_3D.hitrost_premikanja));
+        poz += sizeof(Risalnik::kamera_3D.hitrost_premikanja);
+        */
         m_odjmalec.poslji(buff, poz);
     }
     // Strežnik že 4-krat ni poslal še sem tu
@@ -699,9 +700,12 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
                     if (id == is->nasprotniki[j].id) // Posodabljanje nasprotnikov
                     {
                         is->nasprotniki[j].pr_pozicija = is->nasprotniki[j].tr_pozicija;
-                        is->nasprotniki[j].pr_rotacija = is->nasprotniki[j].tr_rotacija;
+                        is->nasprotniki[j].pozicija = is->nasprotniki[j].tr_pozicija;
                         is->nasprotniki[j].tr_pozicija = pozicija;
+
+                        is->nasprotniki[j].pr_rotacija = is->nasprotniki[j].tr_rotacija;
                         is->nasprotniki[j].tr_rotacija = rotacija;
+
                         is->nasprotniki[j].prebran = true;
                         ali_je_v_tabeli = true;
                     }
@@ -709,7 +713,6 @@ void Igra_scena::vzdrzuj_povezavo(Igra_scena *is)
 
                 if (!ali_je_v_tabeli) // Ustvarjanje novega nasprotnika v primeru če tega ni v tabeli (nov nasprotnik)
                 {
-
                     Nasprotnik nov_nasprotnik;
                     is->nasprotniki.push_back(nov_nasprotnik);
                     is->nasprotniki.back().id = id;

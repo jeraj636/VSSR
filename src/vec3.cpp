@@ -135,6 +135,8 @@ namespace mat
         tmp.x /= dol;
         tmp.y /= dol;
         tmp.z /= dol;
+        if (dol == 0)
+            tmp = mat::vec3(0);
         return tmp;
     }
 
