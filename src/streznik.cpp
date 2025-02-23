@@ -63,9 +63,9 @@ bool Streznik::zazeni(int port, int odjemalci, int opazovalci, bool cli)
         m_kamni.back().pozicija = poz;
         m_kamni.back().rotacija = rot;
         m_kamni.back().vel = vel;
-        m_kamni.back().smer = mat::vec3(rand() * 10, rand() * 10, rand() * 10);
+        m_kamni.back().smer = mat::vec3(rand() * 10.0f - 5, rand() * 10.0f - 5, rand() * 10.0f - 5);
         m_kamni.back().smer = m_kamni.back().smer.normaliziraj();
-        m_kamni.back().hitrost = rand();
+        m_kamni.back().hitrost = (rand() / (float)RAND_MAX * 10.0) + 5;
     }
     kamen1.preberi_obj("../sredstva/kamni/K1.obj");
     kamen2.preberi_obj("../sredstva/kamni/K1.obj");

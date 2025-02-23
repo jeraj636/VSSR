@@ -10,6 +10,7 @@ Licenca: GNU GPL 3
 #include <stdarg.h>
 /*
 ... - To pomeni da je lahko več argumentov z različnimi podatkovnimi tipi
+To omogoča knjižnica stdarg.h
 */
 void napaka(const char *sporocilo, ...);
 void opozorilo(const char *sporocilo, ...);

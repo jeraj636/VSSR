@@ -45,6 +45,7 @@ bool Besedilo::ali_je_miska_gor()
     posodobi();
 
     //* ali je kazalec miske znotraj besedila
+    //* deluje zgolj za nerotirano besedilo
     if (Risalnik::kazalec_miske.pozicija_kazalca_na_platnu.x >= m_leva_pozicija.x &&
         Risalnik::kazalec_miske.pozicija_kazalca_na_platnu.x <= m_leva_pozicija.x + m_dejanska_velikost.x &&
         Risalnik::kazalec_miske.pozicija_kazalca_na_platnu.y >= m_leva_pozicija.y - m_dejanska_velikost.y &&

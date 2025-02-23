@@ -1,3 +1,8 @@
+/*
+Opis: Deklaracija razreda Cas
+Avtor: Jakob Jeraj
+Licenca: GNU GPL 3
+*/
 #ifndef CAS_H
 #define CAS_H
 class Cas

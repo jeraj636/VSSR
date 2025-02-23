@@ -25,7 +25,7 @@ public:
     void narisi_me();
 
 public:
-    Pisava &pisava; //! Bodi previden
+    Pisava &pisava; //! Bodi previden!
     float velikost;
     mat::vec2 pozicija;
     std::string niz;

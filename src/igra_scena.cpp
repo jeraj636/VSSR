@@ -24,7 +24,7 @@ Igra_scena::Igra_scena()
                              "../sredstva/neki.png",
                              "../sredstva/neki.png"},
                             mat::vec3(0), mat::vec3(0), mat::vec3(300));
-
+    //* Nastavljanje osnovnih objektov
     Nasprotnik::raketa.nastavi(mat::vec3(0), mat::vec3(1), mat::vec3(1, 1, 1), 0xffffffff, true, "../sredstva/raketa.obj");
     m_zvezdno_nebo.nastavi(mat::vec2(0), mat::vec2(0), 0, 0xffffffff, "../sredstva/nebo.png", true, R_P_X_SREDINA | R_P_Y_SREDINA); // naredi sicer podobno (isto)
 
@@ -46,7 +46,7 @@ Igra_scena::Igra_scena()
     std::ifstream i_dat("../sredstva/kamni/podatki_o_kamnih.txt");
     if (!i_dat.is_open())
     {
-        std::cout << "Ni datoteke ../sredstva/kamni/podatki_o_kamnih.txt\n";
+        napaka("Ni datoteke ../sredstva/kamni/podatki_o_kamnih.txt\n");
         exit(1);
     }
 
@@ -62,7 +62,8 @@ Igra_scena::Igra_scena()
         m_kamni1[i].nastavi(poz, mat::vec3(vel / 0.5), rot, 0xffffffff, true, "../sredstva/kamni/K1.obj");
         m_kamni1[i].hitrost = 0;
     }
-    //* Branje pocivalisc iz datoteke
+    i_dat.close();
+
     /*
     !Ptiček
     *  ,
@@ -70,6 +71,11 @@ Igra_scena::Igra_scena()
     * //
     * ''
     */
+
+    //* Nastavljanje pocivalisc
+    //* Zadeva deluje zelo kmečko:
+    // Dva pocivalica sta na isti lokaciji samo, da je eden manjši.
+    // S tem se ustvari učinek pristajanja
     for (int i = 0; i < 3; i++)
     {
         m_pocivalisce[i].nastavi(mat::vec3(0), mat::vec3(15), mat::vec3(0), 0xffffffff, true, "../sredstva/pocivalisce.obj");
@@ -84,9 +90,9 @@ Igra_scena::Igra_scena()
     m_pocivalisce[3].pozicija = mat::vec3(80, 90, 90);
     m_pocivalisce[4].pozicija = mat::vec3(0, -50, 0);
     m_pocivalisce[5].pozicija = mat::vec3(-40, 60, -90);
-    i_dat.close();
 
     //* Nastavljanje merilca
+    // Merilec je sestavljen iz štirih črtic tako da tvorijo križec, ki ga je mogoče raztegniti ali skrčiti s pomočjo spremenjivke "m_razmik_merilca"
     m_velikost_merilca = mat::vec2(0.002, 0.02);
     for (int i = 0; i < 4; i++)
     {
@@ -104,7 +110,11 @@ void Igra_scena::zacetek()
     m_pavza = false;
     m_ali_sem_umrl = false;
     m_sem_povezan = false;
+
+    //* Števci
     m_st_uspesnih_zadetkov = 0;
+    m_st_src = 3;
+    m_vseh_st_src = 3;
 
     //* Casovniki
     m_cas_naslednjega_posiljanja_podatkov = 0;
@@ -138,10 +148,8 @@ void Igra_scena::zacetek()
     m_teleportacija.jaw = Risalnik::kamera_3D.yaw;
     m_teleportacija.pitch = Risalnik::kamera_3D.pitch;
 
-    m_st_src = 3;
-    m_vseh_st_src = 3;
-
     //* Povezava na streznik
+    // Nastavljnje porta iz nastavitev
     int port;
     try
     {
@@ -152,8 +160,10 @@ void Igra_scena::zacetek()
         port = -1;
     }
 
+    //* Ker igrica deluje na podlagi UDP je tukaj deset poiskusov povezave
     for (int i = 0; i < 10; i++)
     {
+        // Nastavljanje zacetnega sporočila
         int tip;
         if (p_nastavitve_scena->ali_sem_opazovalec)
         {
@@ -165,30 +175,36 @@ void Igra_scena::zacetek()
             tip = T_ODJEMALEC;
             m_opazujem = false;
         }
-        if (m_odjmalec.zazeni(p_nastavitve_scena->m_streznik.niz, port, tip) < 0)
+
+        // Dejanski poizkus povezave na strežnik
+        if (m_odjmalec.zazeni(p_nastavitve_scena->m_streznik.niz, port, tip) < 0) // Povezava neuspela
         {
             opozorilo("igra_scena.cpp :: Poskus povezave %i od %i ni uspel!\n", i + 1, 10);
         }
         else
-            break;
+            break; // uspešna povezava
     }
 
-    if (m_odjmalec.id != -1)
+    if (m_odjmalec.id != -1) // če je "m_odjemalec_id" enak -1 pomeni, da je strežnik povezavo zavrnil
     {
         m_sem_povezan = true;
         std::thread nit(vzdrzuj_povezavo, this); //* Nit za branje iz vticnika
         nit.detach();
     }
-    else
+    else // Vrnitev na zacetni meni
     {
         napaka("igra_scena.cpp :: Povezava ni uspela!\n");
         konec();
         p_zacena_scena->zacetek();
     }
 }
+
+// Glavna logika igre
 void Igra_scena::zanka()
 {
     //* Risanje in posodabljanje elementov
+
+    // poseben meni če je pavza ali igralec je umrl
     if (m_pavza || m_ali_sem_umrl)
     {
         m_meteor.posodobi();
@@ -197,19 +213,24 @@ void Igra_scena::zanka()
         m_zvezdno_nebo.velikost = Risalnik::vel_platna;
         m_zvezdno_nebo.pozicija = mat::vec2(0); // Ni potrebno
 
-        Risalnik::narisi_2D_objekt(m_zvezdno_nebo);
+        Risalnik::narisi_2D_objekt(m_zvezdno_nebo); //! Morda je potrebno spremeniti
         Risalnik::narisi_2D_objekt(m_meteor);
         Risalnik::nastavi_testiranje_globine(true);
     }
     else
     {
+        // Drugace se izrisiuje nebesna kocka
         Risalnik::narisi_nebesno_kocko(m_nebesna_kocka);
     }
+
     //* Risanje zemljevida
+    // Nastavljanje lastne pozicije rakete, da se zazna kolizijo z elementi zemljevida
     Nasprotnik::raketa.pozicija = Risalnik::kamera_3D.pozicija;
     Nasprotnik::raketa.pozicija.x *= -1;
     Nasprotnik::raketa.pozicija.y *= -1;
     Nasprotnik::raketa.pozicija.z *= -1;
+
+    // Modri kamen
     Risalnik::narisi_3D_objekt(m_modri_kamen);
     if (!p_nastavitve_scena->ali_sem_opazovalec && Objekt_3D::trk(Nasprotnik::raketa, m_modri_kamen))
     {
@@ -217,6 +238,22 @@ void Igra_scena::zanka()
         mat::vec3 smer_premika = mat::normaliziraj(m_modri_kamen.pozicija - Nasprotnik::raketa.pozicija);
         Risalnik::kamera_3D.pozicija += smer_premika * Cas::get_delta_cas() * 100;
     }
+    // Rjav premikajoč kamen se lahko zaleti v modro kuglo
+    for (int i = 10; i < 10; i++)
+    {
+        if (Objekt_3D::trk(m_kamni1[i], m_modri_kamen))
+        {
+            // Izračun novih smeri
+            m_kamni1[i].smer = m_kamni1[i].smer * -1;
+            m_kamni1[i].smer = m_kamni1[i].smer.normaliziraj();
+
+            // Nekoliko hitrejši odboj
+            m_kamni1[i].pozicija += m_kamni1[i].smer * m_kamni1[i].hitrost * Cas::get_delta_cas();
+            m_kamni1[i].pozicija += m_kamni1[i].smer * m_kamni1[i].hitrost * Cas::get_delta_cas();
+        }
+    }
+
+    // RIsanje rjavih kamnov
     for (int i = 0; i < 10; i++)
     {
         m_kamni1[i].pozicija += m_kamni1[i].smer * m_kamni1[i].hitrost * Cas::get_delta_cas();
@@ -234,7 +271,27 @@ void Igra_scena::zanka()
                 m_st_src--;
             }
         }
+        // Rjav premikajoč kamen se lahko zaleti v drug premikajpč rjav kamen
+        for (int j = 10; j < 10; j++)
+        {
+            if (i != j && Objekt_3D::trk(m_kamni1[i], m_kamni1[j]))
+            {
+                // Izračun novih smeri
+                m_kamni1[i].smer = m_kamni1[i].pozicija - m_kamni1[j].pozicija;
+                m_kamni1[j].smer = m_kamni1[j].pozicija - m_kamni1[i].pozicija;
+                m_kamni1[i].smer = m_kamni1[i].smer.normaliziraj();
+                m_kamni1[j].smer = m_kamni1[j].smer.normaliziraj();
+
+                // Nekoliko hitrejši odboj
+                m_kamni1[i].pozicija += m_kamni1[i].smer * m_kamni1[i].hitrost * Cas::get_delta_cas();
+                m_kamni1[i].pozicija += m_kamni1[i].smer * m_kamni1[i].hitrost * Cas::get_delta_cas();
+                m_kamni1[j].pozicija += m_kamni1[j].smer * m_kamni1[j].hitrost * Cas::get_delta_cas();
+                m_kamni1[j].pozicija += m_kamni1[j].smer * m_kamni1[j].hitrost * Cas::get_delta_cas();
+            }
+        }
     }
+
+    // Risanje pocivalisc
     bool ali_se_zdravim = false;
     for (int i = 0; i < 3; i++)
     {
@@ -248,22 +305,22 @@ void Igra_scena::zanka()
                 m_naslednje_zdravljenje = Cas::get_cas() + 2;
             }
         }
-        for (int j = 10; j < 10; j++)
-        {
-            if (i != j && Objekt_3D::trk(m_kamni1[i], m_kamni1[j]))
-            {
-                m_kamni1[i].smer = m_kamni1[i].pozicija - m_kamni1[j].pozicija;
-                m_kamni1[j].smer = m_kamni1[j].pozicija - m_kamni1[i].pozicija;
-                m_kamni1[i].smer = m_kamni1[i].smer.normaliziraj();
-                m_kamni1[j].smer = m_kamni1[j].smer.normaliziraj();
 
+        for (int i = 10; i < 10; i++)
+        {
+            if (Objekt_3D::trk(m_kamni1[i], m_pocivalisce[i]))
+            {
+                // Izračun novih smeri
+                m_kamni1[i].smer = m_pocivalisce[i].pozicija - m_kamni1[i].pozicija;
+                m_kamni1[i].smer = m_kamni1[i].smer.normaliziraj();
+
+                // Nekoliko hitrejši odboj
                 m_kamni1[i].pozicija += m_kamni1[i].smer * m_kamni1[i].hitrost * Cas::get_delta_cas();
                 m_kamni1[i].pozicija += m_kamni1[i].smer * m_kamni1[i].hitrost * Cas::get_delta_cas();
-                m_kamni1[j].pozicija += m_kamni1[j].smer * m_kamni1[j].hitrost * Cas::get_delta_cas();
-                m_kamni1[j].pozicija += m_kamni1[j].smer * m_kamni1[j].hitrost * Cas::get_delta_cas();
             }
         }
     }
+    // Da igralec ne more noter v pocivalisce
     for (int i = 3; i < 6; i++)
     {
         if (!p_nastavitve_scena->ali_sem_opazovalec && Objekt_3D::trk(Nasprotnik::raketa, m_pocivalisce[i]))

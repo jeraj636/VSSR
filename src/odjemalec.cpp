@@ -191,6 +191,7 @@ int Odjemalec::zazeni(std::string naslov, int port, int tip)
     }
 
 #endif
+    return -1;
 }
 
 Odjemalec::~Odjemalec()
@@ -222,7 +223,6 @@ void Odjemalec::ustavi()
     id = -1;
     closesocket(m_vticnik);
     WSACleanup();
-    std::cout << "tu\m";
 #endif
 }
 
