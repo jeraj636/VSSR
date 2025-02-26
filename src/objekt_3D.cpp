@@ -178,42 +178,63 @@ bool preveri_simpleks(std::deque<mat::vec3> &simpleks, mat::vec3 &smer)
     if (simpleks.size() == 2)
     {
         mat::vec3 A = simpleks[0], B = simpleks[1];
-        mat::vec3 AB = B - A;
-        mat::vec3 A0 = mat::vec3(0) - A;
+        mat::vec3 AB = B - A;            // vektor od A do B
+        mat::vec3 A0 = mat::vec3(0) - A; // Smer od 0 proti A
 
+        /*
+        Če je koordinatno središče med A in B,
+        se izračuna smer ki kaže od daljice do koordinatnega izhodišča
+        */
         if (mat::skalarni_produkt(AB, A0) > 0)
         {
             smer = mat::vektorski_produkt(mat::vektorski_produkt(AB, A0), AB);
         }
-        else
+        else //  v naspornem primeru se v simpleks da samo točko A in izračuna smer od A proti koordinatnemu izhodišču
         {
             simpleks = {A};
             smer = A0;
         }
         return false;
     }
-    if (simpleks.size() == 3)
+    if (simpleks.size() == 3) // V primeru, da imamo 2D simpleks (trikotnik)
     {
         mat::vec3 A = simpleks[0];
         mat::vec3 B = simpleks[1];
         mat::vec3 C = simpleks[2];
 
+        /*
+        Izračuna se daljice od B do A
+        in od C do A
+         */
         mat::vec3 AB = B - A;
         mat::vec3 AC = C - A;
         mat::vec3 A0 = mat::vec3(0) - A;
 
-        mat::vec3 normala_ABC = mat::vektorski_produkt(AB, AC);
+        /*
+        Izračuna se normalo trikotnika
+        */
+        mat::vec3 normala_ABC = mat::vektorski_produkt(AB, AC); // pomaga določiti ali je izhodišče nad ali pod trikotnikom
 
+        /*
+        Če je izhodišče na strani trikotnika, ki jo določa vektor AC, in je izven trikotnika, izberemo novo iskalno smer glede na A in C.
+        */
         if (mat::skalarni_produkt(mat::vektorski_produkt(normala_ABC, AC), A0) > 0)
         {
             simpleks = {A, C};
             smer = mat::vektorski_produkt(mat::vektorski_produkt(AC, A0), AC);
         }
+        /*
+        V primeru da je koordinatno izhodišče med a in b in je izven trikotnika
+        se v simpleks da doljico A do b in smer se izračuna od daoljice proti koordinatnemu izhodišču
+        */
         else if (mat::skalarni_produkt(mat::vektorski_produkt(AB, normala_ABC), A0) > 0)
         {
             simpleks = {A, B};
             smer = mat::vektorski_produkt(mat::vektorski_produkt(AB, A0), AB);
         }
+        /*
+        če je koordinatno izhodišče znotraj trikotnika se izračuna novo smer glede na od trikotnika proti koordinatenemu izhodišču
+        */
         else
         {
             smer = normala_ABC * (mat::skalarni_produkt(normala_ABC, A0) > 0 ? 1 : -1);
@@ -233,7 +254,9 @@ bool preveri_simpleks(std::deque<mat::vec3> &simpleks, mat::vec3 &smer)
         mat::vec3 normala_ACD = mat::vektorski_produkt(C - A, D - A);
         mat::vec3 normala_ADB = mat::vektorski_produkt(D - A, B - A);
 
-        if (mat::skalarni_produkt(normala_ABC, A0) > 0)
+        // Ti trije pogoji preverijo ali je koordinatno izhodišče zunaj tetraedra
+        // V pogojih se preverja ali je koordinatno izhodišče v smeri normale, ki kaže izven četverca
+        if (mat::skalarni_produkt(normala_ABC, A0) > 0) // Če je koordinatno izhodišče zunaj se je nova smer normala, ki kaže izven ploskve
         {
             simpleks = {A, B, C};
             smer = normala_ABC;
@@ -251,7 +274,7 @@ bool preveri_simpleks(std::deque<mat::vec3> &simpleks, mat::vec3 &smer)
             smer = normala_ADB;
             return false;
         }
-        return true;
+        return true; // če je znotraj pomeni, da je trk
     }
 
     return false;
