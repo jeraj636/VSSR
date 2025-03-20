@@ -420,7 +420,7 @@ void Igra_scena::zanka()
         Risalnik::narisi_2D_objekt(m_vc_za_teleportirati.spredaj);
         Risalnik::narisi_2D_objekt(m_vc_za_teleportirati.zadaj);
 
-        Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(-.6f, -.6f), 0.1, std::to_string(m_st_uspesnih_zadetkov), R_P_X_SREDINA | R_P_ZGORAJ);
+        Risalnik::narisi_besedilo(m_pisava, 0xffffffff, mat::vec2(-.6f, -.4f), 0.1, std::to_string(m_st_uspesnih_zadetkov), R_P_X_SREDINA | R_P_ZGORAJ);
     }
 
     //* Izris tujih izstrelkov
