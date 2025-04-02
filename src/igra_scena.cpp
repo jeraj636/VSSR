@@ -523,7 +523,7 @@ void Igra_scena::zanka()
             Nasprotnik::raketa.rotacija = nasprotniki[i].pr_rotacija;
         }
         Nasprotnik::raketa.pozicija = nasprotniki[i].pozicija;
-        // Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
+        Nasprotnik::raketa.rotacija = nasprotniki[i].tr_rotacija;
         Risalnik::narisi_3D_objekt(Nasprotnik::raketa);
     }
     if (m_st_src == 0)

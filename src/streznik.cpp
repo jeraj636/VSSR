@@ -244,7 +244,7 @@ void Streznik::poslji_sporocila()
     //* Posiljanje podatkov o igralcih vsem drugim igralcem
     if (m_naslednji_cas_za_podatke_o_igralcih <= zdaj)
     {
-        m_naslednji_cas_za_podatke_o_igralcih += T_HITROST_POSILJANJA_PODATKOV;
+        m_naslednji_cas_za_podatke_o_igralcih = zdaj + T_HITROST_POSILJANJA_PODATKOV;
 
         // Posiljanje odjemalcem
         for (int i = 0; i < odjemalci.size(); i++)
@@ -299,6 +299,10 @@ void Streznik::poslji_sporocila()
             // Rotacija
             memcpy(buff + poz, (char *)&odjemalci[i].rotacija, sizeof(odjemalci[i].rotacija));
             poz += sizeof(odjemalci[i].rotacija);
+
+            // Hitrost
+            memcpy(buff + poz, (char *)&odjemalci[i].hitrost, sizeof(odjemalci[i].hitrost));
+            poz += sizeof(odjemalci[i].hitrost);
         }
 
         for (int i = 0; i < opazovalci.size(); i++)
