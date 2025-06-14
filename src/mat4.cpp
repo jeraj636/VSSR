@@ -225,7 +225,6 @@ namespace mat
         poglej.mat[2][0] = smer.x;
         poglej.mat[2][1] = smer.y;
         poglej.mat[2][2] = smer.z;
-
         vec3 poz = pozicija;
         pozicija_mat = pozicijska(pozicija_mat, poz);
         return poglej * pozicija_mat;

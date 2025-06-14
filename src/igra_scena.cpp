@@ -161,7 +161,7 @@ void Igra_scena::zacetek()
     }
 
     //* Ker igrica deluje na podlagi UDP je tukaj deset poiskusov povezave
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 3; i++)
     {
         // Nastavljanje zacetnega sporočila
         int tip;

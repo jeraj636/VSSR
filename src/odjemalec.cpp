@@ -113,9 +113,12 @@ int Odjemalec::zazeni(std::string naslov, int port, int tip)
     return id;
 #endif
 #ifdef WINDOWS
-
+    std::cout<<"zaceetek"<<std::endl;
     // Ustvarjanje vticnika
-    WSAStartup(MAKEWORD(2, 0), &m_WSAData);
+    if (WSAStartup(MAKEWORD(2, 0), &m_WSAData) != 0) {
+    napaka("Napaka pri inicializaciji Winsock-a!\n");
+    return -1;
+}
     m_vticnik = socket(AF_INET, SOCK_DGRAM, 0);
 
     // Preverjanje ali se je vtičnik pravilno odprl
@@ -127,7 +130,10 @@ int Odjemalec::zazeni(std::string naslov, int port, int tip)
 
     // Nastavljanje neblokiranega načina
     u_long neblokiran = 1;
-    ioctlsocket(m_vticnik, FIONBIO, &neblokiran);
+    if (ioctlsocket(m_vticnik, FIONBIO, &neblokiran) != 0) {
+    napaka("Napaka pri nastavitvi neblokirajočega načina!\n");
+    return -1;
+}
 
     // Iskanje strežnika s pomočjo naslova
     hostent *naslov_streznika = gethostbyname(naslov.c_str());
@@ -220,9 +226,14 @@ void Odjemalec::ustavi()
     close(m_vticnik);
 #endif
 #ifdef WINDOWS
-    id = -1;
-    closesocket(m_vticnik);
+    if (m_vticnik != INVALID_SOCKET) {
+        closesocket(m_vticnik);
+        m_vticnik = INVALID_SOCKET;
+    }
+
     WSACleanup();
+    id = -1;
+    std::cout<<"tu\n";
 #endif
 }
 

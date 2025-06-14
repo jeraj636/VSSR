@@ -158,7 +158,8 @@ void main()
     trenutna_pozicija=u_transformacija * vec4(a_pos,1.0);
     pozicija_luci = u_pozicija_luci;
     gl_Position = u_projekcija*u_kamera* trenutna_pozicija;
-    frag_pos = vec3(gl_Position.x,gl_Position.y,gl_Position.z);
+
+    //frag_pos = vec3(gl_Position.x,gl_Position.y,gl_Position.z);
 }
 )";
 const char *vertex_shader_nk_s = R"(
